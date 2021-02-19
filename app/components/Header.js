@@ -4,12 +4,15 @@ import {theme} from '../core/theme';
 import DropdownMenu from './DropdownMenu';
 import BackButton from '../components/BackButton';
 import Search from './Search';
+import SaveButton from './SaveButton';
 
 const Header = ({
   websocket,
   navigation,
   displayGoBackButton = true,
   displaySearchBar = false,
+  displaySaveConfigurations = false,
+  saveChange,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -21,25 +24,29 @@ const Header = ({
   };
 
   return (
-    <React.Fragment>
+    <View style={styles.box}>
       <View style={styles.top}>
         {displayGoBackButton && <BackButton goBack={handleGoBack} />}
-        <Text style={styles.text}>EV-NRGY</Text>
+        <Text style={styles.center}>EV-NRGY</Text>
+        {displaySaveConfigurations ? (
+          <SaveButton save={saveChange} />
+        ) : (
+          <DropdownMenu navigation={navigation} websocket={websocket} />
+        )}
       </View>
-      <DropdownMenu navigation={navigation} websocket={websocket} />
       {displaySearchBar && (
         <Search navigation={navigation} websocket={websocket} />
       )}
-    </React.Fragment>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   top: {
-    alignItems: 'center',
+    position: 'relative',
   },
-
-  text: {
+  center: {
+    textAlign: 'center',
     fontSize: 26,
     color: theme.colors.primary,
     fontWeight: 'bold',

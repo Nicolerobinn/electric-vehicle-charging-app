@@ -94,6 +94,9 @@ const StationScreen = ({route, navigation}) => {
     const browser_url = `https://www.google.de/maps/@${latitude},${longitude}?q=${label}`;
     return Linking.openURL(browser_url);
   };
+  const configurationClick = () => {
+    navigation.navigate('ConfigurationsScreen', {station: {}});
+  };
   const getDirectionHandler = () => {
     // todo: get station latitude & longitude
     const latitude = '40.7127753';
@@ -180,7 +183,7 @@ const StationScreen = ({route, navigation}) => {
               icon="account-cog"
               mode="outlined"
               uppercase={false}
-              onPress={() => console.log('go to config page')}>
+              onPress={configurationClick}>
               Configuration
             </Button>
           </View>
@@ -220,7 +223,6 @@ const StationScreen = ({route, navigation}) => {
         <Text style={{fontSize: 16, fontWeight: 'bold', color: 'balck'}}>
           $1.00/hr
         </Text>
-        <Text>&nbsp;</Text>
         <Button
           disabled={buttonDsiabled}
           style={styles.button}
@@ -238,7 +240,7 @@ const StationScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   header: {},
   stationHeader: {
-    height: 180,
+    height: 200,
     flexDirection: 'row',
     backgroundColor: 'lightblue',
   },
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonWrapper: {
-    marginTop: 20,
+    marginTop: 30,
     flexDirection: 'row',
   },
   favouriteButton: {
@@ -277,6 +279,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   button: {
+    marginTop: 20,
     paddingTop: 5,
     paddingBottom: 5,
     width: 200,

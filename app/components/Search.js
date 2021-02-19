@@ -30,7 +30,6 @@ const Search = ({websocket, navigation}) => {
       message?.command === 'FindStationV1Response'
     ) {
       const messageData = message.payload;
-      // const messageSerialNumber = messageData.smpctNumber;
       navigation.navigate('StationScreen', {station: messageData});
     } else if (message?.status === 'ERROR') {
       // some error
