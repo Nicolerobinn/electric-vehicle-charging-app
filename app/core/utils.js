@@ -72,7 +72,6 @@ export const websocketCall = (websocket, requestBody, connected = true) => {
  */
 export const connecterTypeChecker = (connectorList) => {
   const type = new Set();
-
   connectorList.forEach((connector) => {
     if (connector.includes('_CCS') || connector.includes('_AA')) {
       type.add('DC');

@@ -1,4 +1,6 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, {memo, useState, useEffect} from 'react';
+import {START, STOP, WAITING, CONNECTOR_LIST} from '../constants';
+import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {
   Platform,
   Linking,
@@ -7,44 +9,34 @@ import {
   View,
   Image,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import Chart from '../components/Chart';
 
-
-import { Text, Button, IconButton } from 'react-native-paper';
+import {Text, Button, IconButton} from 'react-native-paper';
 import globalStyles from '../core/globalStyles';
-import { websocketCall } from '../core/utils';
+import {websocketCall, connecterTypeChecker} from '../core/utils';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+const AUTHORIZING = 'Authorizing';
+const AVAILABLE = 'Available';
 // redux
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
-const StationScreen = ({ route, navigation }) => {
-  const { websocket, serialNumber, station } = route.params;
-  const token = useSelector(state => state.appData.token);
+const StationScreen = ({route, navigation}) => {
+  const {websocket, station = {}} = route.params;
+  console.log(station.connectorList);
+  const token = useSelector((state) => state.appData.token);
+  const userData = useSelector((state) => state.appData.userData);
+  const {favouriteStationList, permissionList} = userData;
 
-  const userData = useSelector(state => state.appData.userData);
-  const { favouriteStationList } = userData;
-
-  // const station = {
-  //   smpctNumber: '03140000000', // Required
-  //   addressLineOne: '1234', // Required
-  //   addressLineTwo: '1234', // Optional
-  //   city: '1234', // Required
-  //   connectorList: [], // Required
-  //   country: 'Canada', // Required
-  //   name: 'SMPCT Charger #1', // Required
-  //   postalCode: '1234', // Required
-  //   state: 'British Columbia', // Required
-  // };
   const [isFavourite, setIsFavourite] = useState(false);
+  const [buttonDsiabled, setButtonDsiabled] = useState(false);
+  const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);
   // options: 'Start Charging', 'Waiting', 'Stop Charging'
-  const [chargingStatus, setChargingStatus] = useState("Start Charging");
-  const message = useSelector(state => state.appData.message);
-
+  const [chargingStatus, setChargingStatus] = useState(START);
+  const message = useSelector((state) => state.appData.message);
 
   useEffect(() => {
     // get station details from message
@@ -53,7 +45,7 @@ const StationScreen = ({ route, navigation }) => {
       message?.command === 'FindStationV1Response'
     ) {
       const stationData = message.payload;
-      setStation(stationData);
+      // setStation(stationData);
     } else if (message?.status === 'ERROR') {
       // some error
     }
@@ -61,10 +53,8 @@ const StationScreen = ({ route, navigation }) => {
 
   // check if current station is favorite or not
 
-  favouriteStationList.forEach(station => {
-    if (
-      station?.smpctNumber === serialNumber 
-    ) {
+  favouriteStationList.forEach((obj) => {
+    if (obj?.smpctNumber === station.serialNumber) {
       setIsFavourite(true);
     }
   });
@@ -72,36 +62,38 @@ const StationScreen = ({ route, navigation }) => {
   const favouriteToggleHandler = () => {
     // check if guess user (check user permission)
 
-    if (!userData.permissionList.includes('MODIFY_FAVOURITES')) {
+    if (!permissionList.includes('MODIFY_FAVOURITES')) {
+      const command = isFavourite
+        ? 'RemoveFavouriteV1Request'
+        : 'AddFavouriteV1Request';
       const requestBody = {
-        command: isFavourite ? 'RemoveFavouriteV1Request' : 'AddFavouriteV1Request',
+        command: command,
         token: token,
         payload: {
-          smpctNumber: serialNumber,
+          smpctNumber: station.serialNumber,
         },
       };
       const response = websocketCall(websocket, requestBody, false);
       if (response?.status === 'success') {
         setIsFavourite(!isFavourite);
-      }
-      else{
+      } else {
         console.log('add/remove favourite error');
       }
     } else {
-      // todo: test in device alert user 
-      alert("Please create an account to do this action")
+      // todo: test in device alert user
+      alert('Please create an account to do this action');
       Alert.alert(
         'Please create an account to do this action',
         'Please create an account to do this action',
-        [
-          { text: 'Sign up', onPress: () => console.log('OK Pressed') }
-        ],
-        { cancelable: false }
+        [{text: 'Sign up', onPress: () => console.log('OK Pressed')}],
+        {cancelable: false},
       );
     }
-    
   };
-
+  const getUrl = (latitude, longitude, label) => {
+    const browser_url = `https://www.google.de/maps/@${latitude},${longitude}?q=${label}`;
+    return Linking.openURL(browser_url);
+  };
   const getDirectionHandler = () => {
     // todo: get station latitude & longitude
     const latitude = '40.7127753';
@@ -109,51 +101,48 @@ const StationScreen = ({ route, navigation }) => {
     const label = station.name;
 
     const url = Platform.select({
-      ios: 'maps:' + latitude + ',' + longitude + '?q=' + label,
-      android: 'geo:' + latitude + ',' + longitude + '?q=' + label,
+      ios: `maps:${latitude},${longitude}?q=${label}`,
+      android: `geo:${latitude},${longitude}?q=${label}`,
     });
-    Linking.canOpenURL(url).then(supported => {
+    Linking.canOpenURL(url).then((supported) => {
       if (supported) {
         // todo: test on real device
         const url = Platform.select({
-          ios: "maps:" + latitude + "," + longitude + "?q=" + label,
-          android: "geo:" + latitude + "," + longitude + "?q=" + label
+          ios: `maps:${latitude},${longitude}?q=${label}`,
+          android: `geo:${latitude},${longitude}?q=${label}`,
         });
         // return Linking.openURL(url);
-        const browser_url =
-          'https://www.google.de/maps/@' +
-          latitude +
-          ',' +
-          longitude +
-          '?q=' +
-          label;
-        return Linking.openURL(browser_url);
+        return getUrl(latitude, longitude, label);
       } else {
-        const browser_url =
-          'https://www.google.de/maps/@' +
-          latitude +
-          ',' +
-          longitude +
-          '?q=' +
-          label;
-        return Linking.openURL(browser_url);
+        return getUrl(latitude, longitude, label);
       }
     });
   };
 
   const startChargingHandler = () => {
-    console.log('charging');
-    // 'Start Charging', 'Waiting', 'Stop Charging'
-    // need an API
-    if (chargingStatus==='Start Charging'){
-      setChargingStatus('Waiting');
-    } else if (chargingStatus==='Waiting'){
-      setChargingStatus('Stop Charging');
-    } else if (chargingStatus==='Stop Charging'){
-      setChargingStatus('Start Charging');
-
+    if (buttonDsiabled) {
+      return;
     }
-  }
+    console.log('charging');
+    // START, WAITING, STOP
+    // need an API
+    switch (chargingStatus) {
+      case START:
+        setChargingStatus(WAITING);
+        setChargingStatusText(AUTHORIZING);
+        break;
+      case WAITING:
+        setChargingStatus(STOP);
+        break;
+      case STOP:
+        setChargingStatus(START);
+        break;
+
+      default:
+        break;
+    }
+    setButtonDsiabled(true);
+  };
 
   return (
     <SafeAreaView style={globalStyles.androidSafeArea}>
@@ -163,57 +152,81 @@ const StationScreen = ({ route, navigation }) => {
         websocket={websocket}
       />
       <View style={styles.stationHeader}>
-        <View>
-          <Text>{station.smpctNumber}</Text>
-          <Text>{`${station.addressLineOne} ${station.addressLineTwo} ${station.city} ${station.state} `}</Text>
+        <View style={styles.stationContent}>
+          <View style={styles.contentTitle}>
+            <Text>{station.smpctNumber}</Text>
+            <IconButton
+              icon={isFavourite ? 'star' : 'star-outline'}
+              size={20}
+              onPress={favouriteToggleHandler}
+            />
+          </View>
+          <Text
+            style={{
+              marginBottom: 5,
+            }}>{`${station.addressLineOne} ${station.addressLineTwo} ${station.city} ${station.state} `}</Text>
           <Text>Max Power: 50.00kW</Text>
           <View style={styles.buttonWrapper}>
             <Button
-              style={styles.button}
+              style={styles.stationButton}
               icon="map-marker"
               mode="contained"
-              onPress={getDirectionHandler}
-            >
-              Direction
+              uppercase={false}
+              onPress={getDirectionHandler}>
+              Directions
             </Button>
             <Button
-              style={styles.button}
-              icon="settings"
+              style={styles.stationButton}
+              icon="account-cog"
               mode="outlined"
-              onPress={() => console.log('go to config page')}
-            >
-              Config
+              uppercase={false}
+              onPress={() => console.log('go to config page')}>
+              Configuration
             </Button>
           </View>
         </View>
         <View style={styles.stationHeaderRight}>
           {/* todo: change the color solid / empty  */}
-          <IconButton
-            icon={isFavourite ? 'star' : 'star-outline'}
-            size={20}
-            onPress={favouriteToggleHandler}
-          />
-          <Image
-            source={require('../assets/IEC_62196_AA.png')}
-            style={styles.image}
-          />
+          {station.connectorList.map((str, index) => {
+            if (CONNECTOR_LIST[str]) {
+              return (
+                <View style={styles.connectorListBox} key={index}>
+                  <Image
+                    source={CONNECTOR_LIST[str].url}
+                    style={styles.image}
+                  />
+                  <Text>{CONNECTOR_LIST[str].type}</Text>
+                </View>
+              );
+            }
+          })}
         </View>
       </View>
       <View style={styles.stationBody}>
-        {chargingStatus==='Start Charging' && <Image
-          source={require('../assets/plug_in.svg')}
-          style={styles.image}
-        />}
-        {chargingStatus==='Waiting' && <ActivityIndicator size="large" color="#0e3f94" />}
-        {chargingStatus==='Stop Charging' && <Chart/>}
-        <Text>Max Power: 50.00kW</Text>
-        <Text>$1.00/hr</Text>
+        {chargingStatus === WAITING && (
+          <ActivityIndicator size="large" color="#0e3f94" />
+        )}
+        {chargingStatus === STOP && <Chart />}
+        {chargingStatus === START && <Icon name="ev-station" size={100} />}
+        <Text
+          style={{
+            marginTop: 12,
+            marginBottom: 12,
+            fontWeight: 'bold',
+            color: 'gray',
+          }}>
+          {chargingStatusText}
+        </Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: 'balck'}}>
+          $1.00/hr
+        </Text>
         <Text>&nbsp;</Text>
         <Button
+          disabled={buttonDsiabled}
           style={styles.button}
           mode="contained"
-          onPress={startChargingHandler}
-        >
+          uppercase={false}
+          onPress={startChargingHandler}>
           {chargingStatus}
         </Button>
       </View>
@@ -225,13 +238,28 @@ const StationScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   header: {},
   stationHeader: {
-    flex: 1,
+    height: 180,
     flexDirection: 'row',
-    padding: '30px',
     backgroundColor: 'lightblue',
   },
   stationHeaderRight: {
-    paddingLeft: '45px',
+    paddingTop: 20,
+    width: '20%',
+  },
+  stationContent: {
+    padding: 20,
+    width: '80%',
+  },
+  contentTitle: {
+    height: 30,
+    alignItems: 'center',
+    textAlign: 'justify',
+    flexDirection: 'row',
+  },
+  connectorListBox: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   stationBody: {
     flex: 3,
@@ -239,15 +267,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonWrapper: {
-    paddingTop: '30px',
-    paddingRight: '20px',
+    marginTop: 20,
     flexDirection: 'row',
   },
   favouriteButton: {
     marginTop: '-20px',
   },
+  stationButton: {
+    marginRight: 10,
+  },
   button: {
-    width: '60%',
+    paddingTop: 5,
+    paddingBottom: 5,
+    width: 200,
+    borderRadius: 10,
   },
   image: {
     width: 50,
