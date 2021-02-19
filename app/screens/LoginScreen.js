@@ -1,40 +1,35 @@
-import React, { memo, useState, useEffect  } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import React, {memo, useState, useEffect} from 'react';
+import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import { theme } from '../core/theme';
-import { emailValidator, passwordValidator, websocketCall } from '../core/utils';
+import {theme} from '../core/theme';
+import {emailValidator, passwordValidator, websocketCall} from '../core/utils';
 
 // redux
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import * as Actions from '../store/Actions';
 
-const LoginScreen = ({ route, navigation }) => {
+const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const { websocket } = route.params;
+  const {websocket} = route.params;
   const [firstTimeVisit, setFirstTimeVisit] = useState(true);
-  const message = useSelector(state => state.appData.message);
-
+  const message = useSelector((state) => state.appData.message);
 
   useEffect(() => {
-    if (!firstTimeVisit){
-      if (message?.status === "SUCCESS") {
+    if (!firstTimeVisit) {
+      if (message?.status === 'SUCCESS') {
         navigation.navigate('HomeScreen');
       } else if (message?.status === 'ERROR') {
-          setGeneralError(message?.message);
+        setGeneralError(message?.message);
       }
-      
-    } else{
+    } else {
       // if first time open, clear previous message
       dispatch(Actions.saveMessage({}));
       setFirstTimeVisit(false);
     }
-
-    
-    
   }, [message]);
 
   // todo: cleanup
@@ -42,7 +37,7 @@ const LoginScreen = ({ route, navigation }) => {
     value: 'owner@company1.com',
     error: '',
   });
-  const [password, setPassword] = useState({ value: 'password', error: '' });
+  const [password, setPassword] = useState({value: 'password', error: ''});
   const [generalError, setGeneralError] = useState('');
 
   const handleLoginSubmit = () => {
@@ -50,27 +45,25 @@ const LoginScreen = ({ route, navigation }) => {
     const passwordError = passwordValidator(password.value);
 
     if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
+      setEmail({...email, error: emailError});
+      setPassword({...password, error: passwordError});
       return;
     }
     const requestBody = {
-      "command" : "LoginV2Request",	// Required
-      "payload" : {
-        "email" : email.value,				// Required
-        "password" : password.value					// Required
-      }
+      command: 'LoginV2Request', // Required
+      payload: {
+        email: email.value, // Required
+        password: password.value, // Required
+      },
     };
 
     websocketCall(websocket, requestBody, false);
   };
 
   const handleSkipLoginSubmit = () => {
-    
     const requestBody = {
-      "command" : "SkipLoginV1Request",	// Required
-      "payload" : {
-      }
+      command: 'SkipLoginV1Request', // Required
+      payload: {},
     };
 
     websocketCall(websocket, requestBody, false);
@@ -86,7 +79,7 @@ const LoginScreen = ({ route, navigation }) => {
         label="Email"
         returnKeyType="next"
         value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
+        onChangeText={(text) => setEmail({value: text, error: ''})}
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
@@ -99,7 +92,7 @@ const LoginScreen = ({ route, navigation }) => {
         label="Password"
         returnKeyType="done"
         value={password.value}
-        onChangeText={text => setPassword({ value: text, error: '' })}
+        onChangeText={(text) => setPassword({value: text, error: ''})}
         error={!!password.error}
         errorText={password.error}
         secureTextEntry
@@ -107,8 +100,7 @@ const LoginScreen = ({ route, navigation }) => {
 
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('ForgotPasswordScreen')}
-        >
+          onPress={() => navigation.navigate('ForgotPasswordScreen')}>
           <Text style={styles.label}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>

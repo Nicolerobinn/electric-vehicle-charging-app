@@ -8,6 +8,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 // redux
 import {useSelector} from 'react-redux';
 
+const tabArr = [
+  {key: 'recent', title: 'Recent'},
+  {key: 'favorites', title: 'Favorites'},
+  {key: 'home', title: 'Home'},
+];
 // fake station data
 // const stations = [
 //   {
@@ -52,6 +57,7 @@ import {useSelector} from 'react-redux';
 const RecentRoute = ({stations, navigation}) => {
   return (
     <View style={styles.scene}>
+      {/* <Text>123</Text> */}
       {stations.map((station) => {
         // todo: check available - connect to Get station status APIs
 
@@ -96,16 +102,12 @@ const HomeRoute = () => (
 const initialLayout = {width: Dimensions.get('window').width};
 
 const ListingsScreen = ({navigation}) => {
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = useState(0);
   const userData = useSelector((state) => state.appData.userData);
   const {favouriteStationList, homeStationList} = userData;
   const [recentStationList, setRecentStationList] = useState([]);
 
-  const [routes] = React.useState([
-    {key: 'recent', title: 'Recent'},
-    {key: 'favorites', title: 'Favorites'},
-    {key: 'home', title: 'Home'},
-  ]);
+  const [routes] = useState(tabArr);
 
   useEffect(() => {
     readRecentStationListFromAsyncStorage();

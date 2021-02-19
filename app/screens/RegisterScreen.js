@@ -1,13 +1,13 @@
-import React, { memo, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {memo, useState, useEffect} from 'react';
+import {useSelector} from 'react-redux';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
-import { theme } from '../core/theme';
+import {theme} from '../core/theme';
 import {
   emailValidator,
   passwordValidator,
@@ -16,22 +16,21 @@ import {
   websocketCall,
 } from '../core/utils';
 
-const RegisterScreen = ({ route, navigation }) => {
-  const message = useSelector(state => state.appData.message);
-  const { websocket } = route.params;
+const RegisterScreen = ({route, navigation}) => {
+  const message = useSelector((state) => state.appData.message);
+  const {websocket} = route.params;
 
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
     error: '',
   });
-  const [password, setPassword] = useState({ value: 'abcabc', error: '' });
+  const [password, setPassword] = useState({value: 'abcabc', error: ''});
   const [confirmPassword, setConfirmPassword] = useState({
     value: 'abcabc',
     error: '',
   });
   const [generalError, setGeneralError] = useState('');
-
 
   useEffect(() => {
     if (message?.status === 'SUCCESS') {
@@ -45,15 +44,15 @@ const RegisterScreen = ({ route, navigation }) => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     const confirmPasswordError = confirmPasswordValidator(
-      confirmPassword.value
+      confirmPassword.value,
     );
     const passwordMatchError = passwordMatch(confirmPassword.value);
 
     // validation
     if (emailError || passwordError || passwordMatchError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
-      setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
+      setEmail({...email, error: emailError});
+      setPassword({...password, error: passwordError});
+      setConfirmPassword({...confirmPassword, error: confirmPasswordError});
       return;
     }
     if (passwordMatchError) {
@@ -87,7 +86,7 @@ const RegisterScreen = ({ route, navigation }) => {
         label="Email"
         returnKeyType="next"
         value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
+        onChangeText={(text) => setEmail({value: text, error: ''})}
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
@@ -100,7 +99,7 @@ const RegisterScreen = ({ route, navigation }) => {
         label="Password"
         returnKeyType="done"
         value={password.value}
-        onChangeText={text => setPassword({ value: text, error: '' })}
+        onChangeText={(text) => setPassword({value: text, error: ''})}
         error={!!password.error}
         errorText={password.error}
         secureTextEntry
@@ -110,7 +109,7 @@ const RegisterScreen = ({ route, navigation }) => {
         label="ConfirmPassword"
         returnKeyType="done"
         value={confirmPassword.value}
-        onChangeText={text => setConfirmPassword({ value: text, error: '' })}
+        onChangeText={(text) => setConfirmPassword({value: text, error: ''})}
         error={!!confirmPassword.error}
         errorText={confirmPassword.error}
         secureTextEntry
@@ -119,8 +118,7 @@ const RegisterScreen = ({ route, navigation }) => {
       <Button
         mode="contained"
         onPress={handleSignupSubmit}
-        style={styles.button}
-      >
+        style={styles.button}>
         Sign Up
       </Button>
 
