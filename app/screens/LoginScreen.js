@@ -16,19 +16,25 @@ const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {websocket} = route.params;
   const [firstTimeVisit, setFirstTimeVisit] = useState(true);
-  const message = useSelector((state) => state.appData.message);
+  const message = useSelector((state) => state.appData.message) || {};
 
   useEffect(() => {
-    if (!firstTimeVisit) {
-      if (message?.status === 'SUCCESS') {
-        navigation.navigate('HomeScreen');
-      } else if (message?.status === 'ERROR') {
-        setGeneralError(message?.message);
+    if (
+      message.command === 'LoginV2Response' ||
+      message.command === 'SkipLoginV1Response'
+    ) {
+      if (!firstTimeVisit) {
+        if (message?.status === 'SUCCESS') {
+          console.log(123);
+          navigation.navigate('HomeScreen');
+        } else if (message?.status === 'ERROR') {
+          setGeneralError(message?.message);
+        }
+      } else {
+        // if first time open, clear previous message
+        dispatch(Actions.saveMessage({}));
+        setFirstTimeVisit(false);
       }
-    } else {
-      // if first time open, clear previous message
-      dispatch(Actions.saveMessage({}));
-      setFirstTimeVisit(false);
     }
   }, [message]);
 

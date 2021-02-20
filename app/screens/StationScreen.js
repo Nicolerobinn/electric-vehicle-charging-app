@@ -54,19 +54,19 @@ const StationScreen = ({route, navigation}) => {
       // some error
     }
   }, [message]);
-
   // check if current station is favorite or not
-
-  favouriteStationList.forEach((obj) => {
-    if (obj?.smpctNumber === station.serialNumber) {
-      setIsFavourite(true);
-    }
-  });
+  useEffect(() => {
+    // init check in componentDidMount
+    favouriteStationList.forEach((obj) => {
+      if (obj?.smpctNumber === station.smpctNumber) {
+        setIsFavourite(true);
+      }
+    });
+  }, []);
 
   const favouriteToggleHandler = () => {
     // check if guess user (check user permission)
-
-    if (!permissionList.includes('MODIFY_FAVOURITES')) {
+    if (permissionList.indexOf('MODIFY_FAVOURITES') !== -1) {
       const command = isFavourite
         ? 'RemoveFavouriteV1Request'
         : 'AddFavouriteV1Request';
@@ -74,7 +74,8 @@ const StationScreen = ({route, navigation}) => {
         command: command,
         token: token,
         payload: {
-          smpctNumber: station.serialNumber,
+          smpctNumber: station.smpctNumber,
+          connectorList: station.connectorList,
         },
       };
       const response = websocketCall(websocket, requestBody, false);
@@ -194,19 +195,20 @@ const StationScreen = ({route, navigation}) => {
         </View>
         <View style={styles.stationHeaderRight}>
           {/* todo: change the color solid / empty  */}
-          {station.connectorList.map((str, index) => {
-            if (CONNECTOR_LIST[str]) {
-              return (
-                <View style={styles.connectorListBox} key={index}>
-                  <Image
-                    source={CONNECTOR_LIST[str].url}
-                    style={styles.image}
-                  />
-                  <Text>{CONNECTOR_LIST[str].type}</Text>
-                </View>
-              );
-            }
-          })}
+          {station.connectorList &&
+            station.connectorList.map((str, index) => {
+              if (CONNECTOR_LIST[str]) {
+                return (
+                  <View style={styles.connectorListBox} key={index}>
+                    <Image
+                      source={CONNECTOR_LIST[str].url}
+                      style={styles.image}
+                    />
+                    <Text>{CONNECTOR_LIST[str].type}</Text>
+                  </View>
+                );
+              }
+            })}
         </View>
       </View>
       <View style={styles.stationBody}>
@@ -225,7 +227,12 @@ const StationScreen = ({route, navigation}) => {
           }}>
           {chargingStatusText}
         </Text>
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: 'balck'}}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: 'rgba(255, 255, 255, 1.0)',
+          }}>
           $1.00/hr
         </Text>
         <Button

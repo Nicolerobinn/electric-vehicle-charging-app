@@ -13,51 +13,11 @@ const tabArr = [
   {key: 'favorites', title: 'Favorites'},
   {key: 'home', title: 'Home'},
 ];
-// fake station data
-// const stations = [
-//   {
-//     id: 'fakeId_dont_care', // Required
-//     addressLineOne: '1234 fake street', // Required
-//     addressLineTwo: 'Suite 1651', // Optional
-//     city: 'Burnaby', // Required
-//     country: 'Canada', // Required
-//     name: 'name', // Required
-//     postalCode: '123453', // Required
-//     serialNumber: '<11 1 digit number>', // Required
-//     state: 'BC', // Required
-//     connectorList: ['IEC_62196_TYPE_1'], // Required
-//   },
-//   {
-//     id: 'fakeId_dont_care', // Required
-//     addressLineOne: '1234 fake street', // Required
-//     addressLineTwo: 'Suite 1651', // Optional
-//     city: 'Burnaby', // Required
-//     country: 'Canada', // Required
-//     name: '<Name of the station>', // Required
-//     postalCode: '123453', // Required
-//     serialNumber: '<11 2 digit number>', // Required
-//     state: 'BC', // Required
-//     connectorList: ['IEC_62196__AA'], // Required
-//   },
-//   {
-//     id: 'fakeId_dont_care', // Required
-//     addressLineOne: '1234 fake street', // Required
-//     addressLineTwo: 'Suite 1651', // Optional
-//     city: 'Burnaby', // Required
-//     country: 'Canada', // Required
-//     name: '<Name of the station>', // Required
-//     postalCode: '123453', // Required
-//     serialNumber: '<11 3 digit number>', // Required
-//     state: 'BC', // Required
-//     connectorList: ['IEC_62196_CCS'], // Required
-//   },
-// ];
 
 // todo: store recent station in AsyncStorage
 const RecentRoute = ({stations = [], navigation}) => {
   return (
     <View style={styles.scene}>
-      {/* <Text>123</Text> */}
       {stations.length > 0 &&
         stations.map((station) => {
           // todo: check available - connect to Get station status APIs

@@ -34,7 +34,7 @@ const DropdownMenu = ({websocket, navigation}) => {
           </Button>
         }>
         <Menu.Item
-          onPress={() => navigation.navigate('SettingScreen')}
+          onPress={() => Linking.openURL('https://dev.evnrgy.com/dashboard')}
           title="Options"
         />
         <Menu.Item

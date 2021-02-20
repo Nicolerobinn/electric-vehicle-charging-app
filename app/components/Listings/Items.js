@@ -10,7 +10,6 @@ const Items = ({navigation, station, icon1, icon2, available}) => {
   const serialNumber = station.serialNumber || station.smpctNumber;
 
   const type = connecterTypeChecker(station.connectorList);
-  console.log(type);
   const stationName = `${station.name} ${station.serialNumber}`;
   const address = `${station.addressLineOne} ${station.addressLineTwo} ${station.city} ${station.state} `;
 
@@ -42,7 +41,7 @@ const Items = ({navigation, station, icon1, icon2, available}) => {
     <React.Fragment>
       <List.Item
         title={stationName}
-        titleNumberOfLines="2"
+        titleNumberOfLines={2}
         description={address}
         left={(props) => <Text style={styles.margin}>{type}</Text>}
         right={(props) => (

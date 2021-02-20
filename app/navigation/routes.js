@@ -96,11 +96,11 @@ export const Route = () => {
     };
 
     websocket.onmessage = (evt) => {
-      console.log('on message', evt);
       // listen to data sent from the websocket server
+      console.log(evt);
       const message = JSON.parse(evt.data);
-      console.log('on message parse data', message);
       dispatch(Actions.saveMessage(message));
+      console.log('message', message);
       if (message?.status === 'SUCCESS' && message?.token) {
         dispatch(Actions.saveToken(message.token));
       }
