@@ -5850,6 +5850,11 @@ react-is@^17.0.1:
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-17.0.1.tgz?cache=0&sync_timestamp=1613579314634&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha1-WzUxvXamRaTJ+25pPtNkGeMwEzk=
 
+react-native-ble-manager@^7.4.2:
+  version "7.4.2"
+  resolved "https://registry.npm.taobao.org/react-native-ble-manager/download/react-native-ble-manager-7.4.2.tgz#6ef8b088994cd94e4c4df0f7c4f332f0b1b5cb8a"
+  integrity sha1-bviwiJlM2U5MTfD3xPMy8LG1y4o=
+
 react-native-chart-kit@^6.11.0:
   version "6.11.0"
   resolved "https://registry.npm.taobao.org/react-native-chart-kit/download/react-native-chart-kit-6.11.0.tgz#513e0944cd8f946e1827facc17fe766ae487d91b"

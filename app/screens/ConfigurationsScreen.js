@@ -1,7 +1,7 @@
 import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, SafeAreaView, View, Text, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
-import {List} from 'react-native-paper';
+import {List, Colors} from 'react-native-paper';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -15,6 +15,12 @@ const ConfigurationsScreen = ({route, navigation}) => {
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const saveChange = () => {
     console.log('save');
+  };
+  const bluetoothClick = () => {
+    navigation.navigate('ConfigurationsBlueToochScreen', {arr: {}});
+  };
+  const wifiClick = () => {
+    navigation.navigate('ConfigurationsWIFIScreen', {arr: {}});
   };
   return (
     <SafeAreaView style={globalStyles.androidSafeArea}>
@@ -38,31 +44,47 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Configuration Password "
-          description="Item description"
           left={(props) => <List.Icon {...props} icon="wifi" />}
           right={(props) => (
             <Icon size={20} style={styles.right} name="arrow-forward-ios" />
           )}
         />
+        <List.Item
+          style={styles.item}
+          title="Authentication"
+          titleStyle={{fontSize: 14, color: 'gray'}}
+        />
         <View style={styles.line} />
         <List.Item
           style={styles.item}
           title="WiFi"
-          description="Item description"
+          onPress={wifiClick}
           left={(props) => <List.Icon {...props} icon="wifi" />}
           right={(props) => (
             <Icon size={20} style={styles.right} name="arrow-forward-ios" />
           )}
+        />
+        <List.Item
+          style={styles.item}
+          title="Authentication"
+          titleStyle={{fontSize: 14, color: 'gray'}}
         />
         <View style={styles.line} />
         <Text style={styles.title}>Access</Text>
         <List.Item
           style={styles.item}
           title="Unrestricted"
-          description="Item description"
-          left={(props) => <List.Icon {...props} icon="folder" />}
+          titleStyle={{color: isSwitchOn ? 'gray' : 'black'}}
+          left={(props) => (
+            <List.Icon
+              {...props}
+              color={isSwitchOn ? 'gray' : 'black'}
+              icon="folder"
+            />
+          )}
           right={(props) => (
             <Switch
+              style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
               trackColor={{false: '#767577', true: '#81b0ff'}}
               thumbColor={isSwitchOn ? '#f5dd4b' : '#f4f3f4'}
               ios_backgroundColor="#3e3e3e"
@@ -74,11 +96,23 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Authentication"
-          description="Item description"
-          left={(props) => <List.Icon {...props} icon="folder" />}
+          titleStyle={{color: !isSwitchOn ? 'gray' : 'black'}}
+          onPress={isSwitchOn && bluetoothClick}
+          left={(props) => (
+            <List.Icon
+              {...props}
+              color={!isSwitchOn ? 'gray' : 'black'}
+              icon="folder"
+            />
+          )}
           right={(props) => (
             <Icon size={20} style={styles.right} name="arrow-forward-ios" />
           )}
+        />
+        <List.Item
+          style={styles.item}
+          title="Authentication"
+          titleStyle={{fontSize: 14, color: 'gray'}}
         />
         <View style={styles.line} />
         <List.Item
@@ -106,7 +140,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   right: {
-    top: 6,
+    top: 8,
     color: 'gray',
   },
   left: {

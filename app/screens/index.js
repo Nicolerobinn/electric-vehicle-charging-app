@@ -5,3 +5,5 @@ export {default as ForgotPasswordScreen} from './ForgotPasswordScreen';
 export {default as ListingsScreen} from './ListingsScreen';
 export {default as StationScreen} from './StationScreen';
 export {default as ConfigurationsScreen} from './ConfigurationsScreen';
+export {default as ConfigurationsBlueToochScreen} from './ConfigurationsBlueToochScreen';
+export {default as ConfigurationsWIFIScreen} from './ConfigurationsWIFIScreen';

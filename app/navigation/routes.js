@@ -17,6 +17,8 @@ import SettingScreen from '../screens/SettingScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import StationScreen from '../screens/StationScreen';
 import ConfigurationsScreen from '../screens/ConfigurationsScreen';
+import ConfigurationsBlueToochScreen from '../screens/ConfigurationsBlueToochScreen';
+import ConfigurationsWIFIScreen from '../screens/ConfigurationsWIFIScreen';
 
 const Stack = createStackNavigator();
 const AppStack = createStackNavigator();
@@ -63,6 +65,18 @@ const AppScreens = ({websocket}) => (
     <Stack.Screen
       name="ConfigurationsScreen"
       component={ConfigurationsScreen}
+      options={{headerShown: false}}
+      initialParams={{websocket: websocket}}
+    />
+    <Stack.Screen
+      name="ConfigurationsBlueToochScreen"
+      component={ConfigurationsBlueToochScreen}
+      options={{headerShown: false}}
+      initialParams={{websocket: websocket}}
+    />
+    <Stack.Screen
+      name="ConfigurationsWIFIScreen"
+      component={ConfigurationsWIFIScreen}
       options={{headerShown: false}}
       initialParams={{websocket: websocket}}
     />
