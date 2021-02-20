@@ -54,14 +54,34 @@ const tabArr = [
 // ];
 
 // todo: store recent station in AsyncStorage
-const RecentRoute = ({stations, navigation}) => {
+const RecentRoute = ({stations = [], navigation}) => {
   return (
     <View style={styles.scene}>
       {/* <Text>123</Text> */}
-      {stations.map((station) => {
-        // todo: check available - connect to Get station status APIs
+      {stations.length > 0 &&
+        stations.map((station) => {
+          // todo: check available - connect to Get station status APIs
 
-        //todo: after steven confirm, we either use  station.smpctNumber or station.serialNumber
+          //todo: after steven confirm, we either use  station.smpctNumber or station.serialNumber
+          return (
+            <Item
+              navigation={navigation}
+              station={station}
+              icon1="power-plug"
+              icon2="power-plug-off"
+              available={true}
+              key={`recent_${station.serialNumber}`}
+            />
+          );
+        })}
+    </View>
+  );
+};
+
+const FavoritesRoute = ({navigation, stations = []}) => (
+  <View style={styles.scene}>
+    {stations.length > 0 &&
+      stations.map((station) => {
         return (
           <Item
             navigation={navigation}
@@ -69,28 +89,10 @@ const RecentRoute = ({stations, navigation}) => {
             icon1="power-plug"
             icon2="power-plug-off"
             available={true}
-            key={`recent_${station.serialNumber}`}
+            key={`favourite_${station.serialNumber}`}
           />
         );
       })}
-    </View>
-  );
-};
-
-const FavoritesRoute = ({navigation, stations}) => (
-  <View style={styles.scene}>
-    {stations.map((station) => {
-      return (
-        <Item
-          navigation={navigation}
-          station={station}
-          icon1="power-plug"
-          icon2="power-plug-off"
-          available={true}
-          key={`favourite_${station.serialNumber}`}
-        />
-      );
-    })}
   </View>
 );
 const HomeRoute = () => (

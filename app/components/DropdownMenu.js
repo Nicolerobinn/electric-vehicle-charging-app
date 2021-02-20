@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 const DropdownMenu = ({websocket, navigation}) => {
   const [visible, setVisible] = useState(false);
   const token = useSelector((state) => state.appData.token);
-  const {permissionList} = useSelector((state) => state.appData.userData);
+  const {permissionList = []} = useSelector((state) => state.appData.userData);
   const skippedLoginUser = permissionList.length === 0;
 
   const openMenu = () => setVisible(true);
@@ -16,6 +16,7 @@ const DropdownMenu = ({websocket, navigation}) => {
 
   const handleLogout = () => {
     websocket.onclose();
+    closeMenu();
     navigation.navigate('LoginScreen');
   };
 

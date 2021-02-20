@@ -9,11 +9,15 @@ import {
   View,
   Image,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import Chart from '../components/Chart';
-
-import {Text, Button, IconButton} from 'react-native-paper';
+import {
+  Text,
+  Button,
+  IconButton,
+  ActivityIndicator,
+  Colors,
+} from 'react-native-paper';
 import globalStyles from '../core/globalStyles';
 import {websocketCall, connecterTypeChecker} from '../core/utils';
 
@@ -29,7 +33,7 @@ const StationScreen = ({route, navigation}) => {
   console.log(station.connectorList);
   const token = useSelector((state) => state.appData.token);
   const userData = useSelector((state) => state.appData.userData);
-  const {favouriteStationList, permissionList} = userData;
+  const {favouriteStationList = [], permissionList} = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);
   const [buttonDsiabled, setButtonDsiabled] = useState(false);
@@ -206,9 +210,10 @@ const StationScreen = ({route, navigation}) => {
         </View>
       </View>
       <View style={styles.stationBody}>
-        {chargingStatus === WAITING && (
-          <ActivityIndicator size="large" color="#0e3f94" />
-        )}
+        <ActivityIndicator
+          animating={chargingStatus === WAITING}
+          color={Colors.red800}
+        />
         {chargingStatus === STOP && <Chart />}
         {chargingStatus === START && <Icon name="ev-station" size={100} />}
         <Text

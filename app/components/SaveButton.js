@@ -16,6 +16,9 @@ const SaveButton = (props) => {
 const styles = StyleSheet.create({
   saveButton: {
     position: 'absolute',
+    right: 14,
+    top: 8,
+    borderRadius: 10,
   },
 });
 
