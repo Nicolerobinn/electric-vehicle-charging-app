@@ -11,6 +11,7 @@ const _stationLookup = (stationList, serialNumber) => {
   });
 };
 
+const RECENT_STATION_LIST = 'recentStationList';
 /**
  * Store current station to asyncStorage
  *
@@ -22,7 +23,7 @@ export const writeRecentStationToAsyncStorage = async (
   station,
   serialNumber,
 ) => {
-  let recentStationList = await AsyncStorage.getItem();
+  let recentStationList = await AsyncStorage.getItem(RECENT_STATION_LIST);
   if (recentStationList) {
     recentStationList = JSON.parse(recentStationList);
     // if current serialNumber exist, then we ignore it
@@ -31,31 +32,11 @@ export const writeRecentStationToAsyncStorage = async (
     } else {
       recentStationList.unshift(station);
       await AsyncStorage.setItem(
-        'recentStationList',
+        RECENT_STATION_LIST,
         JSON.stringify(recentStationList),
       );
     }
   } else {
-    await AsyncStorage.setItem('recentStationList', JSON.stringify([station]));
+    await AsyncStorage.setItem(RECENT_STATION_LIST, JSON.stringify([station]));
   }
-
-  // try {
-  //   let recentStationList = await AsyncStorage.getItem();
-  //   if (recentStationList) {
-  //     recentStationList = JSON.parse(recentStationList);
-  //     // if current serialNumber exist, then we ignore it
-  //     if (_stationLookup(recentStationList, serialNumber)){
-  //       // do nothing
-  //     }
-  //     else{
-  //       recentStationList.unshift(station);
-  //       await AsyncStorage.setItem("recentStationList", JSON.stringify(recentStationList));
-  //     }
-  //   }
-  //   else{
-  //     await AsyncStorage.setItem("recentStationList", JSON.stringify([station]));
-  //   }
-  // } catch (e) {
-  //   alert('Failed to save the data to the storage')
-  // }
 };
