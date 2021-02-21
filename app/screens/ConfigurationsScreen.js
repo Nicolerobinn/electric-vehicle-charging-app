@@ -1,11 +1,11 @@
 import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, SafeAreaView, View, Text, Switch} from 'react-native';
+import {StyleSheet, View, Text, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {List, Colors} from 'react-native-paper';
+import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import globalStyles from '../core/globalStyles';
 
 const ConfigurationsScreen = ({route, navigation}) => {
   const {websocket} = route.params;
@@ -23,7 +23,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
     navigation.navigate('ConfigurationsWIFIScreen', {arr: {}});
   };
   return (
-    <SafeAreaView style={globalStyles.androidSafeArea}>
+    <SafeAreaViewBox>
       <Header
         displaySaveConfigurations
         navigation={navigation}
@@ -124,7 +124,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         />
       </View>
       <Footer navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaViewBox>
   );
 };
 

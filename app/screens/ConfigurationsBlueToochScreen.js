@@ -2,11 +2,11 @@ import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, SafeAreaView, View, Text} from 'react-native';
 import {Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
+import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import {List} from 'react-native-paper';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import globalStyles from '../core/globalStyles';
 
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const {websocket} = route.params;
@@ -18,7 +18,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const arr = [];
   const arr2 = [];
   return (
-    <SafeAreaView style={globalStyles.androidSafeArea}>
+    <SafeAreaViewBox>
       <Header navigation={navigation} websocket={websocket} />
       <ConfigurationsTopBox />
       <View>
@@ -47,7 +47,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         ))}
       </View>
       <Footer navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaViewBox>
   );
 };
 

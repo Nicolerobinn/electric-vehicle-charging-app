@@ -1,15 +1,8 @@
 import React, {memo, useState, useEffect} from 'react';
 import {START, STOP, WAITING, CONNECTOR_LIST} from '../constants';
+import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
-import {
-  Platform,
-  Linking,
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Image,
-  Alert,
-} from 'react-native';
+import {Platform, Linking, StyleSheet, View, Image, Alert} from 'react-native';
 import Chart from '../components/Chart';
 import {
   Text,
@@ -18,7 +11,6 @@ import {
   ActivityIndicator,
   Colors,
 } from 'react-native-paper';
-import globalStyles from '../core/globalStyles';
 import {websocketCall, connecterTypeChecker} from '../core/utils';
 
 import Header from '../components/Header';
@@ -153,7 +145,7 @@ const StationScreen = ({route, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={globalStyles.androidSafeArea}>
+    <SafeAreaViewBox>
       <Header
         style={styles.header}
         navigation={navigation}
@@ -245,7 +237,7 @@ const StationScreen = ({route, navigation}) => {
         </Button>
       </View>
       <Footer navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaViewBox>
   );
 };
 

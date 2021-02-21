@@ -125,9 +125,7 @@ const ListingsScreen = ({navigation}) => {
 
 // todo: deal with the height
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 9,
-  },
+  wrapper: {},
   scene: {
     flex: 1,
   },

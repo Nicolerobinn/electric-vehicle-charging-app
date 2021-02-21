@@ -12,7 +12,6 @@ const Reducer = (state = initialState, action) => {
     case SAVE_TOKEN:
       const token = action.payload;
       let tokenDecodeDecode = {};
-      console.log(123, token);
       if (token.length > 0) {
         // decode token
         tokenDecodeDecode = jwt(token);

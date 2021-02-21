@@ -1,12 +1,12 @@
 import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, SafeAreaView, View, Text} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {Button} from 'react-native-paper';
+import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {List} from 'react-native-paper';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import globalStyles from '../core/globalStyles';
 
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const {websocket} = route.params;
@@ -16,7 +16,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   };
   const arr = [];
   return (
-    <SafeAreaView style={globalStyles.androidSafeArea}>
+    <SafeAreaViewBox>
       <Header navigation={navigation} websocket={websocket} />
       <ConfigurationsTopBox />
       <View>
@@ -38,7 +38,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         ))}
       </View>
       <Footer navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaViewBox>
   );
 };
 

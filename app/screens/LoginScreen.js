@@ -1,5 +1,12 @@
 import React, {memo, useState, useEffect} from 'react';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import {
+  LOGIN_REQ,
+  LOGIN_RES,
+  SKIP_LOGIN_REQ,
+  SKIP_LOGIN_RES,
+} from '../core/api';
+import {useDeepCompareEffect} from '../core/hooks';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
@@ -15,25 +22,16 @@ import * as Actions from '../store/Actions';
 const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {websocket} = route.params;
-  const [firstTimeVisit, setFirstTimeVisit] = useState(true);
   const message = useSelector((state) => state.appData.message) || {};
 
-  useEffect(() => {
-    if (
-      message.command === 'LoginV2Response' ||
-      message.command === 'SkipLoginV1Response'
-    ) {
-      if (!firstTimeVisit) {
-        if (message?.status === 'SUCCESS') {
-          console.log(123);
-          navigation.navigate('HomeScreen');
-        } else if (message?.status === 'ERROR') {
-          setGeneralError(message?.message);
-        }
-      } else {
-        // if first time open, clear previous message
+  useDeepCompareEffect(() => {
+    const {command = '', status = '', message: info} = message;
+    if (command === LOGIN_RES || command === SKIP_LOGIN_RES) {
+      if (status === 'SUCCESS') {
+        navigation.navigate('HomeScreen');
         dispatch(Actions.saveMessage({}));
-        setFirstTimeVisit(false);
+      } else if (status === 'ERROR') {
+        setGeneralError(info);
       }
     }
   }, [message]);
@@ -56,7 +54,7 @@ const LoginScreen = ({route, navigation}) => {
       return;
     }
     const requestBody = {
-      command: 'LoginV2Request', // Required
+      command: LOGIN_REQ, // Required
       payload: {
         email: email.value, // Required
         password: password.value, // Required
@@ -68,7 +66,7 @@ const LoginScreen = ({route, navigation}) => {
 
   const handleSkipLoginSubmit = () => {
     const requestBody = {
-      command: 'SkipLoginV1Request', // Required
+      command: SKIP_LOGIN_REQ, // Required
       payload: {},
     };
 

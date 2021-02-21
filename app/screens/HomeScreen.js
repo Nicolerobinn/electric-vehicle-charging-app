@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
-import globalStyles from '../core/globalStyles';
+import {StyleSheet} from 'react-native';
 
+import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -11,7 +11,7 @@ const HomeScreen = ({route, navigation}) => {
   const {websocket} = route.params;
 
   return (
-    <SafeAreaView style={globalStyles.androidSafeArea}>
+    <SafeAreaViewBox>
       <Header
         style={styles.header}
         navigation={navigation}
@@ -21,7 +21,7 @@ const HomeScreen = ({route, navigation}) => {
       />
       <Listings navigation={navigation} />
       <Footer navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaViewBox>
   );
 };
 
