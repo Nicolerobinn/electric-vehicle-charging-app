@@ -89,7 +89,7 @@ export default class WebSocketClient {
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
-    this.timeout = setTimeout(function () {
+    this.timeout = setTimeout(() => {
       //重新连接WebSocket
       this.initWebSocket();
     }, 15000);
