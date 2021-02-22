@@ -43,6 +43,7 @@ const Footer = ({navigation}) => {
 
   return (
     <BottomNavigation
+      style={{flex: 0}}
       navigationState={{index, routes}}
       onIndexChange={setIndex}
       renderScene={renderScene}

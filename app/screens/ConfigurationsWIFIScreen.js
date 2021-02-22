@@ -1,5 +1,5 @@
 import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {Button} from 'react-native-paper';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
@@ -19,8 +19,12 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     <SafeAreaViewBox>
       <Header navigation={navigation} websocket={websocket} />
       <ConfigurationsTopBox />
-      <View>
-        <Text style={styles.title}>WiFi</Text>
+      <ScrollView style={{flex: 1}}>
+        <List.Item
+          style={styles.item}
+          title="WiFi"
+          left={(props) => <List.Icon {...props} icon="wifi" />}
+        />
         <View style={styles.line} />
         <Text style={styles.title}> Networks </Text>
         {arr.map((e, i) => (
@@ -36,7 +40,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
             )}
           />
         ))}
-      </View>
+      </ScrollView>
       <Footer navigation={navigation} />
     </SafeAreaViewBox>
   );

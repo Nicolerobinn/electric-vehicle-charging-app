@@ -1,5 +1,5 @@
 import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Switch} from 'react-native';
+import {StyleSheet, View, Text, Switch, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {List, Colors} from 'react-native-paper';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
@@ -31,7 +31,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         saveChange={saveChange}
       />
       <ConfigurationsTopBox />
-      <View>
+      <ScrollView style={{flex: 1}}>
         <Text style={styles.title}>Home Station</Text>
         <List.Item
           style={styles.item}
@@ -122,7 +122,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
             <Icon size={25} style={styles.left} name="build-circle" />
           )}
         />
-      </View>
+      </ScrollView>
       <Footer navigation={navigation} />
     </SafeAreaViewBox>
   );

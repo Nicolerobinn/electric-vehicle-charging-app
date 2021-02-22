@@ -42,6 +42,7 @@ const Header = ({
 };
 
 const styles = StyleSheet.create({
+  box: {},
   top: {
     position: 'relative',
   },
