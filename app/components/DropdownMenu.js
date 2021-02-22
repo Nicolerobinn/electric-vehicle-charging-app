@@ -5,17 +5,18 @@ import {Button, Menu, Divider} from 'react-native-paper';
 // redux
 import {useSelector} from 'react-redux';
 
-const DropdownMenu = ({websocket, navigation}) => {
+const DropdownMenu = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const token = useSelector((state) => state.appData.token);
   const {permissionList = []} = useSelector((state) => state.appData.userData);
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const skippedLoginUser = permissionList.length === 0;
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleLogout = () => {
-    websocket.onclose();
+    webscoketClient.onclose();
     closeMenu();
     navigation.navigate('LoginScreen');
   };

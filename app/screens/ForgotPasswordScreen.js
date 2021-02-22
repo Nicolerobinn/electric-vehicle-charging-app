@@ -1,6 +1,7 @@
 import React, {memo, useState, useEffect} from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {emailValidator} from '../core/utils';
+import {useSelector} from 'react-redux';
 import Background from '../components/Background';
 import BackButton from '../components/BackButton';
 import Logo from '../components/Logo';
@@ -8,10 +9,9 @@ import Title from '../components/Title';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import {theme} from '../core/theme';
-import {websocketCall} from '../core/utils';
 
 const ForgotPasswordScreen = ({route, navigation}) => {
-  const {websocket} = route.params;
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -36,7 +36,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
       },
     };
 
-    const response = websocketCall(websocket, requestBody, false);
+    const response = webscoketClient.sendMessage(requestBody, false);
     if (response?.status === 'success') {
       setPasswordResetmessage('Check your inbox for a password reset email');
     }

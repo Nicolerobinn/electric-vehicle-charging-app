@@ -14,7 +14,7 @@ const Reducers = {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['navigation'], // navigation will not be persisted
+  whitelist: ['token'],
   // stateReconciler: autoMergeLevel2,
   // timeout: 100000,
 };

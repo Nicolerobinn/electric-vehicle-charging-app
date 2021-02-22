@@ -1,6 +1,7 @@
 import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Switch, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
+import {useSelector} from 'react-redux';
 import {List, Colors} from 'react-native-paper';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
@@ -8,10 +9,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const ConfigurationsScreen = ({route, navigation}) => {
-  const {websocket} = route.params;
   const [state, setstate] = useState();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const saveChange = () => {
     console.log('save');
@@ -27,7 +27,6 @@ const ConfigurationsScreen = ({route, navigation}) => {
       <Header
         displaySaveConfigurations
         navigation={navigation}
-        websocket={websocket}
         saveChange={saveChange}
       />
       <ConfigurationsTopBox />

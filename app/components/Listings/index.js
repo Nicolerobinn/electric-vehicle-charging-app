@@ -8,12 +8,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 // redux
 import {useSelector} from 'react-redux';
 
-const tabArr = [
-  {key: 'recent', title: 'Recent'},
-  {key: 'favorites', title: 'Favorites'},
-  {key: 'home', title: 'Home'},
-];
-
 // todo: store recent station in AsyncStorage
 const RecentRoute = ({stations = [], navigation}) => {
   return (
@@ -63,22 +57,34 @@ const HomeRoute = () => (
 
 const initialLayout = {width: Dimensions.get('window').width};
 
+const arr = [
+  {key: 'recent', title: 'Recent'},
+  {key: 'favorites', title: 'Favorites'},
+  {key: 'home', title: 'Home'},
+];
+const arrTwo = [
+  {key: 'recent', title: 'Recent'},
+  {key: 'favorites', title: 'Favorites'},
+];
 const ListingsScreen = ({navigation}) => {
   const [index, setIndex] = useState(0);
+  const [routes, setRoutesArr] = useState(arr);
   const userData = useSelector((state) => state.appData.userData);
-  const {favouriteStationList, homeStationList} = userData;
+  const {favouriteStationList, homeStationList = []} = userData || {};
   const [recentStationList, setRecentStationList] = useState([]);
-
-  const [routes] = useState(tabArr);
-
   useEffect(() => {
     readRecentStationListFromAsyncStorage();
   }, []);
-
+  useEffect(() => {
+    if (homeStationList.length === 0) {
+      setRoutesArr(arrTwo);
+    } else {
+      setRoutesArr(arr);
+    }
+  }, [homeStationList.length]);
   // todo: cleanup this and move this in to utils
   const readRecentStationListFromAsyncStorage = async () => {
     const recentStationList = await AsyncStorage.getItem('recentStationList');
-    console.log('recentStationList', recentStationList);
     if (recentStationList !== null) {
       setRecentStationList(JSON.parse(recentStationList));
     }

@@ -34,34 +34,6 @@ export const passwordMatch = (password1, password2) => {
 };
 
 /**
- * Use this function to call websocket.
- *
- * @param {Object} websocket - websocket object
- * @param {Object} requestBody - An object of the request body, need to run JSON.stringify() before submit the call
- * @param {boolean} connected - websocket is connected or not, default connected
- * @return {Object} response - true/false
- *
- */
-export const websocketCall = (websocket, requestBody, connected = true) => {
-  // todo: add connect condition
-  // on submitting the ChatInput form, send the message, add it to the list and reset the input
-  if (!connected) {
-    try {
-      websocket.onopen(); //send data to the server
-    } catch (error) {
-      console.log(error); // catch error
-      return {status: 'fail'};
-    } finally {
-      websocket.send(JSON.stringify(requestBody)); //send data to the server
-    }
-  } else {
-    websocket.send(JSON.stringify(requestBody));
-  }
-
-  return {status: 'success'};
-};
-
-/**
  * Station AC/DC type checker.
  * Rule: Check string contains "_CCS" or "_AA" then they are DC type, otherwise are AC type
  * todo: need to confirm this function

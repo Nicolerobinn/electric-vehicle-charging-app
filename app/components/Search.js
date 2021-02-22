@@ -2,7 +2,6 @@ import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {theme} from '../core/theme';
 import {Searchbar, Button, IconButton} from 'react-native-paper';
-import {websocketCall} from '../core/utils';
 
 // redux
 import {useSelector} from 'react-redux';
@@ -15,7 +14,8 @@ import {useSelector} from 'react-redux';
 //   </View>)
 // }
 
-const Search = ({websocket, navigation}) => {
+const Search = ({navigation}) => {
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   // todo: remove it for testing
   // const [searchQuery, setSearchQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('3140000000');
@@ -49,7 +49,7 @@ const Search = ({websocket, navigation}) => {
         smpctNumber: searchQuery,
       },
     };
-    websocketCall(websocket, requestBody, false);
+    webscoketClient.sendMessage(requestBody);
   };
 
   return (

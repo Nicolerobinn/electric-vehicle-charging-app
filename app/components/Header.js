@@ -3,14 +3,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import {theme} from '../core/theme';
 import DropdownMenu from './DropdownMenu';
 import BackButton from '../components/BackButton';
-import Search from './Search';
 import SaveButton from './SaveButton';
 
 const Header = ({
-  websocket,
   navigation,
   displayGoBackButton = true,
-  displaySearchBar = false,
   displaySaveConfigurations = false,
   saveChange,
 }) => {
@@ -19,7 +16,6 @@ const Header = ({
   const onChangeSearch = (query) => setSearchQuery(query);
 
   const handleGoBack = () => {
-    console.log('go back');
     navigation.goBack(null);
   };
 
@@ -31,12 +27,9 @@ const Header = ({
         {displaySaveConfigurations ? (
           <SaveButton save={saveChange} />
         ) : (
-          <DropdownMenu navigation={navigation} websocket={websocket} />
+          <DropdownMenu navigation={navigation} />
         )}
       </View>
-      {displaySearchBar && (
-        <Search navigation={navigation} websocket={websocket} />
-      )}
     </View>
   );
 };

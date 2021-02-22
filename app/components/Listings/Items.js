@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {List, Text, Button, Divider, Colors} from 'react-native-paper';
-
+import {useSelector} from 'react-redux';
 import {connecterTypeChecker} from '../../core/utils';
 import {writeRecentStationToAsyncStorage} from '../../core/asyncStorage';
 const ItemRight = ({onPress, buttonMode, available, type}) => {
@@ -26,6 +26,7 @@ const ItemRight = ({onPress, buttonMode, available, type}) => {
   );
 };
 const Items = ({navigation, station, available}) => {
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   //todo: after steven confirm, we either use  station.smpctNumber or station.serialNumber
   const serialNumber = station.serialNumber || station.smpctNumber;
 
@@ -46,7 +47,7 @@ const Items = ({navigation, station, available}) => {
     //     smpctNumber: serialNumber,
     //   },
     // };
-    // websocketCall(websocket, requestBody, false);
+    // webscoketClient.sendMessage(requestBody, false);
   }, []);
 
   const handleStationNavigation = () => {

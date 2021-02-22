@@ -13,13 +13,12 @@ import {
   passwordValidator,
   confirmPasswordValidator,
   passwordMatch,
-  websocketCall,
 } from '../core/utils';
 
 const RegisterScreen = ({route, navigation}) => {
   const message = useSelector((state) => state.appData.message);
-  const {websocket} = route.params;
 
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -68,7 +67,7 @@ const RegisterScreen = ({route, navigation}) => {
       },
     };
 
-    const response = websocketCall(websocket, requestBody, false);
+    const response = webscoketClient.sendMessage(requestBody);
     if (response?.status === 'success') {
       // navigation.navigate('HomeScreen');
     }

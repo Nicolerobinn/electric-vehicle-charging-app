@@ -1,10 +1,18 @@
-import {SAVE_TOKEN, SAVE_MESSAGE, SET_CONNECTED} from '../Actions/types';
+import {
+  SAVE_TOKEN,
+  SAVE_MESSAGE,
+  SET_CONNECTED,
+  SET_CURRENT_ROUTE,
+  SET_WEBSCOKET_CLIENT,
+} from '../Actions/types';
 import jwt from 'jwt-decode';
 const initialState = {
   connected: false,
   token: '',
   userData: {},
   message: {},
+  currentRoute: '',
+  webscoketClient: {},
 };
 
 const Reducer = (state = initialState, action) => {
@@ -31,6 +39,16 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         message: action.payload,
+      };
+    case SET_CURRENT_ROUTE:
+      return {
+        ...state,
+        currentRoute: action.payload,
+      };
+    case SET_WEBSCOKET_CLIENT:
+      return {
+        ...state,
+        webscoketClient: action.payload,
       };
     default:
       return state;

@@ -13,7 +13,7 @@ import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import {theme} from '../core/theme';
-import {emailValidator, passwordValidator, websocketCall} from '../core/utils';
+import {emailValidator, passwordValidator} from '../core/utils';
 
 // redux
 import {useSelector, useDispatch} from 'react-redux';
@@ -21,7 +21,8 @@ import * as Actions from '../store/Actions';
 
 const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {websocket} = route.params;
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
+  const connected = useSelector((state) => state.appData.connected);
   const message = useSelector((state) => state.appData.message) || {};
 
   useDeepCompareEffect(() => {
@@ -53,6 +54,9 @@ const LoginScreen = ({route, navigation}) => {
       setPassword({...password, error: passwordError});
       return;
     }
+    if (!connected) {
+      return;
+    }
     const requestBody = {
       command: LOGIN_REQ, // Required
       payload: {
@@ -60,17 +64,19 @@ const LoginScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
-
-    websocketCall(websocket, requestBody, false);
+    webscoketClient.sendMessage(requestBody, connected);
   };
 
   const handleSkipLoginSubmit = () => {
+    if (!connected) {
+      return;
+    }
     const requestBody = {
       command: SKIP_LOGIN_REQ, // Required
       payload: {},
     };
 
-    websocketCall(websocket, requestBody, false);
+    webscoketClient.sendMessage(requestBody, connected);
   };
 
   return (

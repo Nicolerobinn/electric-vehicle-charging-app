@@ -1,4 +1,10 @@
-import {SAVE_TOKEN, SAVE_MESSAGE, SET_CONNECTED} from './types';
+import {
+  SAVE_TOKEN,
+  SAVE_MESSAGE,
+  SET_CONNECTED,
+  SET_CURRENT_ROUTE,
+  SET_WEBSCOKET_CLIENT,
+} from './types';
 export const saveToken = (key) => ({
   type: SAVE_TOKEN,
   payload: key,
@@ -9,6 +15,14 @@ export const saveMessage = (value) => ({
 });
 export const setConnected = (value) => ({
   type: SET_CONNECTED,
+  payload: value,
+});
+export const setCurrentRoute = (value) => ({
+  type: SET_CURRENT_ROUTE,
+  payload: value,
+});
+export const setWebscoketClient = (value) => ({
+  type: SET_WEBSCOKET_CLIENT,
   payload: value,
 });
 // export const setRecentStation = (value) => ({

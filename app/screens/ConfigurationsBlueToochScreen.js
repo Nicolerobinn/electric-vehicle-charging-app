@@ -1,5 +1,6 @@
 import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import {useSelector} from 'react-redux';
 import {Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
@@ -56,7 +57,7 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
   );
 };
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
-  const {websocket} = route.params;
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const [state, setstate] = useState();
   const remove = (i) => () => {
     console.log('remove', i);
@@ -68,7 +69,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const arr2 = [];
   return (
     <SafeAreaViewBox>
-      <Header navigation={navigation} websocket={websocket} />
+      <Header navigation={navigation} />
       <ConfigurationsTopBox />
       <ScrollView style={{flex: 1}}>
         <List.Item

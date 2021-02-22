@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Colors,
 } from 'react-native-paper';
-import {websocketCall, connecterTypeChecker} from '../core/utils';
+import {connecterTypeChecker} from '../core/utils';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -21,10 +21,11 @@ const AVAILABLE = 'Available';
 import {useSelector} from 'react-redux';
 
 const StationScreen = ({route, navigation}) => {
-  const {websocket, station = {}} = route.params;
-  console.log(station.connectorList);
-  const token = useSelector((state) => state.appData.token);
-  const userData = useSelector((state) => state.appData.userData);
+  const {station = {}} = route.params;
+  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
+
+  const appData = useSelector((state) => state.appData);
+  const {token, userData, message} = appData || {};
   const {favouriteStationList = [], permissionList} = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);
@@ -32,7 +33,6 @@ const StationScreen = ({route, navigation}) => {
   const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);
   // options: 'Start Charging', 'Waiting', 'Stop Charging'
   const [chargingStatus, setChargingStatus] = useState(START);
-  const message = useSelector((state) => state.appData.message);
 
   useEffect(() => {
     // get station details from message
@@ -70,7 +70,7 @@ const StationScreen = ({route, navigation}) => {
           connectorList: station.connectorList,
         },
       };
-      const response = websocketCall(websocket, requestBody, false);
+      const response = webscoketClient.sendMessage(requestBody);
       if (response?.status === 'success') {
         setIsFavourite(!isFavourite);
       } else {
@@ -146,11 +146,7 @@ const StationScreen = ({route, navigation}) => {
 
   return (
     <SafeAreaViewBox>
-      <Header
-        style={styles.header}
-        navigation={navigation}
-        websocket={websocket}
-      />
+      <Header style={styles.header} navigation={navigation} />
       <View style={styles.stationHeader}>
         <View style={styles.stationContent}>
           <View style={styles.contentTitle}>
@@ -295,4 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StationScreen;
+export default memo(StationScreen);

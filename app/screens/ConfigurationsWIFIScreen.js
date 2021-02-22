@@ -88,7 +88,6 @@ const AndroidAlert = ({visible, hideDialog, state, passwordChange}) => {
   );
 };
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
-  const {websocket} = route.params;
   const [wifiState, setWifiState] = useState({});
   const [visible, setVisible] = useState(false);
   useEffect(() => {}, []);
@@ -124,7 +123,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const arr = [];
   return (
     <SafeAreaViewBox>
-      <Header navigation={navigation} websocket={websocket} />
+      <Header navigation={navigation} />
       <ConfigurationsTopBox />
       <AndroidAlert
         visible={visible}

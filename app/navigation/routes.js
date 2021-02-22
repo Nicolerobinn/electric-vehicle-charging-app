@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../core/theme';
-
+import WebSocketClient from '../core/WebSocketClient';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, Provider} from 'react-native-paper';
 
@@ -24,98 +24,97 @@ const Stack = createStackNavigator();
 const AppStack = createStackNavigator();
 const WSSURL = 'wss://dev.evnrgy.com:7777';
 
-const AppScreens = ({websocket}) => (
+const AppScreens = () => (
   <AppStack.Navigator>
     <Stack.Screen
       name="LoginScreen"
       component={LoginScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="RegisterScreen"
       component={RegisterScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="ForgotPasswordScreen"
       component={ForgotPasswordScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="HomeScreen"
+      initialRouteName
       component={HomeScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="SettingScreen"
       component={SettingScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="StationScreen"
       component={StationScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="ConfigurationsScreen"
       component={ConfigurationsScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="ConfigurationsBlueToochScreen"
       component={ConfigurationsBlueToochScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
     <Stack.Screen
       name="ConfigurationsWIFIScreen"
       component={ConfigurationsWIFIScreen}
       options={{headerShown: false}}
-      initialParams={{websocket: websocket}}
     />
   </AppStack.Navigator>
 );
 
 export const Route = () => {
+  const navigationRef = useRef();
+  const webscoket = useRef();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.appData.token);
-
-  // instance of websocket connection as a class property
-  const websocket = new WebSocket(WSSURL);
-
+  // instance of webscoket connection as a class property
+  const onMessage = (evt) => {
+    // listen to data sent from the webscoket server
+    const message = JSON.parse(evt.data);
+    dispatch(Actions.saveMessage(message));
+    console.log('message', message);
+    if (message?.status === 'SUCCESS' && message?.token) {
+      dispatch(Actions.saveToken(message.token));
+    }
+  };
+  const onClose = () => {
+    console.log('disconnected');
+    // clear all redux data
+    dispatch(Actions.setConnected(false));
+    dispatch(Actions.saveMessage({}));
+    dispatch(Actions.saveToken(''));
+    // automatically try to reconnect on connection loss
+  };
+  const onOpen = () => {
+    dispatch(Actions.setWebscoketClient(webscoket.current));
+    dispatch(Actions.setConnected(true));
+  };
   useEffect(() => {
-    websocket.onopen = () => {
-      dispatch(Actions.setConnected(true));
-    };
+    webscoket.current = new WebSocketClient({
+      onOpen: onOpen,
+      onMessage: onMessage,
+      onClose: onClose,
+    });
+    webscoket.current.initWebSocket();
+  }, []);
 
-    websocket.onmessage = (evt) => {
-      // listen to data sent from the websocket server
-      console.log(evt);
-      const message = JSON.parse(evt.data);
-      dispatch(Actions.saveMessage(message));
-      console.log('message', message);
-      if (message?.status === 'SUCCESS' && message?.token) {
-        dispatch(Actions.saveToken(message.token));
-      }
-    };
-
-    websocket.onclose = () => {
-      console.log('disconnected');
-      // clear all redux data
-      dispatch(Actions.setConnected(false));
-      dispatch(Actions.saveMessage({}));
-      dispatch(Actions.saveToken(''));
-      // automatically try to reconnect on connection loss
-    };
-  });
-
+  const routeChange = () => {
+    const {name} = navigationRef.current.getCurrentRoute();
+    dispatch(Actions.setCurrentRoute(name));
+  };
   // overwrite react-native-paper theme
   const combinedTheme = {
     ...DefaultTheme,
@@ -129,9 +128,12 @@ export const Route = () => {
   };
 
   return (
-    <NavigationContainer theme={theme}>
+    <NavigationContainer
+      ref={navigationRef}
+      onStateChange={routeChange}
+      theme={theme}>
       <Provider theme={combinedTheme}>
-        <AppScreens options={{animationEnabled: false}} websocket={websocket} />
+        <AppScreens options={{animationEnabled: false}} />
       </Provider>
     </NavigationContainer>
   );
