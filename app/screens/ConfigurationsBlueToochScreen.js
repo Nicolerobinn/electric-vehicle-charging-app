@@ -58,7 +58,6 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const {websocket} = route.params;
   const [state, setstate] = useState();
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
   const remove = (i) => () => {
     console.log('remove', i);
   };
@@ -71,7 +70,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     <SafeAreaViewBox>
       <Header navigation={navigation} websocket={websocket} />
       <ConfigurationsTopBox />
-      <ScrollView STYLE={{flex: 1}}>
+      <ScrollView style={{flex: 1}}>
         <List.Item
           style={styles.titleItem}
           title="Bluetooth"

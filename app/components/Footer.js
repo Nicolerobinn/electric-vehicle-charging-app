@@ -24,7 +24,7 @@ const Footer = ({navigation}) => {
   ]);
 
   const renderScene = ({route}) => {
-    console.log(route);
+    console.log('footer', route);
     // todo: this line causing issues, whenever loaded, it will open home screen
     switch (route.key) {
       case 'search':
