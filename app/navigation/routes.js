@@ -85,6 +85,7 @@ export const Route = () => {
   const onMessage = (evt) => {
     // listen to data sent from the webscoket server
     const message = JSON.parse(evt.data);
+    console.log('message', message);
     dispatch(Actions.saveMessage(message));
     console.log('message', message);
     if (message?.status === 'SUCCESS' && message?.token) {
@@ -104,7 +105,9 @@ export const Route = () => {
     dispatch(Actions.setConnected(true));
   };
   const onError = (e) => {
-    Alert.alert('network', `connect to server error,${e}`, [{text: 'OK'}]);
+    Alert.alert('network', `connect to server error,${e.message}`, [
+      {text: 'OK'},
+    ]);
   };
   useEffect(() => {
     webscoket.current = new WebSocketClient({

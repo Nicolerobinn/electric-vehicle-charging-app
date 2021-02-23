@@ -2,7 +2,7 @@ import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Switch, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {useSelector} from 'react-redux';
-import {List, Colors} from 'react-native-paper';
+import {List, Divider} from 'react-native-paper';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
@@ -53,7 +53,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
           title="Authentication"
           titleStyle={{fontSize: 14, color: 'gray'}}
         />
-        <View style={styles.line} />
+        <Divider />
         <List.Item
           style={styles.item}
           title="WiFi"
@@ -68,7 +68,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
           title="Authentication"
           titleStyle={{fontSize: 14, color: 'gray'}}
         />
-        <View style={styles.line} />
+        <Divider />
         <Text style={styles.title}>Access</Text>
         <List.Item
           style={styles.item}
@@ -113,7 +113,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
           title="Authentication"
           titleStyle={{fontSize: 14, color: 'gray'}}
         />
-        <View style={styles.line} />
+        <Divider />
         <List.Item
           style={styles.item}
           title="Factory Reset"
@@ -132,11 +132,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingTop: 20,
     color: 'gray',
-  },
-  line: {
-    backgroundColor: 'black',
-    height: 0.5,
-    width: '100%',
   },
   right: {
     top: 8,

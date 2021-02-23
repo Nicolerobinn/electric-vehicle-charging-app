@@ -9,7 +9,14 @@ import {
   Platform,
   TextInput,
 } from 'react-native';
-import {Button, List, Dialog, Portal, Paragraph} from 'react-native-paper';
+import {
+  Button,
+  List,
+  Dialog,
+  Portal,
+  Paragraph,
+  Divider,
+} from 'react-native-paper';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
@@ -37,7 +44,7 @@ const CurrentConnectionArr = [
 const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
   return (
     <>
-      <View style={styles.line} />
+      <Divider />
       <Text style={styles.title}>{boxTitle}</Text>
       <View style={{paddingTop: 10, paddingBottom: 10}}>
         {arr.map((e, i) => (
@@ -155,11 +162,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingTop: 16,
     color: 'gray',
-  },
-  line: {
-    backgroundColor: 'black',
-    height: 0.5,
-    width: '100%',
   },
   right: {
     top: 6,

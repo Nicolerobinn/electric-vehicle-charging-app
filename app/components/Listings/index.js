@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Dimensions, Text} from 'react-native';
+import {View, StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
 import {TabView} from 'react-native-tab-view';
 import Item from './Items';
 import {getRecentStations} from '../../core/utils';
@@ -8,53 +8,25 @@ import AsyncStorage from '@react-native-community/async-storage';
 // redux
 import {useSelector} from 'react-redux';
 
-// todo: store recent station in AsyncStorage
-const RecentRoute = ({stations = [], navigation}) => {
+export const ListingComponent = ({stations = [], navigation, propKkey}) => {
   return (
     <View style={styles.scene}>
-      {stations.length > 0 &&
-        stations.map((station) => {
-          // todo: check available - connect to Get station status APIs
-
-          //todo: after steven confirm, we either use  station.smpctNumber or station.serialNumber
-          return (
+      <ScrollView>
+        {stations.length > 0 &&
+          stations.map((station) => (
             <Item
               navigation={navigation}
               station={station}
               icon1="power-plug"
               icon2="power-plug-off"
               available={true}
-              key={`recent_${station.serialNumber}`}
+              key={`${propKkey}_${station.smpctNumber}`}
             />
-          );
-        })}
+          ))}
+      </ScrollView>
     </View>
   );
 };
-
-const FavoritesRoute = ({navigation, stations = []}) => (
-  <View style={styles.scene}>
-    {stations.length > 0 &&
-      stations.map((station) => {
-        return (
-          <Item
-            navigation={navigation}
-            station={station}
-            icon1="power-plug"
-            icon2="power-plug-off"
-            available={true}
-            key={`favourite_${station.serialNumber}`}
-          />
-        );
-      })}
-  </View>
-);
-const HomeRoute = () => (
-  <View style={styles.scene}>
-    <Text>Home stations will be listing here</Text>
-  </View>
-);
-
 const initialLayout = {width: Dimensions.get('window').width};
 
 const arr = [
@@ -103,17 +75,28 @@ const ListingsScreen = ({navigation}) => {
     switch (route.key) {
       case 'recent':
         return (
-          <RecentRoute navigation={navigation} stations={recentStationList} />
+          <ListingComponent
+            navigation={navigation}
+            stations={recentStationList}
+            propKkey="recent"
+          />
         );
       case 'favorites':
         return (
-          <FavoritesRoute
+          <ListingComponent
             navigation={navigation}
             stations={favouriteStationList}
+            propKkey="favorites"
           />
         );
       case 'home':
-        return <HomeRoute navigation={navigation} stations={homeStationList} />;
+        return (
+          <ListingComponent
+            navigation={navigation}
+            stations={homeStationList}
+            propKkey="home"
+          />
+        );
       default:
         return null;
     }

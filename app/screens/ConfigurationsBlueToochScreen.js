@@ -1,7 +1,7 @@
 import React, {memo, useState, useEffect} from 'react';
 import {StyleSheet, ScrollView, View, Text} from 'react-native';
 import {useSelector} from 'react-redux';
-import {Button} from 'react-native-paper';
+import {Button, Divider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import {List} from 'react-native-paper';
@@ -32,7 +32,7 @@ const AvaliableArr = [
 const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
   return (
     <>
-      <View style={styles.line} />
+      <Divider />
       <Text style={styles.title}>{boxTitle}</Text>
       <View style={{paddingTop: 10, paddingBottom: 10}}>
         {arr.map((e, i) => (
@@ -102,11 +102,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingTop: 16,
     color: 'gray',
-  },
-  line: {
-    backgroundColor: 'black',
-    height: 0.5,
-    width: '100%',
   },
   right: {
     top: 6,

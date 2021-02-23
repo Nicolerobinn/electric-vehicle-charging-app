@@ -73,7 +73,10 @@ const LoginScreen = ({route, navigation}) => {
       command: SKIP_LOGIN_REQ, // Required
       payload: {},
     };
-
+    if (!webscoketClient.sendMessage) {
+      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
+      return;
+    }
     webscoketClient.sendMessage(requestBody, connected);
   };
 

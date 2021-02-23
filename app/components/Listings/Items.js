@@ -6,7 +6,7 @@ import {connecterTypeChecker} from '../../core/utils';
 import {GET_CONNECTOR_REQ, GET_CONNECTOR_RES} from '../../core/api';
 import {writeRecentStationToAsyncStorage} from '../../core/asyncStorage';
 import {useDeepCompareEffect} from '../../core/hooks';
-const ItemRight = ({onPress, buttonMode, iconsState, available, type}) => {
+const ItemRight = ({onPress, seationService, iconsState, type}) => {
   return (
     <View style={[styles.flexBox, styles.rightBox]}>
       <Text style={styles.margin}>{type}</Text>
@@ -17,11 +17,11 @@ const ItemRight = ({onPress, buttonMode, iconsState, available, type}) => {
       </View>
       <Button
         style={{
-          backgroundColor: available ? Colors.blue800 : 'gray',
           borderRadius: 6,
         }}
+        disabled={seationService}
         uppercase={false}
-        mode={buttonMode}
+        mode="contained"
         onPress={onPress}>
         Start
       </Button>
@@ -29,6 +29,8 @@ const ItemRight = ({onPress, buttonMode, iconsState, available, type}) => {
   );
 };
 const Items = ({navigation, station, available}) => {
+  const [iconsState, setIconsState] = useState(['grey', 'grey']);
+  const [seationService, setSeationService] = useState(true);
   const appData = useSelector((state) => state.appData);
   const {webscoketClient, token, message, connected} = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
@@ -38,8 +40,6 @@ const Items = ({navigation, station, available}) => {
   const address = `${station.addressLineOne} ${station.addressLineTwo} ${station.city} ${station.state} `;
 
   const buttonMode = available ? 'contained' : 'text';
-  const buttonText = available ? 'Charge' : 'View';
-  const [iconsState, setIconsState] = useState(['grey', 'grey']);
   useDeepCompareEffect(() => {
     const {command = '', status = '', payload, message: info} = message;
     const {statusList = [], noService = false} = payload || {};
@@ -65,6 +65,7 @@ const Items = ({navigation, station, available}) => {
               break;
           }
         });
+        setSeationService(false);
         setIconsState(arr);
       } else if (status === 'ERROR') {
       }
@@ -78,7 +79,6 @@ const Items = ({navigation, station, available}) => {
         smpctNumber: serialNumber,
       },
     };
-    console.log(requestBody);
     webscoketClient.sendMessage(requestBody, connected);
   }, []);
 
@@ -100,8 +100,8 @@ const Items = ({navigation, station, available}) => {
           <ItemRight
             onPress={handleStationNavigation}
             buttonMode={buttonMode}
-            available={available}
             iconsState={iconsState}
+            seationService={seationService}
             type={type}
           />
         )}

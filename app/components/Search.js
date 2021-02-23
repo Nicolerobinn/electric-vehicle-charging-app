@@ -1,8 +1,9 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, {memo, useState} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {theme} from '../core/theme';
 import {Searchbar, Button, IconButton} from 'react-native-paper';
-
+import {FIND_STATION_RES, FIND_STATION_REQ} from '../core/api';
+import {useDeepCompareEffect} from '../core/hooks';
 // redux
 import {useSelector} from 'react-redux';
 
@@ -14,37 +15,32 @@ import {useSelector} from 'react-redux';
 //   </View>)
 // }
 
-const Search = ({navigation}) => {
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
-  const connected = useSelector((state) => state.appData.connected);
-  // todo: remove it for testing
-  // const [searchQuery, setSearchQuery] = useState('');
+const Search = ({navigation, searchChange}) => {
+  const appData = useSelector((state) => state.appData);
+  const {webscoketClient, connected, token, message} = appData || {};
   const [searchQuery, setSearchQuery] = useState('3140000000');
-  const token = useSelector((state) => state.appData.token);
 
-  // listen to onMessage change
-  const message = useSelector((state) => state.appData.message);
-
-  useEffect(() => {
-    if (
-      message?.status === 'SUCCESS' &&
-      message?.command === 'FindStationV1Response'
-    ) {
-      const messageData = message.payload;
-      navigation.navigate('StationScreen', {station: messageData});
-    } else if (message?.status === 'ERROR') {
-      // some error
+  useDeepCompareEffect(() => {
+    const {status, command, payload} = message || {};
+    if (status === 'SUCCESS' && command === FIND_STATION_RES) {
+      searchChange({
+        visible: true,
+        station: [payload],
+      });
     }
   }, [message]);
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
+    searchChange({
+      visible: false,
+    });
   };
   const handleQRScan = () => {};
 
   const searchHandler = () => {
     const requestBody = {
-      command: 'FindStationV1Request', // Required
+      command: FIND_STATION_REQ,
       token: token,
       payload: {
         smpctNumber: searchQuery,
