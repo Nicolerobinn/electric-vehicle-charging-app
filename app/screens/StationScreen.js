@@ -22,10 +22,8 @@ import {useSelector} from 'react-redux';
 
 const StationScreen = ({route, navigation}) => {
   const {station = {}} = route.params;
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
-
   const appData = useSelector((state) => state.appData);
-  const {token, userData, message} = appData || {};
+  const {token, userData, message, webscoketClient} = appData || {};
   const {favouriteStationList = [], permissionList} = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);

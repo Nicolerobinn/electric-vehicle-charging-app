@@ -8,23 +8,12 @@ import {useSelector} from 'react-redux';
 const HOME_SCREEN = 'HomeScreen';
 const BLUETOOTH_SCREEN = 'ConfigurationsBlueToochScreen';
 const Footer = ({navigation}) => {
+  const userData = useSelector((state) => state.appData.userData);
+  const {homeStationList = []} = userData || {};
   const [index, setIndex] = useState(0);
 
   const currentRoute = useSelector((state) => state.appData.currentRoute);
-  useEffect(() => {
-    switch (currentRoute) {
-      case HOME_SCREEN:
-        setIndex(0);
-        break;
-      case BLUETOOTH_SCREEN:
-        setIndex(2);
-        break;
-      default:
-        setIndex('');
-        break;
-    }
-  }, [currentRoute]);
-  const [routes] = useState([
+  const [routes, setRoutes] = useState([
     {
       key: 'search',
       title: 'Search',
@@ -41,6 +30,40 @@ const Footer = ({navigation}) => {
       icon: 'plus',
     },
   ]);
+  useEffect(() => {
+    switch (currentRoute) {
+      case HOME_SCREEN:
+        setIndex(0);
+        break;
+      case BLUETOOTH_SCREEN:
+        setIndex(2);
+        break;
+      default:
+        setIndex('');
+        break;
+    }
+  }, [currentRoute]);
+  useEffect(() => {
+    if (homeStationList.length > 0) {
+      setRoutes([
+        {
+          key: 'search',
+          title: 'Search',
+          icon: 'magnify',
+        },
+        {
+          key: 'location',
+          title: 'Join Location',
+          icon: 'ev-station',
+        },
+        {
+          key: 'stations',
+          title: 'Home Stations',
+          icon: 'ev-station',
+        },
+      ]);
+    }
+  }, [homeStationList.length]);
   const indexChange = (i) => () => {
     if (i === 1) {
       Linking.openURL('https://dev.evnrgy.com/');
@@ -66,7 +89,6 @@ const Footer = ({navigation}) => {
           style={styles.touchable}>
           <View style={styles.item}>
             <Icon
-              style={styles.font}
               style={{
                 color: index === i ? '#fff' : 'rgba(255, 255, 255, 0.5)',
               }}
