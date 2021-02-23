@@ -1,5 +1,5 @@
-import React, {memo, useState, useEffect} from 'react';
-import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import React, {memo, useState} from 'react';
+import {TouchableOpacity, StyleSheet, Text, View, Alert} from 'react-native';
 import {
   LOGIN_REQ,
   LOGIN_RES,
@@ -21,9 +21,9 @@ import * as Actions from '../store/Actions';
 
 const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
-  const connected = useSelector((state) => state.appData.connected);
-  const message = useSelector((state) => state.appData.message) || {};
+
+  const appData = useSelector((state) => state.appData);
+  const {webscoketClient = {}, connected, message = {}} = appData || {};
 
   useDeepCompareEffect(() => {
     const {command = '', status = '', message: info} = message;
@@ -54,9 +54,6 @@ const LoginScreen = ({route, navigation}) => {
       setPassword({...password, error: passwordError});
       return;
     }
-    if (!connected) {
-      return;
-    }
     const requestBody = {
       command: LOGIN_REQ, // Required
       payload: {
@@ -64,13 +61,14 @@ const LoginScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
+    if (!webscoketClient.sendMessage) {
+      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
+      return;
+    }
     webscoketClient.sendMessage(requestBody, connected);
   };
 
   const handleSkipLoginSubmit = () => {
-    if (!connected) {
-      return;
-    }
     const requestBody = {
       command: SKIP_LOGIN_REQ, // Required
       payload: {},

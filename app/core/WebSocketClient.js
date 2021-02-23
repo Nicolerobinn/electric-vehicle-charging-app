@@ -4,12 +4,13 @@ const WSSURL = 'wss://dev.evnrgy.com:7777';
 let that = null;
 
 export default class WebSocketClient {
-  constructor({onOpen, onMessage, onClose}) {
+  constructor({onOpen, onMessage, onClose, onError}) {
     this.ws = null;
     that = this;
-    this.onopenCalllBack = onOpen;
+    this.onopenCallBack = onOpen;
     this.onmessageCallBack = onMessage;
     this.oncloseCallBack = onClose;
+    this.onerrorCallBack = onError;
   }
 
   /**
@@ -31,9 +32,8 @@ export default class WebSocketClient {
       this.ws = new WebSocket(WSSURL);
       this.initWsEvent();
     } catch (e) {
-      console.log('WebSocket err:', e);
       //重连
-      this.reconnect();
+      this.reconnect(e);
     }
   }
 
@@ -43,8 +43,7 @@ export default class WebSocketClient {
   initWsEvent() {
     //建立WebSocket连接
     this.ws.onopen = () => {
-      console.log('123');
-      this.onopenCalllBack && this.onopenCalllBack();
+      this.onopenCallBack && this.onopenCallBack();
       console.log('WebSocket:', 'connect to server');
     };
 
@@ -53,10 +52,10 @@ export default class WebSocketClient {
       this.onmessageCallBack && this.onmessageCallBack(evt);
     };
     //连接错误
-    this.ws.onerror = (err) => {
+    this.ws.onerror = (e) => {
       console.log('WebSocket:', 'connect to server error');
       //重连
-      that.reconnect();
+      that.reconnect(e);
     };
     //连接关闭
     this.ws.onclose = () => {
@@ -85,7 +84,8 @@ export default class WebSocketClient {
   }
 
   //重连
-  reconnect() {
+  reconnect(e) {
+    this.onerrorCallBack && this.onerrorCallBack(e);
     if (this.timeout) {
       clearTimeout(this.timeout);
     }

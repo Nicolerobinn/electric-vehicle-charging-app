@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from 'react';
+import {Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
@@ -102,11 +103,15 @@ export const Route = () => {
     dispatch(Actions.setWebscoketClient(webscoket.current));
     dispatch(Actions.setConnected(true));
   };
+  const onError = (e) => {
+    Alert.alert('network', `connect to server error,${e}`, [{text: 'OK'}]);
+  };
   useEffect(() => {
     webscoket.current = new WebSocketClient({
       onOpen: onOpen,
       onMessage: onMessage,
       onClose: onClose,
+      onError: onError,
     });
     webscoket.current.initWebSocket();
   }, []);
