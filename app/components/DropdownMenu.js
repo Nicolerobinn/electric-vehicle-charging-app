@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {View, Image, StyleSheet, Linking, Text} from 'react-native';
+import {View, Image, StyleSheet, Linking} from 'react-native';
 import {Button, Menu, Divider} from 'react-native-paper';
 
 // redux
@@ -33,7 +33,6 @@ const DropdownMenu = ({navigation}) => {
             />
           </Button>
         }>
-        <Text>123</Text>
         <Menu.Item
           onPress={() => Linking.openURL('https://dev.evnrgy.com/dashboard')}
           title="Options"

@@ -5860,6 +5860,13 @@ react-native-ble-manager@^7.4.2:
   resolved "https://registry.npm.taobao.org/react-native-ble-manager/download/react-native-ble-manager-7.4.2.tgz#6ef8b088994cd94e4c4df0f7c4f332f0b1b5cb8a"
   integrity sha1-bviwiJlM2U5MTfD3xPMy8LG1y4o=
 
+react-native-camera@^3.42.3:
+  version "3.42.3"
+  resolved "https://registry.npm.taobao.org/react-native-camera/download/react-native-camera-3.42.3.tgz#825b4300fc88456761010cb139f0f5faa2a15a82"
+  integrity sha1-gltDAPyIRWdhAQyxOfD1+qKhWoI=
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-chart-kit@^6.11.0:
   version "6.11.0"
   resolved "https://registry.npm.taobao.org/react-native-chart-kit/download/react-native-chart-kit-6.11.0.tgz#513e0944cd8f946e1827facc17fe766ae487d91b"

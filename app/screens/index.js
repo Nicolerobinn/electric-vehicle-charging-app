@@ -7,3 +7,4 @@ export {default as StationScreen} from './StationScreen';
 export {default as ConfigurationsScreen} from './ConfigurationsScreen';
 export {default as ConfigurationsBlueToochScreen} from './ConfigurationsBlueToochScreen';
 export {default as ConfigurationsWIFIScreen} from './ConfigurationsWIFIScreen';
+export {default as QRScannerScreen} from './QRScannerScreen';

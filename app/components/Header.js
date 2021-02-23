@@ -11,10 +11,6 @@ const Header = ({
   displaySaveConfigurations = false,
   saveChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const onChangeSearch = (query) => setSearchQuery(query);
-
   const handleGoBack = () => {
     navigation.goBack(null);
   };

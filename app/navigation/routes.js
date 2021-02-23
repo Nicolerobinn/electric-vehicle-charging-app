@@ -20,10 +20,10 @@ import StationScreen from '../screens/StationScreen';
 import ConfigurationsScreen from '../screens/ConfigurationsScreen';
 import ConfigurationsBlueToochScreen from '../screens/ConfigurationsBlueToochScreen';
 import ConfigurationsWIFIScreen from '../screens/ConfigurationsWIFIScreen';
+import QRScannerScreen from '../screens/QRScannerScreen';
 
 const Stack = createStackNavigator();
 const AppStack = createStackNavigator();
-const WSSURL = 'wss://dev.evnrgy.com:7777';
 
 const AppScreens = () => (
   <AppStack.Navigator>
@@ -71,6 +71,11 @@ const AppScreens = () => (
     <Stack.Screen
       name="ConfigurationsWIFIScreen"
       component={ConfigurationsWIFIScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="QRScannerScreen"
+      component={QRScannerScreen}
       options={{headerShown: false}}
     />
   </AppStack.Navigator>

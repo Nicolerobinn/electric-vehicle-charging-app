@@ -7,14 +7,6 @@ import {useDeepCompareEffect} from '../core/hooks';
 // redux
 import {useSelector} from 'react-redux';
 
-// import QRScanner from '../QRScanner';
-
-// const QRScreenComponent = () => {
-//   return (<View>
-//     <QRScanner />
-//   </View>)
-// }
-
 const Search = ({navigation, searchChange}) => {
   const appData = useSelector((state) => state.appData);
   const {webscoketClient, connected, token, message} = appData || {};
@@ -36,7 +28,9 @@ const Search = ({navigation, searchChange}) => {
       visible: false,
     });
   };
-  const handleQRScan = () => {};
+  const handleQRScan = () => {
+    navigation.navigate('QRScannerScreen', {arr: {}});
+  };
 
   const searchHandler = () => {
     const requestBody = {
