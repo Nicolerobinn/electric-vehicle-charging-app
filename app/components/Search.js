@@ -16,6 +16,7 @@ import {useSelector} from 'react-redux';
 
 const Search = ({navigation}) => {
   const webscoketClient = useSelector((state) => state.appData.webscoketClient);
+  const connected = useSelector((state) => state.appData.connected);
   // todo: remove it for testing
   // const [searchQuery, setSearchQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('3140000000');
@@ -49,7 +50,7 @@ const Search = ({navigation}) => {
         smpctNumber: searchQuery,
       },
     };
-    webscoketClient.sendMessage(requestBody);
+    webscoketClient.sendMessage(requestBody, connected);
   };
 
   return (

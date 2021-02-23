@@ -6,7 +6,8 @@ const SafeAreaViewBox = ({children}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
-      {children}
+      <SafeAreaView style={{flex: 1}}>{children}</SafeAreaView>
+      <SafeAreaView style={{backgroundColor: '#0e3f94'}} />
     </View>
   );
 };
