@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   Colors,
 } from 'react-native-paper';
-import {connecterTypeChecker} from '../core/utils';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -24,11 +23,16 @@ const StationScreen = ({route, navigation}) => {
   const {station = {}} = route.params;
   const appData = useSelector((state) => state.appData);
   const {token, userData, message, webscoketClient} = appData || {};
-  const {favouriteStationList = [], permissionList} = userData;
+  const {
+    favouriteStationList = [],
+    permissionList,
+    homeStationList = [],
+  } = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);
   const [buttonDsiabled, setButtonDsiabled] = useState(false);
   const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);
+  const [configurationButtonType, setConfigurationButtonType] = useState(true);
   // options: 'Start Charging', 'Waiting', 'Stop Charging'
   const [chargingStatus, setChargingStatus] = useState(START);
 
@@ -47,6 +51,11 @@ const StationScreen = ({route, navigation}) => {
   // check if current station is favorite or not
   useEffect(() => {
     // init check in componentDidMount
+    homeStationList.forEach((obj) => {
+      if (obj?.smpctNumber === station.smpctNumber) {
+        setConfigurationButtonType(false);
+      }
+    });
     favouriteStationList.forEach((obj) => {
       if (obj?.smpctNumber === station.smpctNumber) {
         setIsFavourite(true);
@@ -173,6 +182,7 @@ const StationScreen = ({route, navigation}) => {
               style={styles.stationButton}
               icon="account-cog"
               mode="outlined"
+              disabled={configurationButtonType}
               uppercase={false}
               onPress={configurationClick}>
               Configuration

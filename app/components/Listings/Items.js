@@ -1,16 +1,19 @@
-import React, {useEffect} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {List, Text, Button, Divider, Colors} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {connecterTypeChecker} from '../../core/utils';
+import {GET_CONNECTOR_REQ, GET_CONNECTOR_RES} from '../../core/api';
 import {writeRecentStationToAsyncStorage} from '../../core/asyncStorage';
-const ItemRight = ({onPress, buttonMode, available, type}) => {
+import {useDeepCompareEffect} from '../../core/hooks';
+const ItemRight = ({onPress, buttonMode, iconsState, available, type}) => {
   return (
     <View style={[styles.flexBox, styles.rightBox]}>
       <Text style={styles.margin}>{type}</Text>
       <View style={[styles.flexBox]}>
-        <View style={styles.circle} />
-        <View style={styles.circle} />
+        {iconsState.map((e, i) => (
+          <View key={i} style={[styles.circle, {backgroundColor: e}]} />
+        ))}
       </View>
       <Button
         style={{
@@ -26,8 +29,8 @@ const ItemRight = ({onPress, buttonMode, available, type}) => {
   );
 };
 const Items = ({navigation, station, available}) => {
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
-  //todo: after steven confirm, we either use  station.smpctNumber or station.serialNumber
+  const appData = useSelector((state) => state.appData);
+  const {webscoketClient, token, message, connected} = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
 
   const type = connecterTypeChecker(station.connectorList);
@@ -36,18 +39,47 @@ const Items = ({navigation, station, available}) => {
 
   const buttonMode = available ? 'contained' : 'text';
   const buttonText = available ? 'Charge' : 'View';
-
+  const [iconsState, setIconsState] = useState(['grey', 'grey']);
+  useDeepCompareEffect(() => {
+    const {command = '', status = '', payload, message: info} = message;
+    const {statusList = [], noService = false} = payload || {};
+    if (command === GET_CONNECTOR_RES) {
+      if (status === 'SUCCESS') {
+        if (noService) {
+          return;
+        }
+        const arr = statusList.map((e, i) => {
+          switch (e) {
+            case 'Available':
+            case 'Finishing':
+              return 'green';
+            case 'Preparing':
+            case 'Charging':
+            case 'SuspendedEVSE':
+            case 'SuspendedEV':
+              return 'blue';
+            case 'Unavailable':
+            case 'Faulted':
+              return 'black';
+            default:
+              break;
+          }
+        });
+        setIconsState(arr);
+      } else if (status === 'ERROR') {
+      }
+    }
+  }, [message]);
   useEffect(() => {
-    // get station information
-    // todo: check station status and passed to station details page
-    // const requestBody = {
-    //   command: 'GetConnectorStatusListV1Request', // Required
-    //   token: token,
-    //   payload: {
-    //     smpctNumber: serialNumber,
-    //   },
-    // };
-    // webscoketClient.sendMessage(requestBody, false);
+    const requestBody = {
+      command: GET_CONNECTOR_REQ, // Required
+      token: token,
+      payload: {
+        smpctNumber: serialNumber,
+      },
+    };
+    console.log(requestBody);
+    webscoketClient.sendMessage(requestBody, connected);
   }, []);
 
   const handleStationNavigation = () => {
@@ -69,6 +101,7 @@ const Items = ({navigation, station, available}) => {
             onPress={handleStationNavigation}
             buttonMode={buttonMode}
             available={available}
+            iconsState={iconsState}
             type={type}
           />
         )}
@@ -101,8 +134,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 10 / 2,
     marginRight: 5,
-    backgroundColor: 'green',
   },
 });
 
-export default Items;
+export default memo(Items);
