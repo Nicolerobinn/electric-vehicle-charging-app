@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     left: 10,
-    top: 14,
+    top: 54,
     zIndex: 9999,
   },
   image: {

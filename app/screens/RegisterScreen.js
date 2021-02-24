@@ -1,13 +1,14 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, {memo, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
+import {USER_REGISTRATION_REQ, USER_REGISTRATION_RES} from '../core/api';
+import {useDeepCompareEffect} from '../core/hooks';
 import BottomTouchView from '../components/BottomTouchView';
 import {
   emailValidator,
@@ -32,14 +33,16 @@ const RegisterScreen = ({route, navigation}) => {
   });
   const [generalError, setGeneralError] = useState('');
 
-  useEffect(() => {
-    if (message?.status === 'SUCCESS') {
-      navigation.navigate('HomeScreen');
-    } else if (message?.status === 'ERROR') {
-      setGeneralError(message?.message);
+  useDeepCompareEffect(() => {
+    const {command = '', status = '', message: info} = message;
+    if (command === USER_REGISTRATION_RES) {
+      if (status === 'SUCCESS') {
+        navigation.navigate('HomeScreen');
+      } else if (status === 'ERROR') {
+        setGeneralError(info);
+      }
     }
   }, [message]);
-
   const handleSignupSubmit = () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
@@ -61,77 +64,70 @@ const RegisterScreen = ({route, navigation}) => {
     }
 
     const requestBody = {
-      command: 'UserRegistrationV1Request', // Required
+      command: USER_REGISTRATION_REQ, // Required
       payload: {
         email: email.value, // Required
         password: password.value, // Required
       },
     };
-
-    const response = webscoketClient.sendMessage(requestBody);
-    if (response?.status === 'success') {
-      // navigation.navigate('HomeScreen');
-    }
+    webscoketClient.sendMessage(requestBody);
   };
 
   return (
-    <>
-      <BackButton goBack={() => navigation.goBack(null)} />
-      <Background>
-        <Logo />
+    <Background navigation={navigation}>
+      <Logo />
 
-        <Title>Create Account</Title>
+      <Title>Create Account</Title>
 
-        <TextInput
-          label="Email"
-          returnKeyType="next"
-          value={email.value}
-          onChangeText={(text) => setEmail({value: text, error: ''})}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
+      <TextInput
+        label="Email"
+        returnKeyType="next"
+        value={email.value}
+        onChangeText={(text) => setEmail({value: text, error: ''})}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+      />
 
-        <TextInput
-          label="Password"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={(text) => setPassword({value: text, error: ''})}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
+      <TextInput
+        label="Password"
+        returnKeyType="done"
+        value={password.value}
+        onChangeText={(text) => setPassword({value: text, error: ''})}
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
+      />
 
-        <TextInput
-          label="ConfirmPassword"
-          returnKeyType="done"
-          value={confirmPassword.value}
-          onChangeText={(text) => setConfirmPassword({value: text, error: ''})}
-          error={!!confirmPassword.error}
-          errorText={confirmPassword.error}
-          secureTextEntry
-        />
+      <TextInput
+        label="ConfirmPassword"
+        returnKeyType="done"
+        value={confirmPassword.value}
+        onChangeText={(text) => setConfirmPassword({value: text, error: ''})}
+        error={!!confirmPassword.error}
+        errorText={confirmPassword.error}
+        secureTextEntry
+      />
 
-        <Button
-          mode="contained"
-          onPress={handleSignupSubmit}
-          style={styles.button}>
-          Sign Up
-        </Button>
+      <Button
+        mode="contained"
+        onPress={handleSignupSubmit}
+        style={styles.button}>
+        Sign Up
+      </Button>
 
-        <View style={styles.row}>
-          <Text style={styles.error}>{generalError}</Text>
-        </View>
-        <BottomTouchView
-          onChange={() => navigation.navigate('LoginScreen')}
-          text="Already have an account? "
-          touchText="Login"
-        />
-      </Background>
-    </>
+      <View style={styles.row}>
+        <Text style={styles.error}>{generalError}</Text>
+      </View>
+      <BottomTouchView
+        onChange={() => navigation.navigate('LoginScreen')}
+        text="Already have an account? "
+        touchText="Login"
+      />
+    </Background>
   );
 };
 

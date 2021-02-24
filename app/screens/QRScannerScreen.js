@@ -12,7 +12,6 @@ import {
   Alert,
 } from 'react-native';
 import * as Actions from '../store/Actions';
-let camera;
 
 const ScanQRCode = ({route, navigation}) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
@@ -35,7 +34,6 @@ const ScanQRCode = ({route, navigation}) => {
           {
             title: 'permissions',
             message: 'Grant camera permissions',
-            buttonNeutral: '等会再问我',
             buttonNegative: 'no',
             buttonPositive: 'ok',
           },
@@ -83,6 +81,11 @@ const ScanQRCode = ({route, navigation}) => {
         onPress: () => {
           dispatch(Actions.setQRCode(number));
           navigation.goBack(null);
+        },
+      },
+      {
+        text: 'cancel',
+        onPress: () => {
           setThrottle(false);
         },
       },
@@ -92,9 +95,6 @@ const ScanQRCode = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <RNCamera
-        ref={(ref) => {
-          camera = ref;
-        }}
         autoFocus={RNCamera.Constants.AutoFocus.on} /*自动对焦*/
         style={[styles.preview]}
         type={RNCamera.Constants.Type.back} /*切换前后摄像头 front前back后*/

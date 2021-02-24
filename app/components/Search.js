@@ -22,7 +22,6 @@ const Search = ({navigation, searchChange}, ref) => {
   }, [message]);
   // 此处注意useImperativeHandle方法的的第一个参数是目标元素的ref引用
   const onChangeSearch = (query) => {
-    console.log(123, query);
     setSearchQuery(query);
     searchHandler();
   };
@@ -49,7 +48,7 @@ const Search = ({navigation, searchChange}, ref) => {
       <View style={styles.container}>
         <Searchbar
           placeholder="Search station #"
-          onChangeText={onChangeSearch}
+          onChangeText={setSearchQuery}
           value={searchQuery}
           style={styles.searchBar}
         />

@@ -29,8 +29,8 @@ const LoginScreen = ({route, navigation}) => {
     const {command = '', status = '', message: info} = message;
     if (command === LOGIN_RES || command === SKIP_LOGIN_RES) {
       if (status === 'SUCCESS') {
-        navigation.navigate('HomeScreen');
         dispatch(Actions.saveMessage({}));
+        navigation.navigate('HomeScreen');
       } else if (status === 'ERROR') {
         setGeneralError(info);
       }
