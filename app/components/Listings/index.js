@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
-import {TabView} from 'react-native-tab-view';
+import {TabView, SceneMap} from 'react-native-tab-view';
 import Item from './Items';
 import {getRecentStations} from '../../core/utils';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -70,39 +70,33 @@ const ListingsScreen = ({navigation}) => {
     //   alert('Failed to fetch the data from storage')
     // }
   };
-
-  const renderScene = ({route}) => {
-    switch (route.key) {
-      case 'recent':
-        return (
-          <ListingComponent
-            navigation={navigation}
-            stations={recentStationList}
-            propKkey="recent"
-          />
-        );
-      case 'favorites':
-        return (
-          <ListingComponent
-            navigation={navigation}
-            stations={favouriteStationList}
-            propKkey="favorites"
-          />
-        );
-      case 'home':
-        return (
-          <ListingComponent
-            navigation={navigation}
-            stations={homeStationList}
-            propKkey="home"
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const renderScene = SceneMap({
+    recent: () => (
+      <ListingComponent
+        navigation={navigation}
+        stations={recentStationList}
+        propKkey="recent"
+      />
+    ),
+    favorites: () => (
+      <ListingComponent
+        navigation={navigation}
+        stations={favouriteStationList}
+        propKkey="favorites"
+      />
+    ),
+    home: () => (
+      <ListingComponent
+        navigation={navigation}
+        stations={homeStationList}
+        propKkey="home"
+      />
+    ),
+  });
   return (
     <TabView
+      lazy={true}
+      removeClippedSubviews={true}
       navigationState={{index, routes}}
       renderScene={renderScene}
       onIndexChange={setIndex}

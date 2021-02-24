@@ -9,6 +9,7 @@ import {
 import {useDeepCompareEffect} from '../core/hooks';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
+import BottomTouchView from '../components/BottomTouchView';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
@@ -18,7 +19,6 @@ import {emailValidator, passwordValidator} from '../core/utils';
 // redux
 import {useSelector, useDispatch} from 'react-redux';
 import * as Actions from '../store/Actions';
-
 const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
 
@@ -127,13 +127,11 @@ const LoginScreen = ({route, navigation}) => {
       <View style={styles.row}>
         <Text style={styles.error}>{generalError}</Text>
       </View>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
+      <BottomTouchView
+        onChange={() => navigation.navigate('RegisterScreen')}
+        text="Don’t have an account?"
+        touchText="Sign up"
+      />
     </Background>
   );
 };
@@ -143,17 +141,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-end',
     marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  label: {
-    color: theme.colors.secondary,
-  },
-  link: {
-    fontWeight: 'bold',
-    color: theme.colors.primary,
   },
   error: {
     fontWeight: 'bold',
