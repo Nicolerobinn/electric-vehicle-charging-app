@@ -1,5 +1,6 @@
 import {RNCamera} from 'react-native-camera';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {
   StyleSheet,
   Animated,
@@ -8,13 +9,15 @@ import {
   View,
   Text,
   Platform,
+  Alert,
 } from 'react-native';
-
+import * as Actions from '../store/Actions';
 let camera;
 
-const ScanQRCode = () => {
+const ScanQRCode = ({route, navigation}) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
-
+  const dispatch = useDispatch();
+  const [throttle, setThrottle] = useState(false);
   useEffect(() => {
     requestCameraPermission();
     startAnimation();
@@ -25,6 +28,7 @@ const ScanQRCode = () => {
   const requestCameraPermission = async () => {
     try {
       const {OS} = Platform; // android or ios
+
       if (OS === 'android') {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -37,12 +41,12 @@ const ScanQRCode = () => {
           },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('现在你获得摄像头权限了');
+          console.log('android 现在你获得摄像头权限了');
         } else {
           console.log('用户没有允许相机权限');
         }
       } else {
-        console.log('现在你获得摄像头权限了');
+        console.log('ios 现在你获得摄像头权限了');
       }
     } catch (err) {
       console.warn(err);
@@ -67,10 +71,22 @@ const ScanQRCode = () => {
     ]).start(() => startAnimation());
   };
   const onBarCodeRead = (result) => {
-    const {data} = result; //只要拿到data就可以了
+    if (throttle) {
+      return;
+    }
+    const {data: number} = result; //只要拿到data就可以了
     //扫码后的操作
-    console.log(data);
-    alert(data);
+    setThrottle(true);
+    Alert.alert('stationNumber', number, [
+      {
+        text: 'go',
+        onPress: () => {
+          dispatch(Actions.setQRCode(number));
+          navigation.goBack(null);
+          setThrottle(false);
+        },
+      },
+    ]);
   };
 
   return (

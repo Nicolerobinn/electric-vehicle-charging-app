@@ -1,4 +1,4 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useState, useImperativeHandle, forwardRef} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {theme} from '../core/theme';
 import {Searchbar, Button, IconButton} from 'react-native-paper';
@@ -7,11 +7,10 @@ import {useDeepCompareEffect} from '../core/hooks';
 // redux
 import {useSelector} from 'react-redux';
 
-const Search = ({navigation, searchChange}) => {
+const Search = ({navigation, searchChange}, ref) => {
   const appData = useSelector((state) => state.appData);
   const {webscoketClient, connected, token, message} = appData || {};
   const [searchQuery, setSearchQuery] = useState('3140000000');
-
   useDeepCompareEffect(() => {
     const {status, command, payload} = message || {};
     if (status === 'SUCCESS' && command === FIND_STATION_RES) {
@@ -21,13 +20,15 @@ const Search = ({navigation, searchChange}) => {
       });
     }
   }, [message]);
-
+  // 此处注意useImperativeHandle方法的的第一个参数是目标元素的ref引用
   const onChangeSearch = (query) => {
+    console.log(123, query);
     setSearchQuery(query);
-    searchChange({
-      visible: false,
-    });
+    searchHandler();
   };
+  useImperativeHandle(ref, () => ({
+    search: (str) => onChangeSearch(str),
+  }));
   const handleQRScan = () => {
     navigation.navigate('QRScannerScreen', {arr: {}});
   };
@@ -100,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Search);
+export default memo(forwardRef(Search));

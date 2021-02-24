@@ -1,4 +1,4 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useState, useRef, useEffect} from 'react';
 import {StyleSheet, Dimensions, View, TouchableOpacity} from 'react-native';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Header from '../components/Header';
@@ -8,8 +8,21 @@ import {ListingComponent} from '../components/Listings';
 
 import Listings from '../components/Listings';
 
+// redux
+import {useSelector, useDispatch} from 'react-redux';
+import * as Actions from '../store/Actions';
 const HomeScreen = ({route, navigation}) => {
+  const qrCode = useSelector((state) => state.appData.qrCode);
+  const dispatch = useDispatch();
   const [searchState, setSearchState] = useState({});
+  const childRef = useRef();
+  useEffect(() => {
+    console.log(qrCode);
+    if (qrCode) {
+      childRef.current.search(qrCode);
+      dispatch(Actions.setQRCode(''));
+    }
+  }, [qrCode]);
   return (
     <SafeAreaViewBox>
       <Header
@@ -18,7 +31,11 @@ const HomeScreen = ({route, navigation}) => {
         displayGoBackButton={false}
         displaySearchBar={true}
       />
-      <Search navigation={navigation} searchChange={setSearchState} />
+      <Search
+        ref={childRef}
+        navigation={navigation}
+        searchChange={setSearchState}
+      />
 
       {searchState.visible && (
         <TouchableOpacity

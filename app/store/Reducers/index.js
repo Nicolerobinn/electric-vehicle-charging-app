@@ -4,6 +4,7 @@ import {
   SET_CONNECTED,
   SET_CURRENT_ROUTE,
   SET_WEBSCOKET_CLIENT,
+  SET_QRCODE,
 } from '../Actions/types';
 import jwt from 'jwt-decode';
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
   message: {},
   currentRoute: '',
   webscoketClient: {},
+  qrCode: '',
 };
 
 const Reducer = (state = initialState, action) => {
@@ -50,6 +52,12 @@ const Reducer = (state = initialState, action) => {
         ...state,
         webscoketClient: action.payload,
       };
+    case SET_QRCODE:
+      return {
+        ...state,
+        qrCode: action.payload,
+      };
+
     default:
       return state;
   }

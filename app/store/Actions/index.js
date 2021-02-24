@@ -4,6 +4,7 @@ import {
   SET_CONNECTED,
   SET_CURRENT_ROUTE,
   SET_WEBSCOKET_CLIENT,
+  SET_QRCODE,
 } from './types';
 export const saveToken = (key) => ({
   type: SAVE_TOKEN,
@@ -24,6 +25,10 @@ export const setCurrentRoute = (value) => ({
 export const setWebscoketClient = (value) => ({
   type: SET_WEBSCOKET_CLIENT,
   payload: value,
+});
+export const setQRCode = (str) => ({
+  type: SET_QRCODE,
+  payload: str,
 });
 // export const setRecentStation = (value) => ({
 //   type: SET_RECENT_STATION,

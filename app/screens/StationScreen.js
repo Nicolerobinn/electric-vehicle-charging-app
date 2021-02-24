@@ -84,8 +84,6 @@ const StationScreen = ({route, navigation}) => {
         console.log('add/remove favourite error');
       }
     } else {
-      // todo: test in device alert user
-      alert('Please create an account to do this action');
       Alert.alert(
         'Please create an account to do this action',
         'Please create an account to do this action',
