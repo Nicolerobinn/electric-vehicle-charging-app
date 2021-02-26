@@ -4,11 +4,10 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
+  Text,
   Platform,
 } from 'react-native';
 import BackButton from '../components/BackButton';
-
 const Background = ({children, navigation}) => (
   <ImageBackground
     source={require('../assets/background_dot.png')}
@@ -22,6 +21,9 @@ const Background = ({children, navigation}) => (
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView>{children}</ScrollView>
     </KeyboardAvoidingView>
+    <Text style={{textAlign: 'center', color: 'gray', fontSize: 12}}>
+      Copyright 2020 SMPC
+    </Text>
   </ImageBackground>
 );
 
