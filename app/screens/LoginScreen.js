@@ -65,7 +65,7 @@ const LoginScreen = ({route, navigation}) => {
       Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
       return;
     }
-    webscoketClient.sendMessage(requestBody, connected);
+    webscoketClient?.sendMessage(requestBody, connected);
   };
 
   const handleSkipLoginSubmit = () => {

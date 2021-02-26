@@ -37,6 +37,9 @@
 			</dict>
 		</dict>
 	</dict>
+
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Grant Bluetooth  permissions</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Grant Bluetooth  permissions</string>
 	<key>NSCameraUsageDescription</key>

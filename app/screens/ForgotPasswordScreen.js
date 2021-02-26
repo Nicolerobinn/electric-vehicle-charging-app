@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {emailValidator} from '../core/utils';
 import {useSelector} from 'react-redux';
 import Background from '../components/Background';
@@ -12,8 +12,8 @@ import {useDeepCompareEffect} from '../core/hooks';
 import {theme} from '../core/theme';
 
 const ForgotPasswordScreen = ({route, navigation}) => {
-  const message = useSelector((state) => state.appData.message);
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
+  const appData = useSelector((state) => state.appData);
+  const {webscoketClient = {}, connected, message = {}} = appData || {};
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -44,7 +44,11 @@ const ForgotPasswordScreen = ({route, navigation}) => {
         email: email.value, // Required
       },
     };
-    webscoketClient.sendMessage(requestBody, false);
+    if (!webscoketClient.sendMessage) {
+      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
+      return;
+    }
+    webscoketClient.sendMessage(requestBody, connected);
   };
 
   return (

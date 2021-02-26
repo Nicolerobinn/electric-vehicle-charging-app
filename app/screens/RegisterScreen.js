@@ -1,6 +1,6 @@
 import React, {memo, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
@@ -70,6 +70,10 @@ const RegisterScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
+    if (!webscoketClient.sendMessage) {
+      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
+      return;
+    }
     webscoketClient.sendMessage(requestBody);
   };
 

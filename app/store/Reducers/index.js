@@ -13,7 +13,9 @@ const initialState = {
   userData: {},
   message: {},
   currentRoute: '',
-  webscoketClient: {},
+  webscoketClient: {
+    sendMessage: () => {},
+  },
   qrCode: '',
 };
 

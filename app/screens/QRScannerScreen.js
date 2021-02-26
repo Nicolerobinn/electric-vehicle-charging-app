@@ -65,13 +65,25 @@ const ScanQRCode = ({route, navigation}) => {
         console.log('The permission is limited: some actions are possible');
         break;
       case RESULTS.GRANTED:
+        console.log('CAMERA PERMISSIONS GRANTED');
         // 已有权限
         return;
       case RESULTS.BLOCKED:
         // TODO 拒绝时权限提示修改
-        alert('The permission is denied and not requestable anymore');
-        // ，可以打开注释引导用户打开设置页面主动授权
-        // openSettings().catch(() => console.warn('cannot open settings'));
+        // 引导用户打开设置页面主动授权
+        Alert.alert('xxx', 'xxx', [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () =>
+              openSettings().catch(() => console.warn('cannot open settings')),
+          },
+          ,
+        ]);
         break;
     }
   };
@@ -89,14 +101,14 @@ const ScanQRCode = ({route, navigation}) => {
   const startAnimation = () => {
     Animated.sequence([
       Animated.timing(moveAnim, {
-        toValue: 200,
-        duration: 1500,
+        toValue: 500,
+        duration: 4000,
         easing: Easing.linear,
         useNativeDriver: false,
       }),
       Animated.timing(moveAnim, {
         toValue: -1,
-        duration: 1500,
+        duration: 0,
         easing: Easing.linear,
         useNativeDriver: false,
       }),
@@ -127,90 +139,40 @@ const ScanQRCode = ({route, navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <RNCamera
-        autoFocus={RNCamera.Constants.AutoFocus.on} /*自动对焦*/
-        style={[styles.preview]}
-        type={RNCamera.Constants.Type.back} /*切换前后摄像头 front前back后*/
-        flashMode={RNCamera.Constants.FlashMode.off} /*相机闪光模式*/
-        captureAudio={false}
-        onBarCodeRead={onBarCodeRead}>
-        <View
-          style={{
-            width: 500,
-            height: 220,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-          }}
+    <RNCamera
+      autoFocus={RNCamera.Constants.AutoFocus.on} /*自动对焦*/
+      style={[styles.preview]}
+      type={RNCamera.Constants.Type.back} /*切换前后摄像头 front前back后*/
+      flashMode={RNCamera.Constants.FlashMode.off} /*相机闪光模式*/
+      captureAudio={false}
+      onBarCodeRead={onBarCodeRead}>
+      <View style={{width: '80%', height: '60%'}}>
+        <Animated.View
+          style={[styles.border, {transform: [{translateY: moveAnim}]}]}
         />
-
-        <View style={[{flexDirection: 'row'}]}>
-          <View
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              height: 200,
-              width: 200,
-            }}
-          />
-          <Animated.View
-            style={[styles.border, {transform: [{translateY: moveAnim}]}]}
-          />
-          <View
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              height: 200,
-              width: 200,
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            width: 500,
-            alignItems: 'center',
-          }}>
-          <Text style={styles.rectangleText}>Scan QR Code</Text>
-        </View>
-      </RNCamera>
-    </View>
+      </View>
+      <Text style={styles.rectangleText}>Scan QR Code</Text>
+    </RNCamera>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-  },
   preview: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  rectangleContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  rectangle: {
-    height: 200,
-    width: 200,
-    borderWidth: 1,
-    borderColor: '#fcb602',
-    backgroundColor: 'transparent',
-    borderRadius: 10,
+    paddingTop: 10,
   },
   rectangleText: {
-    flex: 0,
     color: '#fff',
-    marginTop: 10,
   },
   border: {
     flex: 0,
-    width: 196,
+    width: '100%',
     height: 2,
     backgroundColor: '#fcb602',
     borderRadius: 50,
+    shadowColor: '#fcb602',
   },
 });
 
