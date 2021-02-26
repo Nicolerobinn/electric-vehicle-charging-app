@@ -8,7 +8,7 @@ import {List} from 'react-native-paper';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+import {removeHomeStation} from '../core/asyncStorage';
 const AutherArr = [
   {
     title: 'iPhone',
@@ -59,18 +59,22 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const [state, setstate] = useState();
-  const remove = (i) => () => {
-    console.log('remove', i);
+  const remove = (station) => () => {
+    removeHomeStation(station);
+    console.log('remove', station);
   };
-  const add = (i) => () => {
-    console.log('add', i);
+  const add = (station) => () => {
+    navigation.navigate('StationDefaultPasswordResetScreen', {
+      station: station,
+    });
+    console.log('add', station);
   };
   const arr = [];
   const arr2 = [];
   return (
     <SafeAreaViewBox>
       <Header navigation={navigation} />
-      <ConfigurationsTopBox />
+      <ConfigurationsTopBox text="HOME STATIONS" />
       <ScrollView style={{flex: 1}}>
         <List.Item
           style={styles.titleItem}

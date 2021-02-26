@@ -93,3 +93,11 @@ export const getRecentStations = async (key) => {
     alert('Failed to save the data to the storage');
   }
 };
+
+export const arrayMapEqul = (arr, station) => {
+  arr.forEach((obj) => {
+    if (obj?.smpctNumber === station.smpctNumber) {
+      return true;
+    }
+  });
+};

@@ -5902,6 +5902,11 @@ react-native-paper@^4.7.1:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.3.1"
 
+react-native-permissions@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npm.taobao.org/react-native-permissions/download/react-native-permissions-3.0.1.tgz#7273f7d07701974ef50bf77bb052881846a3bb91"
+  integrity sha1-cnP30HcBl071C/d7sFKIGEaju5E=
+
 react-native-reanimated@^1.13.2:
   version "1.13.2"
   resolved "https://registry.npm.taobao.org/react-native-reanimated/download/react-native-reanimated-1.13.2.tgz#1ae5457b24b4913d173a5a064bb28eae7783d293"

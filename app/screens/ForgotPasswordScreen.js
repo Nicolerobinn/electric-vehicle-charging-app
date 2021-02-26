@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: theme.colors.secondary,
     width: '100%',
     textAlign: 'center',
-    marginBottom: '20px',
+    marginBottom: 20,
   },
   label: {
     color: theme.colors.secondary,

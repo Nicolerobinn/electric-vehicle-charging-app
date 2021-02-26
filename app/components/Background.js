@@ -10,19 +10,19 @@ import {
 import BackButton from '../components/BackButton';
 
 const Background = ({children, navigation}) => (
-  <>
-    <ImageBackground
-      source={require('../assets/background_dot.png')}
-      resizeMode="repeat"
-      style={styles.background}>
-      {navigation && <BackButton goBack={() => navigation.goBack(null)} />}
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView>{children}</ScrollView>
-      </KeyboardAvoidingView>
-    </ImageBackground>
-  </>
+  <ImageBackground
+    source={require('../assets/background_dot.png')}
+    resizeMode="repeat"
+    style={styles.background}>
+    {navigation && (
+      <BackButton style={{top: 54}} goBack={() => navigation.goBack(null)} />
+    )}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView>{children}</ScrollView>
+    </KeyboardAvoidingView>
+  </ImageBackground>
 );
 
 const styles = StyleSheet.create({

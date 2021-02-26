@@ -14,6 +14,9 @@ import {
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import {arrayMapEqul} from '../core/utils';
+import {homeStationPasswordCompare} from '../core/asyncStorage';
+import {REMOVE_FAVOUR_REQ, ADD_FAVOUR_REQ, FIND_STATION_RES} from '../core/api';
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
 // redux
@@ -36,39 +39,21 @@ const StationScreen = ({route, navigation}) => {
   // options: 'Start Charging', 'Waiting', 'Stop Charging'
   const [chargingStatus, setChargingStatus] = useState(START);
 
-  useEffect(() => {
-    // get station details from message
-    if (
-      message?.status === 'SUCCESS' &&
-      message?.command === 'FindStationV1Response'
-    ) {
-      const stationData = message.payload;
-      // setStation(stationData);
-    } else if (message?.status === 'ERROR') {
-      // some error
-    }
-  }, [message]);
   // check if current station is favorite or not
   useEffect(() => {
     // init check in componentDidMount
-    homeStationList.forEach((obj) => {
-      if (obj?.smpctNumber === station.smpctNumber) {
-        setConfigurationButtonType(false);
-      }
-    });
-    favouriteStationList.forEach((obj) => {
-      if (obj?.smpctNumber === station.smpctNumber) {
-        setIsFavourite(true);
-      }
-    });
+    if (arrayMapEqul(homeStationList, station)) {
+      setConfigurationButtonType(false);
+    }
+    if (arrayMapEqul(favouriteStationList, station)) {
+      setIsFavourite(true);
+    }
   }, []);
 
   const favouriteToggleHandler = () => {
     // check if guess user (check user permission)
     if (permissionList.indexOf('MODIFY_FAVOURITES') !== -1) {
-      const command = isFavourite
-        ? 'RemoveFavouriteV1Request'
-        : 'AddFavouriteV1Request';
+      const command = isFavourite ? REMOVE_FAVOUR_REQ : ADD_FAVOUR_REQ;
       const requestBody = {
         command: command,
         token: token,
@@ -97,6 +82,13 @@ const StationScreen = ({route, navigation}) => {
     return Linking.openURL(browser_url);
   };
   const configurationClick = () => {
+    // 密码校验
+    if (homeStationPasswordCompare(station)) {
+      navigation.navigate('StationDefaultPasswordResetScreen', {
+        station: station,
+      });
+      return;
+    }
     navigation.navigate('ConfigurationsScreen', {station: {}});
   };
   const getDirectionHandler = () => {

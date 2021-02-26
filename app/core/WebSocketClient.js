@@ -49,6 +49,7 @@ export default class WebSocketClient {
 
     //客户端接收服务端数据时触发
     this.ws.onmessage = (evt) => {
+      console.log('messsage', evt);
       this.onmessageCallBack && this.onmessageCallBack(evt);
     };
     //连接错误

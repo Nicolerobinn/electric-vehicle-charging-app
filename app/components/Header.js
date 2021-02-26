@@ -16,22 +16,19 @@ const Header = ({
   };
 
   return (
-    <View style={styles.box}>
-      <View style={styles.top}>
-        {displayGoBackButton && <BackButton goBack={handleGoBack} />}
-        <Text style={styles.center}>EV-NRGY</Text>
-        {displaySaveConfigurations ? (
-          <SaveButton save={saveChange} />
-        ) : (
-          <DropdownMenu navigation={navigation} />
-        )}
-      </View>
+    <View style={styles.top}>
+      {displayGoBackButton && <BackButton goBack={handleGoBack} />}
+      <Text style={styles.center}>EV-NRGY</Text>
+      {displaySaveConfigurations ? (
+        <SaveButton save={saveChange} />
+      ) : (
+        <DropdownMenu navigation={navigation} />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  box: {},
   top: {
     position: 'relative',
   },

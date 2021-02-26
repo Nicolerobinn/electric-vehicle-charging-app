@@ -21,6 +21,7 @@ import ConfigurationsScreen from '../screens/ConfigurationsScreen';
 import ConfigurationsBlueToochScreen from '../screens/ConfigurationsBlueToochScreen';
 import ConfigurationsWIFIScreen from '../screens/ConfigurationsWIFIScreen';
 import QRScannerScreen from '../screens/QRScannerScreen';
+import StationDefaultPasswordResetScreen from '../screens/StationDefaultPasswordResetScreen';
 
 const Stack = createStackNavigator();
 const AppStack = createStackNavigator();
@@ -46,7 +47,7 @@ const AppScreens = () => (
       name="HomeScreen"
       initialRouteName
       component={HomeScreen}
-      options={{headerShown: false}}
+      options={{headerShown: false, gestureEnabled: false}}
     />
     <Stack.Screen
       name="SettingScreen"
@@ -76,6 +77,11 @@ const AppScreens = () => (
     <Stack.Screen
       name="QRScannerScreen"
       component={QRScannerScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="StationDefaultPasswordResetScreen"
+      component={StationDefaultPasswordResetScreen}
       options={{headerShown: false}}
     />
   </AppStack.Navigator>
