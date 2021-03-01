@@ -1,4 +1,4 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, {memo, useState, useRef, useEffect} from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -36,6 +36,9 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const peripherals = new Map();
   // 储存当前连接蓝牙的数据结构
   const connectedPeripherals = new Map();
+  // 使用ref持久化
+  const peripheralsRef = useRef(null);
+  const connectedPeripheralsRef = useRef(null);
   // 储存未连接蓝牙的list
   const [peripheralsList, setPeripheralsList] = useState([]);
   // 储存当前连接蓝牙的list
@@ -52,10 +55,12 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   };
   // 断开蓝牙
   const handleDisconnectedPeripheral = (data) => {
-    let peripheral = connectedPeripherals.get(data.peripheral);
+    let peripheral = connectedPeripheralsRef.current.get(data.peripheral);
     if (peripheral) {
-      connectedPeripherals.delete(peripheral.id);
-      setConnectedPeripheralsList(Array.from(connectedPeripherals.values()));
+      connectedPeripheralsRef.current.delete(peripheral.id);
+      setConnectedPeripheralsList(
+        Array.from(connectedPeripheralsRef.current.values()),
+      );
     }
     console.log('Disconnected from ' + data.peripheral);
   };
@@ -76,9 +81,11 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         console.log('没有连接外围设备');
       }
       for (let i = 0; i < results.length; i++) {
-        connectedPeripherals.set(results[i].id, results[i]);
+        connectedPeripheralsRef.current.set(results[i].id, results[i]);
       }
-      setConnectedPeripheralsList(Array.from(connectedPeripherals.values()));
+      setConnectedPeripheralsList(
+        Array.from(connectedPeripheralsRef.current.values()),
+      );
     });
   };
   // 获取到蓝牙设备
@@ -91,12 +98,12 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     }
     // 判断当前蓝牙是否已连接
     // 如果已经连接则不储存
-    const obj = connectedPeripherals.get(peripheral.id);
+    const obj = connectedPeripheralsRef.current.get(peripheral.id);
     if (!obj) {
-      peripherals.set(peripheral.id, peripheral);
-      setPeripheralsList(Array.from(peripherals.values()));
+      peripheralsRef.current.set(peripheral.id, peripheral);
+    } else {
+      connectedPeripheralsRef.current.set(peripheral.id, peripheral);
     }
-    console.log('peripherals', Array.from(peripherals.values()).length);
   };
   // 获取rssi
   const testPeripheral = (peripheral) => {
@@ -106,11 +113,11 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
 
       BleManager.readRSSI(peripheral.id).then((rssi) => {
         console.log('检索到 RSSI value', rssi);
-        let p = peripherals.get(peripheral.id);
+        let p = peripheralsRef.current.get(peripheral.id);
         if (p) {
           p.rssi = rssi;
-          peripherals.set(peripheral.id, p);
-          setPeripheralsList(Array.from(peripherals.values()));
+          peripheralsRef.current.set(peripheral.id, p);
+          setPeripheralsList(Array.from(peripheralsRef.current.values()));
         }
       });
     });
@@ -119,13 +126,12 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const addPeripheral = (peripheral) => {
     BleManager.connect(peripheral.id)
       .then(() => {
-        console.log('peripherals', Array.from(peripherals.values()));
-        peripherals.delete(peripheral.id);
-        console.log('delete peripherals', Array.from(peripherals.values()));
-        connectedPeripherals.set(peripheral.id, peripheral);
-        setPeripheralsList(Array.from(peripherals.values()));
-        setConnectedPeripheralsList(Array.from(connectedPeripherals.values()));
-        console.log('Connected to ' + peripheral.id);
+        peripheralsRef.current.delete(peripheral.id);
+        connectedPeripheralsRef.current.set(peripheral.id, peripheral);
+        setPeripheralsList(Array.from(peripheralsRef.current.values()));
+        setConnectedPeripheralsList(
+          Array.from(connectedPeripheralsRef.current.values()),
+        );
         // TODO: 暂时存疑，是否需要rssi数据
         // setTimeout(() => {
         //   testPeripheral(peripheral);
@@ -136,7 +142,10 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
       });
   };
   // 结束扫描
-  const handleStopScan = () => console.log('结束扫描');
+  const handleStopScan = () => {
+    setPeripheralsList(Array.from(connectedPeripheralsRef.current.values()));
+    setPeripheralsList(Array.from(peripheralsRef.current.values()));
+  };
 
   // 权限校验与反馈
   const androidPermissionCheck = async () => {
@@ -212,6 +221,8 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   // 初始化方法
   useEffect(() => {
     // 开始扫描
+    peripheralsRef.current = peripherals;
+    connectedPeripheralsRef.current = connectedPeripherals;
     BleManager.start({showAlert: false});
     // 发现设备
     bleManagerEmitter.addListener(
@@ -219,7 +230,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
       handleDiscoverPeripheral,
     );
     // 结束设备扫描。
-    // The scanning for peripherals is ended.
+    // The scanning for peripheralsRef.current is ended.
     bleManagerEmitter.addListener('BleManagerStopScan', handleStopScan);
     // 一个设备被断开
     // A peripheral was disconnected.
@@ -263,6 +274,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     BleManager.disconnect(station.id);
     retrieveConnected();
     removeHomeStation(station);
+    startScan();
     console.log('remove', station);
   };
   const add = (station) => () => {
