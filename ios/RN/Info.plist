@@ -5,9 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>RN</string>
+	<string>Ev_nery</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -21,7 +23,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<string>NO</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -37,15 +43,30 @@
 			</dict>
 		</dict>
 	</dict>
-
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app requires access to play music</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Grant Bluetooth  permissions</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Grant Bluetooth  permissions</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app requires access to calendar</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Grant camera permissions</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app requires access to contacts</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Grant location permissions</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Grant location permissions</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires access to microphone</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Ev_nrgy motion use.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>Grant Siri permissions</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>recognize speech</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -91,7 +91,6 @@ export const Route = () => {
   const navigationRef = useRef();
   const webscoket = useRef();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.appData.token);
   // instance of webscoket connection as a class property
   const onMessage = (evt) => {
     // listen to data sent from the webscoket server
