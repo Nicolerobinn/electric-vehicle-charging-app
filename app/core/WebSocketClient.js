@@ -49,7 +49,6 @@ export default class WebSocketClient {
 
     //客户端接收服务端数据时触发
     this.ws.onmessage = (evt) => {
-      console.log('messsage', evt);
       this.onmessageCallBack && this.onmessageCallBack(evt);
     };
     //连接错误
@@ -66,6 +65,7 @@ export default class WebSocketClient {
 
   //发送消息
   sendMessage(requestBody, connected) {
+    console.log(123, requestBody);
     // todo: add connect condition
     // on submitting the ChatInput form, send the message, add it to the list and reset the input
     if (!connected) {

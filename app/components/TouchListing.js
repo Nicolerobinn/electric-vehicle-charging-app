@@ -1,7 +1,7 @@
-import React, {memo, useState, useRef, useEffect} from 'react';
+import React, {memo} from 'react';
 import {Button} from 'react-native-paper';
 import {StyleSheet, Dimensions, View, Text} from 'react-native';
-import {ListingComponent} from './Listings/ListingComponent';
+import ListingComponent from './Listings/ListingComponent';
 
 const TouchListing = ({onChange, list = 0, navigation}) => {
   return (

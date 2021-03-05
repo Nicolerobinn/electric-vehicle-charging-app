@@ -95,7 +95,6 @@ export const Route = () => {
   const onMessage = (evt) => {
     // listen to data sent from the webscoket server
     const message = JSON.parse(evt.data);
-    console.log('message', message);
     dispatch(Actions.saveMessage(message));
     console.log('message', message);
     if (message?.status === 'SUCCESS' && message?.token) {
@@ -124,7 +123,7 @@ export const Route = () => {
       onOpen: onOpen,
       onMessage: onMessage,
       onClose: onClose,
-      onError: onError,
+      // onError: onError,
     });
     webscoket.current.initWebSocket();
   }, []);

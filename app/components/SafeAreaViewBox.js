@@ -4,7 +4,10 @@ import {SafeAreaView, View} from 'react-native';
 // for IOS adaptation security zone
 const SafeAreaViewBox = ({children}) => {
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{
+        flex: 1,
+      }}>
       <SafeAreaView />
       <SafeAreaView style={{flex: 1}}>{children}</SafeAreaView>
       <SafeAreaView style={{backgroundColor: '#0e3f94'}} />

@@ -4,13 +4,7 @@ import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {Platform, Linking, StyleSheet, View, Image, Alert} from 'react-native';
 import StationBody from '../components/StationBody';
-import {
-  Text,
-  Button,
-  IconButton,
-  ActivityIndicator,
-  Colors,
-} from 'react-native-paper';
+import {Text, Button, IconButton} from 'react-native-paper';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -197,7 +191,12 @@ const StationScreen = ({route, navigation}) => {
             })}
         </View>
       </View>
-      {!seationService && <StationBody station={station} />}
+      {/* 暂时不处理，优先级较低，app整体flex布局修改，  */}
+      {!seationService ? (
+        <StationBody station={station} />
+      ) : (
+        <View style={{flex: 1}} />
+      )}
 
       <Footer navigation={navigation} />
     </SafeAreaViewBox>
@@ -205,7 +204,6 @@ const StationScreen = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  header: {},
   stationHeader: {
     height: 200,
     flexDirection: 'row',
@@ -229,11 +227,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  stationBody: {
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   buttonWrapper: {
     marginTop: 30,

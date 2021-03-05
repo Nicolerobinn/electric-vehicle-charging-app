@@ -6,6 +6,7 @@ import {
   check,
   RESULTS,
 } from 'react-native-permissions';
+import {Button} from 'react-native-paper';
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {
@@ -146,6 +147,14 @@ const ScanQRCode = ({route, navigation}) => {
       flashMode={RNCamera.Constants.FlashMode.off} /*相机闪光模式*/
       captureAudio={false}
       onBarCodeRead={onBarCodeRead}>
+      <Button
+        style={styles.button}
+        icon="arrow-left"
+        mode="contained"
+        labelStyle={{marginLeft: 0}}
+        uppercase={false}
+        onPress={() => navigation.goBack(null)}
+      />
       <View style={{width: '80%', height: '60%'}}>
         <Animated.View
           style={[styles.border, {transform: [{translateY: moveAnim}]}]}
@@ -157,6 +166,14 @@ const ScanQRCode = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    width: 60,
+    minWidth: 'auto',
+    position: 'absolute',
+    left: 26,
+    top: 60,
+    textAlign: 'center',
+  },
   preview: {
     flex: 1,
     justifyContent: 'center',
