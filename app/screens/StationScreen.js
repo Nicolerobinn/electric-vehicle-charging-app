@@ -3,7 +3,7 @@ import {START, STOP, WAITING, CONNECTOR_LIST} from '../constants';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {Platform, Linking, StyleSheet, View, Image, Alert} from 'react-native';
-import Chart from '../components/Chart';
+import StationBody from '../components/StationBody';
 import {
   Text,
   Button,
@@ -23,7 +23,7 @@ const AVAILABLE = 'Available';
 import {useSelector} from 'react-redux';
 
 const StationScreen = ({route, navigation}) => {
-  const {station = {}} = route.params;
+  const {station = {}, seationService} = route.params;
   const appData = useSelector((state) => state.appData);
   const {token, userData, message, webscoketClient} = appData || {};
   const {
@@ -197,39 +197,8 @@ const StationScreen = ({route, navigation}) => {
             })}
         </View>
       </View>
-      <View style={styles.stationBody}>
-        <ActivityIndicator
-          animating={chargingStatus === WAITING}
-          color={Colors.red800}
-        />
-        {chargingStatus === STOP && <Chart />}
-        {chargingStatus === START && <Icon name="ev-station" size={100} />}
-        <Text
-          style={{
-            marginTop: 12,
-            marginBottom: 12,
-            fontWeight: 'bold',
-            color: 'gray',
-          }}>
-          {chargingStatusText}
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: 'rgba(255, 255, 255, 1.0)',
-          }}>
-          $1.00/hr
-        </Text>
-        <Button
-          disabled={buttonDsiabled}
-          style={styles.button}
-          mode="contained"
-          uppercase={false}
-          onPress={startChargingHandler}>
-          {chargingStatus}
-        </Button>
-      </View>
+      {!seationService && <StationBody station={station} />}
+
       <Footer navigation={navigation} />
     </SafeAreaViewBox>
   );

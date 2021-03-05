@@ -19,11 +19,10 @@ const ItemRight = ({onPress, seationService, iconsState, type}) => {
         style={{
           borderRadius: 6,
         }}
-        disabled={seationService}
         uppercase={false}
         mode="contained"
         onPress={onPress}>
-        Start
+        {seationService ? 'View' : 'Start'}
       </Button>
     </View>
   );
@@ -87,6 +86,7 @@ const Items = ({navigation, station, available}) => {
     writeRecentStationToAsyncStorage(station, serialNumber);
     return navigation.navigate('StationScreen', {
       station: station,
+      seationService: seationService,
     });
   };
 

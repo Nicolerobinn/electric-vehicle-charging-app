@@ -3,30 +3,12 @@ import {View, StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import Item from './Items';
 import {getRecentStations} from '../../core/utils';
+import ListingComponent from './ListingComponent';
 import AsyncStorage from '@react-native-community/async-storage';
 
 // redux
 import {useSelector} from 'react-redux';
 
-export const ListingComponent = ({stations = [], navigation, propKkey}) => {
-  return (
-    <View style={styles.scene}>
-      <ScrollView>
-        {stations.length > 0 &&
-          stations.map((station) => (
-            <Item
-              navigation={navigation}
-              station={station}
-              icon1="power-plug"
-              icon2="power-plug-off"
-              available={true}
-              key={`${propKkey}_${station.smpctNumber}`}
-            />
-          ))}
-      </ScrollView>
-    </View>
-  );
-};
 const initialLayout = {width: Dimensions.get('window').width};
 
 const arr = [

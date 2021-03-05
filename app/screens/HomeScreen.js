@@ -1,11 +1,10 @@
 import React, {memo, useState, useRef, useEffect} from 'react';
-import {StyleSheet, Dimensions, View, TouchableOpacity} from 'react-native';
+import {StyleSheet} from 'react-native';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Search from '../components/Search';
-import {ListingComponent} from '../components/Listings';
-
+import TouchListing from '../components/TouchListing';
 import Listings from '../components/Listings';
 
 // redux
@@ -37,19 +36,16 @@ const HomeScreen = ({route, navigation}) => {
         searchChange={setSearchState}
       />
 
+      {/* 根据visible切换对应状态 */}
+      {/* 搜索列表 */}
       {searchState.visible && (
-        <TouchableOpacity
-          onPress={(e) => setSearchState({})}
-          style={[{width: Dimensions.get('window').width, flex: 1}]}>
-          <View style={[{width: '100%', flex: 1}]}>
-            <ListingComponent
-              navigation={navigation}
-              stations={searchState.station}
-              propKkey="search"
-            />
-          </View>
-        </TouchableOpacity>
+        <TouchListing
+          list={searchState.station}
+          onChange={setSearchState}
+          navigation={navigation}
+        />
       )}
+      {/* home tab组件 */}
       {!searchState.visible && <Listings navigation={navigation} />}
       <Footer navigation={navigation} />
     </SafeAreaViewBox>
