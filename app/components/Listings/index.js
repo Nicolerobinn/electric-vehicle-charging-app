@@ -20,15 +20,32 @@ const arrTwo = [
   {key: 'recent', title: 'Recent'},
   {key: 'favorites', title: 'Favorites'},
 ];
+const RecentList = ({navigation}) => {
+  const [recentStationList, setRecentStationList] = useState([]);
+  useEffect(() => {
+    readRecentStationListFromAsyncStorage();
+  }, []);
+  // todo: cleanup this and move this in to utils
+  const readRecentStationListFromAsyncStorage = async () => {
+    const list = await AsyncStorage.getItem('recentStationList');
+    console.log('list', JSON.parse(list));
+    if (list !== null) {
+      setRecentStationList(JSON.parse(list));
+    }
+  };
+  return (
+    <ListingComponent
+      navigation={navigation}
+      stations={recentStationList}
+      propKkey="recent"
+    />
+  );
+};
 const ListingsScreen = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutesArr] = useState(arr);
   const userData = useSelector((state) => state.appData.userData);
   const {favouriteStationList, homeStationList = []} = userData || {};
-  const [recentStationList, setRecentStationList] = useState([]);
-  useEffect(() => {
-    readRecentStationListFromAsyncStorage();
-  }, []);
   useEffect(() => {
     if (homeStationList.length === 0) {
       setRoutesArr(arrTwo);
@@ -36,30 +53,8 @@ const ListingsScreen = ({navigation}) => {
       setRoutesArr(arr);
     }
   }, [homeStationList.length]);
-  // todo: cleanup this and move this in to utils
-  const readRecentStationListFromAsyncStorage = async () => {
-    const recentStationList = await AsyncStorage.getItem('recentStationList');
-    if (recentStationList !== null) {
-      setRecentStationList(JSON.parse(recentStationList));
-    }
-
-    // try {
-    //   const recentStationList = await AsyncStorage.getItem("recentStationList")
-    //   if (recentStationList !== null) {
-    //     setRecentStationList(recentStationList);
-    //   }
-    // } catch (e) {
-    //   alert('Failed to fetch the data from storage')
-    // }
-  };
   const renderScene = SceneMap({
-    recent: () => (
-      <ListingComponent
-        navigation={navigation}
-        stations={recentStationList}
-        propKkey="recent"
-      />
-    ),
+    recent: () => <RecentList navigation={navigation} />,
     favorites: () => (
       <ListingComponent
         navigation={navigation}
