@@ -37,7 +37,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
     console.log('station name', text);
   };
   const nameAlert = () => {
-    Alert.prompt('', 'station name change', (text) => {
+    Alert.prompt('', 'Plaese give this station a name', (text) => {
       nameChange(text);
     });
   };
@@ -60,13 +60,9 @@ const ConfigurationsScreen = ({route, navigation}) => {
         visible={visible}
         hideDialog={hideDialog}
         handleChange={() => androidAlertChange}
-        title={'station name'}
+        title={'Plaese give this station a name'}
       />
-      <Header
-        displaySaveConfigurations
-        navigation={navigation}
-        saveChange={saveChange}
-      />
+      <Header navigation={navigation} saveChange={saveChange} />
       <ConfigurationsTopBox />
       <ScrollView style={{flex: 1}}>
         <Text style={styles.title}>Home Station</Text>

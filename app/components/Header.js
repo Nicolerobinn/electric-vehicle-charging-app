@@ -3,14 +3,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import {theme} from '../core/theme';
 import DropdownMenu from './DropdownMenu';
 import BackButton from '../components/BackButton';
-import SaveButton from './SaveButton';
 
-const Header = ({
-  navigation,
-  displayGoBackButton = true,
-  displaySaveConfigurations = false,
-  saveChange,
-}) => {
+const Header = ({navigation, displayGoBackButton = true, saveChange}) => {
   const handleGoBack = () => {
     navigation.goBack(null);
   };
@@ -19,11 +13,7 @@ const Header = ({
     <View style={styles.top}>
       {displayGoBackButton && <BackButton goBack={handleGoBack} />}
       <Text style={styles.center}>EV-NRGY</Text>
-      {displaySaveConfigurations ? (
-        <SaveButton save={saveChange} />
-      ) : (
-        <DropdownMenu navigation={navigation} />
-      )}
+      <DropdownMenu navigation={navigation} />
     </View>
   );
 };
