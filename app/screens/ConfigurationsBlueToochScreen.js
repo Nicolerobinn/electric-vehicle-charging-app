@@ -16,6 +16,7 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 
+import * as UUID from '../core/UUID';
 import BlueToothList from '../components/BlueToothList';
 import BleManager from 'react-native-ble-manager';
 import {useSelector} from 'react-redux';
@@ -26,11 +27,13 @@ import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {removeHomeStation} from '../core/asyncStorage';
+// for send data to BLE, we need to convert it to buffer array
+import {stringToBytes} from 'convert-string';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const ConfigurationsBlueToochScreen = ({route, navigation}) => {
+const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
   const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   // 储存未连接蓝牙的数据结构
   const peripherals = new Map();
@@ -73,6 +76,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         data.characteristic,
       data.value,
     );
+    // Received data from 0B57B2C7-43D4-CD90-C2E5-4DDC2DBF536A characteristic BFF6F2F4-AD95-417B-832A-8BF733344F26 [3]
   };
   // 获取当前连接设备
   const retrieveConnected = () => {
@@ -88,13 +92,12 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
       );
     });
   };
-  // 获取到蓝牙设备
+  // Discover ALl BLE devices
   const handleDiscoverPeripheral = (peripheral) => {
-    console.log('获取到ble设备', peripheral);
-    // TODO: 通过station充电站 的蓝牙特定字段
-    // 判断是否为station充电站，如果不是则不添加到可显示蓝牙列表
+    // console.log('Discover BLE device: ', peripheral, peripheral.advertising.manufacturerData);
+    // Ignore peripheral that has no name
     if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
+      return;
     }
     // 判断当前蓝牙是否已连接
     // 如果已经连接则不储存
@@ -122,12 +125,13 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
       });
     });
   };
-  // 添加蓝牙
+  // 添加蓝牙/Connect to a bluetooth
   const addPeripheral = (peripheral) => {
-    BleManager.connect(peripheral.id)
+    const {id: ID} = peripheral;
+    BleManager.connect(ID)
       .then(() => {
-        peripheralsRef.current.delete(peripheral.id);
-        connectedPeripheralsRef.current.set(peripheral.id, peripheral);
+        peripheralsRef.current.delete(ID);
+        connectedPeripheralsRef.current.set(ID, peripheral);
         setPeripheralsList(Array.from(peripheralsRef.current.values()));
         setConnectedPeripheralsList(
           Array.from(connectedPeripheralsRef.current.values()),
@@ -136,6 +140,35 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         // setTimeout(() => {
         //   testPeripheral(peripheral);
         // }, 900);
+
+        // TODO: enable bluetooth
+        // https://github.com/innoveit/react-native-ble-manager#enablebluetooth-android-only
+
+        // testing
+        setTimeout(() => {
+          BleManager.retrieveServices(ID).then((peripheralInfo) => {
+            setTimeout(() => {
+              BleManager.startNotification(ID, UUID.SERVICE, UUID.LOGIN_STATUS)
+                .then(() => {
+                  console.log('Started notification on ' + ID);
+                  setTimeout(() => {
+                    const data = stringToBytes('dog');
+                    BleManager.write(
+                      ID,
+                      UUID.SERVICE,
+                      UUID.CHECK_PASSWORD,
+                      data,
+                    ).then(() => {
+                      console.log('checking password');
+                    });
+                  }, 500);
+                })
+                .catch((error) => {
+                  console.log('Notification error', error);
+                });
+            }, 200);
+          });
+        }, 900);
       })
       .catch((error) => {
         console.log('Connection error', error);
@@ -158,8 +191,8 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
       } else {
         PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        ).then((result) => {
-          if (result) {
+        ).then((res) => {
+          if (res) {
             startScan();
             console.log('用户接受');
           } else {
@@ -185,7 +218,6 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         onPress: () =>
           openSettings().catch(() => console.warn('cannot open settings')),
       },
-      ,
     ];
     Alert.alert('xxx', 'xxx', arr);
   };
@@ -193,7 +225,8 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
     switch (result) {
       case RESULTS.UNAVAILABLE:
-        alert(
+        Alert.alert(
+          'xxx',
           'This feature is not available (on this device / in this context)',
         );
         break;
@@ -279,52 +312,13 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   };
   const add = (station) => () => {
     addPeripheral(station);
+    console.log('Add station', station);
     return;
     navigation.navigate('StationDefaultPasswordResetScreen', {
       station: station,
     });
     console.log('add', station);
   };
-  [
-    {
-      advertising: {
-        isConnectable: 1,
-        kCBAdvDataRxPrimaryPHY: 0,
-        kCBAdvDataRxSecondaryPHY: 0,
-        kCBAdvDataTimestamp: 636029318.953386,
-        txPowerLevel: 12,
-      },
-      id: '211EDD7A-6526-C316-8D8F-37640E930668',
-      name: 'NO NAME',
-      rssi: -51,
-    },
-    {
-      advertising: {
-        isConnectable: 1,
-        kCBAdvDataRxPrimaryPHY: 0,
-        kCBAdvDataRxSecondaryPHY: 0,
-        kCBAdvDataTimestamp: 636029319.10553,
-        txPowerLevel: 8,
-      },
-      id: '232B5E21-C7FF-A0BA-339C-D2921B2AC537',
-      name: 'NO NAME',
-      rssi: -53,
-    },
-    {
-      advertising: {
-        isConnectable: 1,
-        kCBAdvDataRxPrimaryPHY: 0,
-        kCBAdvDataRxSecondaryPHY: 0,
-        kCBAdvDataTimestamp: 636029318.757321,
-        localName: 'Mi Smart Band 5',
-        manufacturerData: [Object],
-        serviceUUIDs: [Array],
-      },
-      id: 'D32F4CE3-2CD6-0781-504E-43FA4C4B0EA3',
-      name: 'Mi Smart Band 5',
-      rssi: -71,
-    },
-  ];
   return (
     <SafeAreaViewBox>
       <Header navigation={navigation} />
@@ -338,7 +332,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
           )}
         />
         <BlueToothList
-          buttonText="remove"
+          buttonText="Remove"
           boxTitle="Authenticated Devices"
           arr={connectedPeripheralsList}
           change={remove}
@@ -346,7 +340,7 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         <BlueToothList
           boxTitle="Avaliable Devices"
           arr={peripheralsList}
-          buttonText="add"
+          buttonText="Add"
           change={add}
         />
       </ScrollView>
@@ -367,4 +361,4 @@ const styles = StyleSheet.create({
   item: {paddingBottom: 0, paddingTop: 0, paddingLeft: 25},
 });
 
-export default memo(ConfigurationsBlueToochScreen);
+export default memo(ConfigurationsBlueTouchScreen);

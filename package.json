@@ -16,6 +16,7 @@
     "@react-native-community/toolbar-android": "^0.1.0-rc.2",
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.2",
+    "convert-string": "^0.1.0",
     "dayjs": "^1.10.4",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
