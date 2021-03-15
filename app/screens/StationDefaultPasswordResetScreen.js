@@ -25,9 +25,9 @@ const StationDefaultPasswordResetScreen = ({route, navigation}) => {
     value: '',
     error: '',
   });
-  const [password, setPassword] = useState({value: 'password', error: ''});
+
+  const [password, setPassword] = useState({value: '', error: ''});
   const save = () => {
-    console.log('save');
     const change = () => {
       navigation.goBack(null);
     };

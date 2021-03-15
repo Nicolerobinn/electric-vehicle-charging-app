@@ -127,7 +127,7 @@ const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
   };
   // 添加蓝牙/Connect to a bluetooth
   const addPeripheral = (peripheral) => {
-    const {id: ID} = peripheral;
+    const ID = peripheral.id;
     BleManager.connect(ID)
       .then(() => {
         peripheralsRef.current.delete(ID);

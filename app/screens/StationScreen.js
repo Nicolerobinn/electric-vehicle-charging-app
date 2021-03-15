@@ -77,12 +77,12 @@ const StationScreen = ({route, navigation}) => {
   };
   const configurationClick = () => {
     // 密码校验
-    if (homeStationPasswordCompare(station)) {
-      navigation.navigate('StationDefaultPasswordResetScreen', {
-        station: station,
-      });
-      return;
-    }
+    // if (homeStationPasswordCompare(station)) {
+    //   navigation.navigate('StationDefaultPasswordResetScreen', {
+    //     station: station,
+    //   });
+    //   return;
+    // }
     navigation.navigate('ConfigurationsScreen', {station: {}});
   };
   const getDirectionHandler = () => {
@@ -166,7 +166,7 @@ const StationScreen = ({route, navigation}) => {
               style={styles.stationButton}
               icon="account-cog"
               mode="outlined"
-              disabled={configurationButtonType}
+              // disabled={configurationButtonType}
               uppercase={false}
               onPress={configurationClick}>
               Configuration

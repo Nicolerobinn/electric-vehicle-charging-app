@@ -7,16 +7,9 @@ import {
   ScrollView,
   Alert,
   Platform,
-  TextInput,
 } from 'react-native';
-import {
-  Button,
-  List,
-  Dialog,
-  Portal,
-  Paragraph,
-  Divider,
-} from 'react-native-paper';
+import {List, Divider} from 'react-native-paper';
+import AndroidTextAlert from '../components/AndroidTextAlert';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
@@ -66,34 +59,6 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
     </>
   );
 };
-const AndroidAlert = ({visible, hideDialog, state, passwordChange}) => {
-  const [inputText, setInputText] = useState('');
-  return (
-    <Portal>
-      <Dialog visible={visible} onDismiss={hideDialog}>
-        <Dialog.Content>
-          <Paragraph>{`${PROMPT} ${state.title}`}</Paragraph>
-          <View style={{borderBottomWidth: 1, paddingTop: 20}}>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setInputText(text)}
-            />
-          </View>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => hideDialog()}>Cancel</Button>
-          <Button
-            onPress={() => {
-              passwordChange(inputText);
-              hideDialog();
-            }}>
-            Ok
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
-  );
-};
 const ConfigurationsBlueToochScreen = ({route, navigation}) => {
   const [wifiState, setWifiState] = useState({});
   const [visible, setVisible] = useState(false);
@@ -128,15 +93,19 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     connectionWIFI(e);
   };
   const arr = [];
+  const androidAlertChange = (text) => {
+    passwordCheck(text);
+    hideDialog();
+  };
   return (
     <SafeAreaViewBox>
       <Header navigation={navigation} />
       <ConfigurationsTopBox />
-      <AndroidAlert
+      <AndroidTextAlert
         visible={visible}
         hideDialog={hideDialog}
-        passwordChange={passwordCheck}
-        state={wifiState}
+        handleChange={() => androidAlertChange}
+        title={`${PROMPT} ${wifiState.title}`}
       />
       <ScrollView style={{flex: 1}}>
         <List.Item

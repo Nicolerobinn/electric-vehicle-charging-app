@@ -1,8 +1,17 @@
 import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Switch, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Switch,
+  ScrollView,
+  Alert,
+  Platform,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import {useSelector} from 'react-redux';
 import {List, Divider} from 'react-native-paper';
+import AndroidTextAlert from '../components/AndroidTextAlert';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
@@ -10,9 +19,11 @@ import Footer from '../components/Footer';
 
 const ConfigurationsScreen = ({route, navigation}) => {
   const [state, setstate] = useState();
+  const [visible, setVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const hideDialog = () => setVisible(false);
   const saveChange = () => {
     console.log('save');
   };
@@ -22,8 +33,35 @@ const ConfigurationsScreen = ({route, navigation}) => {
   const wifiClick = () => {
     navigation.navigate('ConfigurationsWIFIScreen', {arr: {}});
   };
+  const nameChange = (text) => {
+    console.log('station name', text);
+  };
+  const nameAlert = () => {
+    Alert.prompt('', 'station name change', (text) => {
+      nameChange(text);
+    });
+  };
+  const nameAlertShow = () => {
+    if (Platform.OS === 'android') {
+      setVisible(true);
+      return;
+    }
+    // IOS alert
+    nameAlert();
+    return;
+  };
+  const androidAlertChange = (text) => {
+    nameChange(text);
+    hideDialog();
+  };
   return (
     <SafeAreaViewBox>
+      <AndroidTextAlert
+        visible={visible}
+        hideDialog={hideDialog}
+        handleChange={() => androidAlertChange}
+        title={'station name'}
+      />
       <Header
         displaySaveConfigurations
         navigation={navigation}
@@ -35,6 +73,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Name"
+          onPress={nameAlertShow}
           left={(props) => <List.Icon {...props} icon="folder" />}
           right={(props) => (
             <Text style={{marginTop: 10}}>Home station Name</Text>
