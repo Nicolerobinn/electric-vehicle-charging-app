@@ -1,3 +1,5 @@
+export const EV_NRGY = 'ev_nrgy';
+
 export const SERVICE = '32244fe7-824c-46f4-b157-810a708123ba';
 
 export const LOGIN_STATUS = 'bff6f2f4-ad95-417b-832a-8bf733344f26';

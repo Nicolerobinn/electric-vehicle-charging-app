@@ -44,7 +44,7 @@ const StationDefaultPasswordResetScreen = ({route, navigation}) => {
             <ConfigurationsTopBox text="LOGIN STATION NAME" />
             <View style={styles.container}>
               <TextInput
-                label="Default Password"
+                label="please enter original password"
                 returnKeyType="done"
                 value={defaultPassword.value}
                 onChangeText={(text) =>
@@ -56,7 +56,7 @@ const StationDefaultPasswordResetScreen = ({route, navigation}) => {
               />
 
               <TextInput
-                label="New Password"
+                label="please enter new password"
                 returnKeyType="done"
                 value={password.value}
                 onChangeText={(text) => setPassword({value: text, error: ''})}

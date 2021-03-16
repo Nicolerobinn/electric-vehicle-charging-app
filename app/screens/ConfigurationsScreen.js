@@ -21,7 +21,6 @@ const ConfigurationsScreen = ({route, navigation}) => {
   const [state, setstate] = useState();
   const [visible, setVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const hideDialog = () => setVisible(false);
   const saveChange = () => {
@@ -54,6 +53,9 @@ const ConfigurationsScreen = ({route, navigation}) => {
     nameChange(text);
     hideDialog();
   };
+  const changePassword = () => {
+    navigation.navigate('StationDefaultPasswordResetScreen', {arr: {}});
+  };
   return (
     <SafeAreaViewBox>
       <AndroidTextAlert
@@ -77,7 +79,8 @@ const ConfigurationsScreen = ({route, navigation}) => {
         />
         <List.Item
           style={styles.item}
-          title="Configuration Password "
+          title="Configuration Password"
+          onPress={changePassword}
           left={(props) => <List.Icon {...props} icon="wifi" />}
           right={(props) => (
             <Icon size={20} style={styles.right} name="arrow-forward-ios" />

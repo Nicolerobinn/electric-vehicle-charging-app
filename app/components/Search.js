@@ -4,12 +4,13 @@ import {theme} from '../core/theme';
 import {Searchbar, Button, IconButton} from 'react-native-paper';
 import {FIND_STATION_RES, FIND_STATION_REQ} from '../core/api';
 import {useDeepCompareEffect} from '../core/hooks';
+import WebSocketClient from '../core/WebSocketClient';
 // redux
 import {useSelector} from 'react-redux';
 
 const Search = ({navigation, searchChange}, ref) => {
   const appData = useSelector((state) => state.appData);
-  const {webscoketClient, connected, token, message} = appData || {};
+  const {connected, token, message} = appData || {};
   const [searchQuery, setSearchQuery] = useState('3140000000');
   useDeepCompareEffect(() => {
     const {status, command, payload} = message || {};
@@ -40,7 +41,7 @@ const Search = ({navigation, searchChange}, ref) => {
         smpctNumber: searchQuery,
       },
     };
-    webscoketClient.sendMessage(requestBody, connected);
+    WebSocketClient.instance.sendMessage(requestBody, connected);
   };
 
   return (

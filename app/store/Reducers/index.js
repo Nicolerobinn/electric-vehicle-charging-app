@@ -13,9 +13,6 @@ const initialState = {
   userData: {},
   message: {},
   currentRoute: '',
-  webscoketClient: {
-    sendMessage: () => {},
-  },
   qrCode: '',
 };
 
@@ -48,11 +45,6 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         currentRoute: action.payload,
-      };
-    case SET_WEBSCOKET_CLIENT:
-      return {
-        ...state,
-        webscoketClient: action.payload,
       };
     case SET_QRCODE:
       return {

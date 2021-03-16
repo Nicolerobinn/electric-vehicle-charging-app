@@ -10,10 +10,11 @@ import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import {useDeepCompareEffect} from '../core/hooks';
 import {theme} from '../core/theme';
+import WebSocketClient from '../core/WebSocketClient';
 
 const ForgotPasswordScreen = ({route, navigation}) => {
   const appData = useSelector((state) => state.appData);
-  const {webscoketClient = {}, connected, message = {}} = appData || {};
+  const {connected, message = {}} = appData || {};
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -44,11 +45,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
         email: email.value, // Required
       },
     };
-    if (!webscoketClient.sendMessage) {
-      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
-      return;
-    }
-    webscoketClient.sendMessage(requestBody, connected);
+    WebSocketClient.instance?.sendMessage(requestBody, connected);
   };
 
   return (

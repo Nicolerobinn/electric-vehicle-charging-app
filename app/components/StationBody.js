@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 
 const StationBody = ({station}) => {
   const appData = useSelector((state) => state.appData);
-  const {token, userData, message, webscoketClient} = appData || {};
+  const {token, userData, message} = appData || {};
 
   const [buttonDsiabled, setButtonDsiabled] = useState(false);
   const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);

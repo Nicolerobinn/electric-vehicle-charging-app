@@ -53,6 +53,8 @@ const ListingsScreen = ({navigation}) => {
       setRoutesArr(arr);
     }
   }, [homeStationList.length]);
+
+  // TODO: 修改SceneMap 关闭error
   const renderScene = SceneMap({
     recent: () => <RecentList navigation={navigation} />,
     favorites: () => (

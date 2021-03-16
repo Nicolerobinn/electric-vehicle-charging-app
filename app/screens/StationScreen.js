@@ -10,6 +10,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {arrayMapEqul} from '../core/utils';
 import {homeStationPasswordCompare} from '../core/asyncStorage';
+import WebSocketClient from '../core/WebSocketClient';
+
 import {REMOVE_FAVOUR_REQ, ADD_FAVOUR_REQ, FIND_STATION_RES} from '../core/api';
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
@@ -19,11 +21,12 @@ import {useSelector} from 'react-redux';
 const StationScreen = ({route, navigation}) => {
   const {station = {}, seationService} = route.params;
   const appData = useSelector((state) => state.appData);
-  const {token, userData, message, webscoketClient} = appData || {};
+  const {token, userData, message} = appData || {};
   const {
     favouriteStationList = [],
     permissionList,
     homeStationList = [],
+    connected,
   } = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);
@@ -56,7 +59,10 @@ const StationScreen = ({route, navigation}) => {
           connectorList: station.connectorList,
         },
       };
-      const response = webscoketClient.sendMessage(requestBody);
+      const response = WebSocketClient.instance?.sendMessage(
+        requestBody,
+        connected,
+      );
       if (response?.status === 'success') {
         setIsFavourite(!isFavourite);
       } else {

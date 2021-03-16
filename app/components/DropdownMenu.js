@@ -1,6 +1,7 @@
 import React, {memo, useState} from 'react';
 import {View, Image, StyleSheet, Linking} from 'react-native';
 import {Button, Menu, Divider} from 'react-native-paper';
+import WebSocketClient from '../core/WebSocketClient';
 
 // redux
 import {useSelector} from 'react-redux';
@@ -8,14 +9,14 @@ import {useSelector} from 'react-redux';
 const DropdownMenu = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const appData = useSelector((state) => state.appData);
-  const {token, permissionList = [], webscoketClient} = appData || {};
+  const {token, permissionList = []} = appData || {};
   const skippedLoginUser = permissionList.length === 0;
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   const handleLogout = () => {
-    webscoketClient.ws.onclose();
+    WebSocketClient.instance.close();
     closeMenu();
     navigation.navigate('LoginScreen');
   };

@@ -6,6 +6,8 @@ import {connecterTypeChecker} from '../../core/utils';
 import {GET_CONNECTOR_REQ, GET_CONNECTOR_RES} from '../../core/api';
 import {writeRecentStationToAsyncStorage} from '../../core/asyncStorage';
 import {useDeepCompareEffect} from '../../core/hooks';
+import WebSocketClient from '../../core/WebSocketClient';
+
 const ItemRight = ({onPress, seationService, iconsState, type}) => {
   return (
     <View style={[styles.flexBox, styles.rightBox]}>
@@ -31,7 +33,7 @@ const Items = ({navigation, station, available}) => {
   const [iconsState, setIconsState] = useState(['grey', 'grey']);
   const [seationService, setSeationService] = useState(true);
   const appData = useSelector((state) => state.appData);
-  const {webscoketClient, token, message, connected} = appData || {};
+  const {token, message, connected} = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
 
   const type = connecterTypeChecker(station.connectorList);
@@ -78,7 +80,8 @@ const Items = ({navigation, station, available}) => {
         smpctNumber: serialNumber,
       },
     };
-    webscoketClient.sendMessage(requestBody, connected);
+
+    WebSocketClient.instance.sendMessage(requestBody, connected);
   }, []);
 
   const handleStationNavigation = () => {

@@ -1,29 +1,56 @@
+import * as Actions from '../store/Actions';
 const WSSURL = 'wss://dev.evnrgy.com:7777';
 // instance of websocket connection as a class property
 
 let that = null;
 
+// callback function
+const onClose = (dispatch) => {
+  console.log('disconnected');
+  // clear all redux data
+  dispatch(Actions.setConnected(false));
+  dispatch(Actions.saveMessage({}));
+  dispatch(Actions.saveToken(''));
+  // automatically try to reconnect on connection loss
+};
+const onMessage = (evt, dispatch) => {
+  // listen to data sent from the webscoket server
+  // TODO: 修改接收模式，改为派发，优先级低
+  const message = JSON.parse(evt.data);
+  dispatch(Actions.saveMessage(message));
+  console.log('message', message);
+  if (message?.status === 'SUCCESS' && message?.token) {
+    dispatch(Actions.saveToken(message.token));
+  }
+};
+const onOpen = (dispatch) => {
+  dispatch(Actions.setConnected(true));
+};
+
+// singleton pattern class
 export default class WebSocketClient {
-  constructor({onOpen, onMessage, onClose, onError}) {
+  constructor(dispatch) {
     this.ws = null;
     that = this;
-    this.onopenCallBack = onOpen;
-    this.onmessageCallBack = onMessage;
-    this.oncloseCallBack = onClose;
-    this.onerrorCallBack = onError;
+    this.dispatch = dispatch;
   }
 
   /**
    * 获取WebSocket单例
    * @returns {WebSocketClient}
    */
-  static getInstance() {
+  static getInstance(dispatch) {
     if (!this.instance) {
-      this.instance = new WebSocketClient();
+      console.log('初始化webscoket 单例');
+      if (!dispatch) {
+        console.log('未注入派发器,请检查代码');
+      }
+      this.instance = new WebSocketClient(dispatch);
+      // 添加初始化节流，防止提前调用方法导致error
+      this.instance.isInit = true;
     }
     return this.instance;
   }
-
   /**
    * 初始化WebSocket
    */
@@ -43,13 +70,14 @@ export default class WebSocketClient {
   initWsEvent() {
     //建立WebSocket连接
     this.ws.onopen = () => {
-      this.onopenCallBack && this.onopenCallBack();
-      console.log('WebSocket:', 'connect to server');
+      // open后关闭节流
+      this.isInit = false;
+      onOpen(this.dispatch, this);
     };
 
     //客户端接收服务端数据时触发
     this.ws.onmessage = (evt) => {
-      this.onmessageCallBack && this.onmessageCallBack(evt);
+      onMessage(evt, this.dispatch);
     };
     //连接错误
     this.ws.onerror = (e) => {
@@ -59,14 +87,21 @@ export default class WebSocketClient {
     };
     //连接关闭
     this.ws.onclose = () => {
-      this.oncloseCallBack && this.oncloseCallBack();
+      onClose(this.dispatch);
     };
   }
 
+  close() {
+    this.ws.onclose();
+  }
   //发送消息
   sendMessage(requestBody, connected) {
-    // todo: add connect condition
-    // on submitting the ChatInput form, send the message, add it to the list and reset the input
+    // 根据节流判断是否允许send
+    if (this.isInit) {
+      console.log('ws 初始化中');
+      return;
+    }
+    console.log('==========requestBody', requestBody);
     if (!connected) {
       try {
         this.ws.onopen(); //send data to the server

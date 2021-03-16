@@ -1,5 +1,4 @@
 import React, {useEffect, useRef} from 'react';
-import {Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
@@ -89,43 +88,10 @@ const AppScreens = () => (
 
 export const Route = () => {
   const navigationRef = useRef();
-  const webscoket = useRef();
   const dispatch = useDispatch();
-  // instance of webscoket connection as a class property
-  const onMessage = (evt) => {
-    // listen to data sent from the webscoket server
-    const message = JSON.parse(evt.data);
-    dispatch(Actions.saveMessage(message));
-    console.log('message', message);
-    if (message?.status === 'SUCCESS' && message?.token) {
-      dispatch(Actions.saveToken(message.token));
-    }
-  };
-  const onClose = () => {
-    console.log('disconnected');
-    // clear all redux data
-    dispatch(Actions.setConnected(false));
-    dispatch(Actions.saveMessage({}));
-    dispatch(Actions.saveToken(''));
-    // automatically try to reconnect on connection loss
-  };
-  const onOpen = () => {
-    dispatch(Actions.setWebscoketClient(webscoket.current));
-    dispatch(Actions.setConnected(true));
-  };
-  const onError = (e) => {
-    Alert.alert('network', `connect to server error,${e.message}`, [
-      {text: 'OK'},
-    ]);
-  };
   useEffect(() => {
-    webscoket.current = new WebSocketClient({
-      onOpen: onOpen,
-      onMessage: onMessage,
-      onClose: onClose,
-      // onError: onError,
-    });
-    webscoket.current.initWebSocket();
+    // 初始化webscoket
+    WebSocketClient.getInstance(dispatch).initWebSocket();
   }, []);
 
   const routeChange = () => {

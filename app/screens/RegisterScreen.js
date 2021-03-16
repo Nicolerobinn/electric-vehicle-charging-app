@@ -10,6 +10,8 @@ import {theme} from '../core/theme';
 import {USER_REGISTRATION_REQ, USER_REGISTRATION_RES} from '../core/api';
 import {useDeepCompareEffect} from '../core/hooks';
 import BottomTouchView from '../components/BottomTouchView';
+import WebSocketClient from '../core/WebSocketClient';
+
 import {
   emailValidator,
   passwordValidator,
@@ -20,7 +22,7 @@ import {
 const RegisterScreen = ({route, navigation}) => {
   const message = useSelector((state) => state.appData.message);
 
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
+  const connected = useSelector((state) => state.appData.connected);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -70,11 +72,7 @@ const RegisterScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
-    if (!webscoketClient.sendMessage) {
-      Alert.alert('network', 'connect to server error', [{text: 'OK'}]);
-      return;
-    }
-    webscoketClient.sendMessage(requestBody);
+    WebSocketClient.instance?.sendMessage(requestBody, connected);
   };
 
   return (

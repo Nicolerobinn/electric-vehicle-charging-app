@@ -34,7 +34,6 @@ const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
-  const webscoketClient = useSelector((state) => state.appData.webscoketClient);
   // 储存未连接蓝牙的数据结构
   const peripherals = new Map();
   // 储存当前连接蓝牙的数据结构
@@ -125,6 +124,31 @@ const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
       });
     });
   };
+  const blueTouchCheckPassword = (ID, password) => {
+    setTimeout(() => {
+      BleManager.retrieveServices(ID).then((peripheralInfo) => {
+        setTimeout(() => {
+          BleManager.startNotification(ID, UUID.SERVICE, UUID.LOGIN_STATUS)
+            .then(() => {
+              console.log('Started notification on ' + ID);
+              setTimeout(() => {
+                BleManager.write(
+                  ID,
+                  UUID.SERVICE,
+                  UUID.CHECK_PASSWORD,
+                  password,
+                ).then(() => {
+                  console.log('checking password');
+                });
+              }, 500);
+            })
+            .catch((error) => {
+              console.log('Notification error', error);
+            });
+        }, 200);
+      });
+    }, 900);
+  };
   // 添加蓝牙/Connect to a bluetooth
   const addPeripheral = (peripheral) => {
     const ID = peripheral.id;
@@ -145,30 +169,8 @@ const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
         // https://github.com/innoveit/react-native-ble-manager#enablebluetooth-android-only
 
         // testing
-        setTimeout(() => {
-          BleManager.retrieveServices(ID).then((peripheralInfo) => {
-            setTimeout(() => {
-              BleManager.startNotification(ID, UUID.SERVICE, UUID.LOGIN_STATUS)
-                .then(() => {
-                  console.log('Started notification on ' + ID);
-                  setTimeout(() => {
-                    const data = stringToBytes('dog');
-                    BleManager.write(
-                      ID,
-                      UUID.SERVICE,
-                      UUID.CHECK_PASSWORD,
-                      data,
-                    ).then(() => {
-                      console.log('checking password');
-                    });
-                  }, 500);
-                })
-                .catch((error) => {
-                  console.log('Notification error', error);
-                });
-            }, 200);
-          });
-        }, 900);
+        const psd = stringToBytes('dog');
+        blueTouchCheckPassword(ID, psd);
       })
       .catch((error) => {
         console.log('Connection error', error);
