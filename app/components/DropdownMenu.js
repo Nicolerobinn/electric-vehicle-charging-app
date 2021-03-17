@@ -2,7 +2,7 @@ import React, {memo, useState} from 'react';
 import {View, Image, StyleSheet, Linking} from 'react-native';
 import {Button, Menu, Divider} from 'react-native-paper';
 import WebSocketClient from '../core/WebSocketClient';
-
+import {loginOut} from '../core/asyncStorage';
 // redux
 import {useSelector} from 'react-redux';
 
@@ -16,8 +16,8 @@ const DropdownMenu = ({navigation}) => {
   const closeMenu = () => setVisible(false);
 
   const handleLogout = () => {
+    loginOut();
     WebSocketClient.instance.close();
-    closeMenu();
     navigation.navigate('LoginScreen');
   };
 

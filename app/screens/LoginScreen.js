@@ -16,7 +16,6 @@ import TextInput from '../components/TextInput';
 import {theme} from '../core/theme';
 import {emailValidator, passwordValidator} from '../core/utils';
 import WebSocketClient from '../core/WebSocketClient';
-
 // redux
 import {useSelector, useDispatch} from 'react-redux';
 import * as Actions from '../store/Actions';
@@ -25,6 +24,14 @@ const LoginScreen = ({route, navigation}) => {
 
   const appData = useSelector((state) => state.appData);
   const {connected, message = {}} = appData || {};
+
+  // todo: cleanup
+  const [email, setEmail] = useState({
+    value: 'owner@company1.com',
+    error: '',
+  });
+  const [password, setPassword] = useState({value: 'password', error: ''});
+  const [generalError, setGeneralError] = useState('');
 
   useDeepCompareEffect(() => {
     const {command = '', status = '', message: info} = message;
@@ -37,15 +44,6 @@ const LoginScreen = ({route, navigation}) => {
       }
     }
   }, [message]);
-
-  // todo: cleanup
-  const [email, setEmail] = useState({
-    value: 'owner@company1.com',
-    error: '',
-  });
-  const [password, setPassword] = useState({value: 'password', error: ''});
-  const [generalError, setGeneralError] = useState('');
-
   const handleLoginSubmit = () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);

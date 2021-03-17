@@ -2,10 +2,8 @@ import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import Item from './Items';
-import {getRecentStations} from '../../core/utils';
 import ListingComponent from './ListingComponent';
-import AsyncStorage from '@react-native-community/async-storage';
-
+import {readRecentStationListFromAsyncStorage} from '../../core/asyncStorage';
 // redux
 import {useSelector} from 'react-redux';
 
@@ -23,16 +21,8 @@ const arrTwo = [
 const RecentList = ({navigation}) => {
   const [recentStationList, setRecentStationList] = useState([]);
   useEffect(() => {
-    readRecentStationListFromAsyncStorage();
+    readRecentStationListFromAsyncStorage(setRecentStationList);
   }, []);
-  // todo: cleanup this and move this in to utils
-  const readRecentStationListFromAsyncStorage = async () => {
-    const list = await AsyncStorage.getItem('recentStationList');
-    console.log('list', JSON.parse(list));
-    if (list !== null) {
-      setRecentStationList(JSON.parse(list));
-    }
-  };
   return (
     <ListingComponent
       navigation={navigation}

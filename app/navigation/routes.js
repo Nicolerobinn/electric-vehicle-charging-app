@@ -4,9 +4,9 @@ import {theme} from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, Provider} from 'react-native-paper';
-
+import {checkLoginPersistent} from '../core/asyncStorage';
 // redux
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import * as Actions from '../store/Actions';
 
 // screens
@@ -89,11 +89,19 @@ const AppScreens = () => (
 export const Route = () => {
   const navigationRef = useRef();
   const dispatch = useDispatch();
+  const checkLogin = async () => {
+    const token = await checkLoginPersistent();
+    if (token) {
+      dispatch(Actions.saveToken(token));
+      navigationRef.current?.navigate('HomeScreen');
+    }
+  };
   useEffect(() => {
     // 初始化webscoket
     WebSocketClient.getInstance(dispatch).initWebSocket();
+    // 检查登录保持
+    checkLogin();
   }, []);
-
   const routeChange = () => {
     const {name} = navigationRef.current.getCurrentRoute();
     dispatch(Actions.setCurrentRoute(name));

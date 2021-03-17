@@ -1,12 +1,30 @@
 // handle all async storage related functions
 import AsyncStorage from '@react-native-community/async-storage';
 
+const RECENT_STATION_LIST = 'recentStationList';
+const HOME_STATION__LIST = 'stationPasswordList';
+const LOGIN_PERSISTENT = 'loginPersistent';
+
 const _stationLookup = (stationList, serialNumber) => {
   return stationList.some((station) => station.smpctNumber === serialNumber);
 };
 
-const RECENT_STATION_LIST = 'recentStationList';
-const HOME_STATION__LIST = 'stationPasswordList';
+export const setLoginPersistent = (token) => {
+  AsyncStorage.setItem(LOGIN_PERSISTENT, token);
+};
+export const checkLoginPersistent = async () => {
+  const account = await AsyncStorage.getItem(LOGIN_PERSISTENT);
+  return account;
+};
+export const loginOut = async () => {
+  AsyncStorage.removeItem(LOGIN_PERSISTENT);
+};
+
+export const readRecentStationListFromAsyncStorage = async (callback) => {
+  const list = await AsyncStorage.getItem(RECENT_STATION_LIST);
+  const arr = list ? JSON.parse(list) : [];
+  callback(arr);
+};
 /**
  * Store current station to asyncStorage
  *
@@ -18,7 +36,6 @@ export const writeRecentStationToAsyncStorage = async (
   station,
   serialNumber,
 ) => {
-  console.log(station, serialNumber);
   let recentStationList = await AsyncStorage.getItem(RECENT_STATION_LIST);
   if (recentStationList) {
     recentStationList = JSON.parse(recentStationList);

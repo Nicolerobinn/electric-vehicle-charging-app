@@ -24,6 +24,7 @@ const onMessage = (evt, dispatch) => {
   }
 };
 const onOpen = (dispatch) => {
+  console.log('ws 连接成功');
   dispatch(Actions.setConnected(true));
 };
 
@@ -101,7 +102,6 @@ export default class WebSocketClient {
       console.log('ws 初始化中');
       return;
     }
-    console.log('==========requestBody', requestBody);
     if (!connected) {
       try {
         this.ws.onopen(); //send data to the server

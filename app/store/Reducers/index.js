@@ -6,6 +6,7 @@ import {
   SET_WEBSCOKET_CLIENT,
   SET_QRCODE,
 } from '../Actions/types';
+import {setLoginPersistent} from '../../core/asyncStorage';
 import jwt from 'jwt-decode';
 const initialState = {
   connected: false,
@@ -23,9 +24,9 @@ const Reducer = (state = initialState, action) => {
       let tokenDecodeDecode = {};
       if (token.length > 0) {
         // decode token
+        setLoginPersistent(token);
         tokenDecodeDecode = jwt(token);
       }
-      console.log('tokenDecodeDecode', tokenDecodeDecode);
       return {
         ...state,
         token: token,

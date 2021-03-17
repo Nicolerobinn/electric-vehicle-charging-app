@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage';
-
 export const emailValidator = (email) => {
   const re = /\S+@\S+\.\S+/;
 
@@ -53,45 +51,6 @@ export const connecterTypeChecker = (connectorList) => {
   });
 
   return Array.from(type).join(' ');
-};
-
-// Async storage read/write function
-// todo: js doc
-const _storeDataToAsyncStorage = async (key, strValue) => {
-  try {
-    await AsyncStorage.setItem(key, strValue);
-  } catch (error) {
-    // Error saving data
-  }
-};
-
-// todo: js doc
-const _retrieveDataFromAsyncStorage = async (key) => {
-  try {
-    return await AsyncStorage.getItem(key);
-  } catch (error) {
-    alert('Failed to save the data to the storage');
-  }
-};
-
-// For example:
-// recentStations = {
-//   {station object}
-// }
-
-export const saveToRecentStation = (stationSerialNumber) => {
-  // const recentStationList =
-};
-export const getRecentStations = async (key) => {
-  // const result = _retrieveDataFromAsyncStorage('recentStations');
-  // console.log('result', result);
-  // return result;
-
-  try {
-    return (await AsyncStorage.getItem(key)) || [];
-  } catch (error) {
-    alert('Failed to save the data to the storage');
-  }
 };
 
 export const arrayMapEqul = (arr, station) => {
