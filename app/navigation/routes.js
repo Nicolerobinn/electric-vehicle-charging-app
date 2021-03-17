@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {theme} from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
@@ -6,101 +6,148 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, Provider} from 'react-native-paper';
 import {checkLoginPersistent} from '../core/asyncStorage';
 // redux
-import {useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import * as Actions from '../store/Actions';
 
 // screens
-import HomeScreen from '../screens/HomeScreen';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
-import SettingScreen from '../screens/SettingScreen';
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
-import StationScreen from '../screens/StationScreen';
-import ConfigurationsScreen from '../screens/ConfigurationsScreen';
-import ConfigurationsBlueToochScreen from '../screens/ConfigurationsBlueToochScreen';
-import ConfigurationsWIFIScreen from '../screens/ConfigurationsWIFIScreen';
-import QRScannerScreen from '../screens/QRScannerScreen';
-import StationDefaultPasswordResetScreen from '../screens/StationDefaultPasswordResetScreen';
-
+import {
+  HomeScreen,
+  LoginScreen,
+  RegisterScreen,
+  SettingScreen,
+  ForgotPasswordScreen,
+  StationScreen,
+  ConfigurationsScreen,
+  SplashScreen,
+  StationDefaultPasswordResetScreen,
+  QRScannerScreen,
+  ConfigurationsWIFIScreen,
+  ConfigurationsBlueToochScreen,
+} from '../screens/index';
 const Stack = createStackNavigator();
-const AppStack = createStackNavigator();
 
-const AppScreens = () => (
-  <AppStack.Navigator>
-    <Stack.Screen
-      name="LoginScreen"
-      component={LoginScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="RegisterScreen"
-      component={RegisterScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="ForgotPasswordScreen"
-      component={ForgotPasswordScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="HomeScreen"
-      initialRouteName
-      component={HomeScreen}
-      options={{headerShown: false, gestureEnabled: false}}
-    />
-    <Stack.Screen
-      name="SettingScreen"
-      component={SettingScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="StationScreen"
-      component={StationScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="ConfigurationsScreen"
-      component={ConfigurationsScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="ConfigurationsBlueToochScreen"
-      component={ConfigurationsBlueToochScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="ConfigurationsWIFIScreen"
-      component={ConfigurationsWIFIScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="QRScannerScreen"
-      component={QRScannerScreen}
-      options={{headerShown: false}}
-    />
-    <Stack.Screen
-      name="StationDefaultPasswordResetScreen"
-      component={StationDefaultPasswordResetScreen}
-      options={{headerShown: false}}
-    />
-  </AppStack.Navigator>
-);
+const isLogin = () => {
+  return (
+    <>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+    </>
+  );
+};
+const goLogin = () => {
+  return (
+    <>
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+    </>
+  );
+};
+const AppScreens = () => {
+  const dispatch = useDispatch();
+  const appData = useSelector((state) => state.appData);
+  const {token, isLoading} = appData;
+  const checkLogin = async () => {
+    const tok = await checkLoginPersistent();
+    if (tok) {
+      dispatch(Actions.saveToken(tok));
+    }
+
+    dispatch(Actions.setLoad(false));
+  };
+  useEffect(() => {
+    // 检查登录保持
+    checkLogin();
+  }, []);
+  if (isLoading) {
+    // We haven't finished checking for the token yet
+    return <SplashScreen />;
+  }
+
+  return (
+    <Stack.Navigator
+      initialRouteName={token ? 'HomeScreen' : 'LoginScreen'}
+      options={{animationEnabled: false}}>
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SettingScreen"
+        component={SettingScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="StationScreen"
+        component={StationScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ConfigurationsScreen"
+        component={ConfigurationsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ConfigurationsBlueToochScreen"
+        component={ConfigurationsBlueToochScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ConfigurationsWIFIScreen"
+        component={ConfigurationsWIFIScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="QRScannerScreen"
+        component={QRScannerScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="StationDefaultPasswordResetScreen"
+        component={StationDefaultPasswordResetScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
 
 export const Route = () => {
   const navigationRef = useRef();
   const dispatch = useDispatch();
-  const checkLogin = async () => {
-    const token = await checkLoginPersistent();
-    if (token) {
-      dispatch(Actions.saveToken(token));
-      navigationRef.current?.navigate('HomeScreen');
-    }
-  };
   useEffect(() => {
     // 初始化webscoket
     WebSocketClient.getInstance(dispatch).initWebSocket();
-    // 检查登录保持
-    checkLogin();
   }, []);
   const routeChange = () => {
     const {name} = navigationRef.current.getCurrentRoute();
@@ -124,7 +171,7 @@ export const Route = () => {
       onStateChange={routeChange}
       theme={theme}>
       <Provider theme={combinedTheme}>
-        <AppScreens options={{animationEnabled: false}} />
+        <AppScreens />
       </Provider>
     </NavigationContainer>
   );

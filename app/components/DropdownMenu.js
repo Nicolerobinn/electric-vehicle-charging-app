@@ -18,6 +18,7 @@ const DropdownMenu = ({navigation}) => {
   const handleLogout = () => {
     loginOut();
     WebSocketClient.instance.close();
+    closeMenu();
     navigation.navigate('LoginScreen');
   };
 

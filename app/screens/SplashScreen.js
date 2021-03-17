@@ -3,11 +3,11 @@ import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 
-const SettingScreen = ({navigation}) => (
+const SplashScreen = ({navigation}) => (
   <Background>
     <Logo />
-    <Title>Setting Screen</Title>
+    <Title>SplashScreen</Title>
   </Background>
 );
 
-export default memo(SettingScreen);
+export default memo(SplashScreen);

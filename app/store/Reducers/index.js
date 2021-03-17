@@ -3,8 +3,8 @@ import {
   SAVE_MESSAGE,
   SET_CONNECTED,
   SET_CURRENT_ROUTE,
-  SET_WEBSCOKET_CLIENT,
   SET_QRCODE,
+  SET_LOAD,
 } from '../Actions/types';
 import {setLoginPersistent} from '../../core/asyncStorage';
 import jwt from 'jwt-decode';
@@ -15,6 +15,7 @@ const initialState = {
   message: {},
   currentRoute: '',
   qrCode: '',
+  isLoading: true,
 };
 
 const Reducer = (state = initialState, action) => {
@@ -31,6 +32,11 @@ const Reducer = (state = initialState, action) => {
         ...state,
         token: token,
         userData: tokenDecodeDecode,
+      };
+    case SET_LOAD:
+      return {
+        ...state,
+        isLoading: action.isLoading,
       };
     case SET_CONNECTED:
       return {
