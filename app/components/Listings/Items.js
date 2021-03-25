@@ -33,7 +33,7 @@ const Items = ({navigation, station, available}) => {
   const [iconsState, setIconsState] = useState(['grey', 'grey']);
   const [seationService, setSeationService] = useState(true);
   const appData = useSelector((state) => state.appData);
-  const {token, message, connected} = appData || {};
+  const {token, message} = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
 
   const type = connecterTypeChecker(station.connectorList);
@@ -81,7 +81,7 @@ const Items = ({navigation, station, available}) => {
       },
     };
 
-    WebSocketClient.instance.sendMessage(requestBody, connected);
+    WebSocketClient.instance.sendMessage(requestBody);
   }, []);
 
   const handleStationNavigation = () => {

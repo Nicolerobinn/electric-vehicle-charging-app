@@ -8,7 +8,6 @@ let that = null;
 const onClose = (dispatch) => {
   console.log('disconnected');
   // clear all redux data
-  dispatch(Actions.setConnected(false));
   dispatch(Actions.saveMessage({}));
   dispatch(Actions.saveToken(''));
   // automatically try to reconnect on connection loss
@@ -23,15 +22,12 @@ const onMessage = (evt, dispatch) => {
     dispatch(Actions.saveToken(message.token));
   }
 };
-const onOpen = (dispatch) => {
-  console.log('ws 连接成功');
-  dispatch(Actions.setConnected(true));
-};
 
 // singleton pattern class
 export default class WebSocketClient {
+  connected = false;
+  ws = null;
   constructor(dispatch) {
-    this.ws = null;
     that = this;
     this.dispatch = dispatch;
   }
@@ -73,7 +69,8 @@ export default class WebSocketClient {
     this.ws.onopen = () => {
       // open后关闭节流
       this.isInit = false;
-      onOpen(this.dispatch, this);
+      this.connected = true;
+      console.log('ws 连接成功');
     };
 
     //客户端接收服务端数据时触发
@@ -88,6 +85,7 @@ export default class WebSocketClient {
     };
     //连接关闭
     this.ws.onclose = () => {
+      this.connected = false;
       onClose(this.dispatch);
     };
   }
@@ -96,13 +94,13 @@ export default class WebSocketClient {
     this.ws.onclose();
   }
   //发送消息
-  sendMessage(requestBody, connected) {
+  sendMessage(requestBody) {
     // 根据节流判断是否允许send
     if (this.isInit) {
       console.log('ws 初始化中');
       return;
     }
-    if (!connected) {
+    if (!this.connected) {
       try {
         this.ws.onopen(); //send data to the server
       } catch (error) {

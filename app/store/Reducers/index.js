@@ -1,21 +1,22 @@
 import {
   SAVE_TOKEN,
   SAVE_MESSAGE,
-  SET_CONNECTED,
   SET_CURRENT_ROUTE,
   SET_QRCODE,
   SET_LOAD,
+  SET_BLUE_COLL,
 } from '../Actions/types';
 import {setLoginPersistent} from '../../core/asyncStorage';
 import jwt from 'jwt-decode';
 const initialState = {
-  connected: false,
   token: '',
   userData: {},
   message: {},
   currentRoute: '',
   qrCode: '',
   isLoading: true,
+  peripheralsList: [],
+  connectedPeripheralsList: [],
 };
 
 const Reducer = (state = initialState, action) => {
@@ -38,11 +39,6 @@ const Reducer = (state = initialState, action) => {
         ...state,
         isLoading: action.isLoading,
       };
-    case SET_CONNECTED:
-      return {
-        ...state,
-        connected: action.payload,
-      };
     case SAVE_MESSAGE:
       return {
         ...state,
@@ -58,7 +54,13 @@ const Reducer = (state = initialState, action) => {
         ...state,
         qrCode: action.payload,
       };
-
+    case SET_BLUE_COLL:
+      const {connectedPeripherals = [], peripherals = []} = action.payload;
+      return {
+        ...state,
+        connectedPeripheralsList: connectedPeripherals,
+        peripheralsList: peripherals,
+      };
     default:
       return state;
   }

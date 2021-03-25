@@ -6,7 +6,6 @@ import Title from '../components/Title';
 const SplashScreen = ({navigation}) => (
   <Background>
     <Logo />
-    <Title>SplashScreen</Title>
   </Background>
 );
 

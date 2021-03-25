@@ -1,7 +1,6 @@
-import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
-import {TabView, SceneMap} from 'react-native-tab-view';
-import Item from './Items';
+import React, {memo, useEffect, useState, useMemo} from 'react';
+import {StyleSheet, Dimensions} from 'react-native';
+import {TabView} from 'react-native-tab-view';
 import ListingComponent from './ListingComponent';
 import {readRecentStationListFromAsyncStorage} from '../../core/asyncStorage';
 // redux
@@ -44,24 +43,30 @@ const ListingsScreen = ({navigation}) => {
     }
   }, [homeStationList.length]);
 
-  // TODO: 修改SceneMap 关闭error
-  const renderScene = SceneMap({
-    recent: () => <RecentList navigation={navigation} />,
-    favorites: () => (
-      <ListingComponent
-        navigation={navigation}
-        stations={favouriteStationList}
-        propKkey="favorites"
-      />
-    ),
-    home: () => (
-      <ListingComponent
-        navigation={navigation}
-        stations={homeStationList}
-        propKkey="home"
-      />
-    ),
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'recent':
+        return <RecentList navigation={navigation} />;
+      case 'favorites':
+        return (
+          <ListingComponent
+            navigation={navigation}
+            stations={favouriteStationList}
+            propKkey="favorites"
+          />
+        );
+      case 'home':
+        return (
+          <ListingComponent
+            navigation={navigation}
+            stations={homeStationList}
+            propKkey="home"
+          />
+        );
+      default:
+        return null;
+    }
+  };
   return (
     <TabView
       lazy={true}

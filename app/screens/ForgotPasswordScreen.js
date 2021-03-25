@@ -14,7 +14,7 @@ import WebSocketClient from '../core/WebSocketClient';
 
 const ForgotPasswordScreen = ({route, navigation}) => {
   const appData = useSelector((state) => state.appData);
-  const {connected, message = {}} = appData || {};
+  const {message = {}} = appData || {};
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -45,7 +45,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
         email: email.value, // Required
       },
     };
-    WebSocketClient.instance?.sendMessage(requestBody, connected);
+    WebSocketClient.instance?.sendMessage(requestBody);
   };
 
   return (

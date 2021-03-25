@@ -23,7 +23,7 @@ const LoginScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
 
   const appData = useSelector((state) => state.appData);
-  const {connected, message = {}} = appData || {};
+  const {message = {}} = appData || {};
 
   // todo: cleanup
   const [email, setEmail] = useState({
@@ -60,7 +60,7 @@ const LoginScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
-    WebSocketClient.instance?.sendMessage(requestBody, connected);
+    WebSocketClient.instance?.sendMessage(requestBody);
   };
 
   const handleSkipLoginSubmit = () => {
@@ -68,7 +68,7 @@ const LoginScreen = ({route, navigation}) => {
       command: SKIP_LOGIN_REQ, // Required
       payload: {},
     };
-    WebSocketClient.instance?.sendMessage(requestBody, connected);
+    WebSocketClient.instance?.sendMessage(requestBody);
   };
 
   return (

@@ -21,8 +21,6 @@ import {
 
 const RegisterScreen = ({route, navigation}) => {
   const message = useSelector((state) => state.appData.message);
-
-  const connected = useSelector((state) => state.appData.connected);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -72,7 +70,7 @@ const RegisterScreen = ({route, navigation}) => {
         password: password.value, // Required
       },
     };
-    WebSocketClient.instance?.sendMessage(requestBody, connected);
+    WebSocketClient.instance?.sendMessage(requestBody);
   };
 
   return (

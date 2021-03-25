@@ -26,7 +26,6 @@ const StationScreen = ({route, navigation}) => {
     favouriteStationList = [],
     permissionList,
     homeStationList = [],
-    connected,
   } = userData;
 
   const [isFavourite, setIsFavourite] = useState(false);
@@ -59,10 +58,7 @@ const StationScreen = ({route, navigation}) => {
           connectorList: station.connectorList,
         },
       };
-      const response = WebSocketClient.instance?.sendMessage(
-        requestBody,
-        connected,
-      );
+      const response = WebSocketClient.instance?.sendMessage(requestBody);
       if (response?.status === 'success') {
         setIsFavourite(!isFavourite);
       } else {

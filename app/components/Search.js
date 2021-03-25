@@ -10,7 +10,7 @@ import {useSelector} from 'react-redux';
 
 const Search = ({navigation, searchChange}, ref) => {
   const appData = useSelector((state) => state.appData);
-  const {connected, token, message} = appData || {};
+  const {token, message} = appData || {};
   const [searchQuery, setSearchQuery] = useState('3140000000');
   useDeepCompareEffect(() => {
     const {status, command, payload} = message || {};
@@ -41,7 +41,7 @@ const Search = ({navigation, searchChange}, ref) => {
         smpctNumber: searchQuery,
       },
     };
-    WebSocketClient.instance.sendMessage(requestBody, connected);
+    WebSocketClient.instance.sendMessage(requestBody);
   };
 
   return (
