@@ -1,26 +1,28 @@
-import React, {memo, useEffect, useState, useMemo} from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
-import {TabView} from 'react-native-tab-view';
+import React, { memo, useEffect, useState, useMemo } from 'react';
+import { StyleSheet, Dimensions } from 'react-native';
+import { TabView } from 'react-native-tab-view';
 import ListingComponent from './ListingComponent';
-import {readRecentStationListFromAsyncStorage} from '../../core/asyncStorage';
+import { readRecentStationListFromAsyncStorage } from '../../core/asyncStorage';
 // redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const initialLayout = {width: Dimensions.get('window').width};
+const initialLayout = { width: Dimensions.get('window').width };
 
 const arr = [
-  {key: 'recent', title: 'Recent'},
-  {key: 'favorites', title: 'Favorites'},
-  {key: 'home', title: 'Home'},
+  { key: 'recent', title: 'Recent' },
+  { key: 'favorites', title: 'Favorites' },
+  { key: 'home', title: 'Home' },
 ];
 const arrTwo = [
-  {key: 'recent', title: 'Recent'},
-  {key: 'favorites', title: 'Favorites'},
+  { key: 'recent', title: 'Recent' },
+  { key: 'favorites', title: 'Favorites' },
 ];
-const RecentList = ({navigation}) => {
+const RecentList = ({ navigation }) => {
   const [recentStationList, setRecentStationList] = useState([]);
   useEffect(() => {
-    readRecentStationListFromAsyncStorage(setRecentStationList);
+    readRecentStationListFromAsyncStorage().then((list) => {
+      setRecentStationList(list)
+    })
   }, []);
   return (
     <ListingComponent
@@ -30,11 +32,11 @@ const RecentList = ({navigation}) => {
     />
   );
 };
-const ListingsScreen = ({navigation}) => {
+const ListingsScreen = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutesArr] = useState(arr);
   const userData = useSelector((state) => state.appData.userData);
-  const {favouriteStationList, homeStationList = []} = userData || {};
+  const { favouriteStationList, homeStationList = [] } = userData || {};
   useEffect(() => {
     if (homeStationList.length === 0) {
       setRoutesArr(arrTwo);
@@ -43,7 +45,7 @@ const ListingsScreen = ({navigation}) => {
     }
   }, [homeStationList.length]);
 
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     switch (route.key) {
       case 'recent':
         return <RecentList navigation={navigation} />;
@@ -71,7 +73,7 @@ const ListingsScreen = ({navigation}) => {
     <TabView
       lazy={true}
       removeClippedSubviews={true}
-      navigationState={{index, routes}}
+      navigationState={{ index, routes }}
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={initialLayout}

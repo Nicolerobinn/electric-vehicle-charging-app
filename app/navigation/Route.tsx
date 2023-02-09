@@ -1,15 +1,14 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {theme} from '../core/theme';
+import React, { useEffect } from 'react';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { theme } from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
 import BlueTouchClient from '../core/BlueTouchClient';
-import {DefaultTheme, Provider} from 'react-native-paper';
+import { DefaultTheme, Provider } from 'react-native-paper';
 // redux
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as Actions from '../store/Actions';
 import AppScreens from './AppScreens';
 const Route = () => {
-  const navigationRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,8 +20,10 @@ const Route = () => {
       BlueTouchClient.getInstance().unMountBlueTouchClint();
     };
   }, []);
+  const navigationRef = useNavigationContainerRef(); // You can also use a regular ref with `React.useRef()`
+
   const routeChange = () => {
-    const {name} = navigationRef.current.getCurrentRoute();
+    const name = navigationRef.getCurrentRoute();
     dispatch(Actions.setCurrentRoute(name));
   };
   // overwrite react-native-paper theme
@@ -32,8 +33,6 @@ const Route = () => {
     colors: {
       ...DefaultTheme.colors,
       primary: theme.colors.primary,
-      secondary: theme.colors.secondary,
-      error: theme.colors.error,
     },
   };
 

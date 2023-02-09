@@ -22,8 +22,7 @@ export const loginOut = async () => {
 
 export const readRecentStationListFromAsyncStorage = async (callback) => {
   const list = await AsyncStorage.getItem(RECENT_STATION_LIST);
-  const arr = list ? JSON.parse(list) : [];
-  callback(arr);
+  return list ? JSON.parse(list) : [];
 };
 /**
  * Store current station to asyncStorage
@@ -54,30 +53,29 @@ export const writeRecentStationToAsyncStorage = async (
 
 // 关于station 储存本地密码的函数
 
-export const homeStationPasswordCompare = async (station, callBack) => {
+export const homeStationPasswordCompare = async (station) => {
   let list = await AsyncStorage.getItem(HOME_STATION__LIST);
   if (list) {
     list = JSON.parse(list);
     const stationObj = list.filter((e, i) => e.number === station.number);
     return stationObj.password === station.password;
   }
-  // 用于处理不存在情况下的的回调，一般不可能用到
-  callBack && callBack();
+  return 'error'
 };
 
-export const removeHomeStation = async (station, callBack) => {
+export const removeHomeStation = async (station) => {
   let list = await AsyncStorage.getItem(HOME_STATION__LIST);
   if (list) {
     list = JSON.parse(list);
     list = list.filter((e) => e.number !== station.number);
     AsyncStorage.setItem(HOME_STATION__LIST, JSON.stringify(list));
   }
-  callBack && callBack();
+  return 'error'
 };
 
-export const setHomeStation = async (station, password, callBack) => {
+export const setHomeStation = async (station, password) => {
   let list = await AsyncStorage.getItem(HOME_STATION__LIST);
-  const obj = {number: station.number, password: password};
+  const obj = { number: station.number, password: password };
   if (list) {
     list = JSON.parse(list);
     list = list.filter((e) => e.number !== obj.number);
@@ -86,5 +84,4 @@ export const setHomeStation = async (station, password, callBack) => {
   } else {
     AsyncStorage.setItem(HOME_STATION__LIST, JSON.stringify([obj]));
   }
-  callBack && callBack();
 };

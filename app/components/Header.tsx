@@ -1,10 +1,10 @@
-import React, {memo, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {theme} from '../core/theme';
+import React, { memo, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { theme } from '../core/theme';
 import DropdownMenu from './DropdownMenu';
-import BackButton from '../components/BackButton';
+import BackButton from './BackButton';
 
-const Header = ({navigation, displayGoBackButton = true, saveChange}) => {
+const Header = ({ navigation, displayGoBackButton = true, saveChange }) => {
   const handleGoBack = () => {
     navigation.goBack(null);
   };

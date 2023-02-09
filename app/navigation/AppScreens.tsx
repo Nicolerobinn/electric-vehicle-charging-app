@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {checkLoginPersistent} from '../core/asyncStorage';
+import React, { useEffect } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { checkLoginPersistent } from '../core/asyncStorage';
 // redux
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as Actions from '../store/Actions';
 // screens
 import {
@@ -23,8 +23,8 @@ const Stack = createStackNavigator();
 
 const AppScreens = () => {
   const dispatch = useDispatch();
-  const appData = useSelector((state) => state.appData);
-  const {token, isLoading} = appData;
+  const appData = useSelector((state: any) => state.appData);
+  const { token, isLoading } = appData;
   const checkLogin = async () => {
     const tok = await checkLoginPersistent();
     if (tok) {
@@ -44,64 +44,63 @@ const AppScreens = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={token ? 'HomeScreen' : 'LoginScreen'}
-      options={{animationEnabled: false}}>
+      initialRouteName={token ? 'HomeScreen' : 'LoginScreen'}>
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{headerShown: false, gestureEnabled: false}}
+        options={{ headerShown: false, gestureEnabled: false }}
       />
       <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ForgotPasswordScreen"
         component={ForgotPasswordScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="SettingScreen"
         component={SettingScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StationScreen"
         component={StationScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ConfigurationsScreen"
         component={ConfigurationsScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ConfigurationsBlueToochScreen"
         component={ConfigurationsBlueToochScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ConfigurationsWIFIScreen"
         component={ConfigurationsWIFIScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="QRScannerScreen"
         component={QRScannerScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StationDefaultPasswordResetScreen"
         component={StationDefaultPasswordResetScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
-    </Stack.Navigator>
+    </Stack.Navigator >
   );
 };
 export default AppScreens;

@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -7,21 +7,26 @@ import {
   Text,
   Platform,
 } from 'react-native';
-import BackButton from '../components/BackButton';
-const Background = ({children, navigation}) => (
+import BackButton from './BackButton';
+
+interface Props {
+  children: React.ReactNode;
+  navigation?: any
+}
+const Background = ({ children, navigation }: Props) => (
   <ImageBackground
     source={require('../assets/background_dot.png')}
     resizeMode="repeat"
     style={styles.background}>
     {navigation && (
-      <BackButton style={{top: 54}} goBack={() => navigation.goBack(null)} />
+      <BackButton style={{ top: 54 }} goBack={() => navigation.goBack(null)} />
     )}
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView>{children}</ScrollView>
     </KeyboardAvoidingView>
-    <Text style={{textAlign: 'center', color: 'gray', fontSize: 12}}>
+    <Text style={{ textAlign: 'center', color: 'gray', fontSize: 12 }}>
       Copyright 2020 SMPC
     </Text>
   </ImageBackground>

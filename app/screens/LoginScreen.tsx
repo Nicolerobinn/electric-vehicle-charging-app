@@ -1,44 +1,47 @@
-import React, {memo, useState} from 'react';
-import {TouchableOpacity, StyleSheet, Text, View, Alert} from 'react-native';
+import React, { memo, useState } from 'react';
+import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import {
   LOGIN_REQ,
   LOGIN_RES,
   SKIP_LOGIN_REQ,
   SKIP_LOGIN_RES,
 } from '../core/api';
-import {useDeepCompareEffect} from '../core/hooks';
+import { useDeepCompareEffect } from '../core/hooks';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import BottomTouchView from '../components/BottomTouchView';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {theme} from '../core/theme';
-import {emailValidator, passwordValidator} from '../core/utils';
+import { emailValidator, passwordValidator } from '../core/utils';
 import WebSocketClient from '../core/WebSocketClient';
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
 // redux
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as Actions from '../store/Actions';
-const LoginScreen = ({route, navigation}) => {
+type Props = StackScreenProps<ParamListBase>;
+
+const LoginScreen = ({ navigation }: Props) => {
   const dispatch = useDispatch();
 
   const appData = useSelector((state) => state.appData);
-  const {message = {}} = appData || {};
+  const { message = {} } = appData || {};
 
   // todo: cleanup
   const [email, setEmail] = useState({
     value: 'owner@company1.com',
     error: '',
   });
-  const [password, setPassword] = useState({value: 'password', error: ''});
+  const [password, setPassword] = useState({ value: 'password', error: '' });
   const [generalError, setGeneralError] = useState('');
 
   useDeepCompareEffect(() => {
-    const {command = '', status = '', message: info} = message;
+    const { command = '', status = '', message: info } = message;
     if (command === LOGIN_RES || command === SKIP_LOGIN_RES) {
       if (status === 'SUCCESS') {
         dispatch(Actions.saveMessage({}));
-        navigation.navigate('HomeScreen');
+        navigation.navigate('HomeScreen' as never);
       } else if (status === 'ERROR') {
         setGeneralError(info);
       }
@@ -49,8 +52,8 @@ const LoginScreen = ({route, navigation}) => {
     const passwordError = passwordValidator(password.value);
 
     if (emailError || passwordError) {
-      setEmail({...email, error: emailError});
-      setPassword({...password, error: passwordError});
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
       return;
     }
     const requestBody = {
@@ -81,11 +84,11 @@ const LoginScreen = ({route, navigation}) => {
         label="Email"
         returnKeyType="next"
         value={email.value}
-        onChangeText={(text) => setEmail({value: text, error: ''})}
+        onChangeText={(text: string) => setEmail({ value: text, error: '' })}
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
-        autoCompleteType="email"
+        autoComplete="email"
         textContentType="emailAddress"
         keyboardType="email-address"
       />
@@ -94,7 +97,7 @@ const LoginScreen = ({route, navigation}) => {
         label="Password"
         returnKeyType="done"
         value={password.value}
-        onChangeText={(text) => setPassword({value: text, error: ''})}
+        onChangeText={(text) => setPassword({ value: text, error: '' })}
         error={!!password.error}
         errorText={password.error}
         secureTextEntry
@@ -103,7 +106,7 @@ const LoginScreen = ({route, navigation}) => {
       <View style={styles.forgotPassword}>
         <TouchableOpacity
           onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-          <Text style={styles.label}>Forgot your password?</Text>
+          <Text  >Forgot your password?</Text>
         </TouchableOpacity>
       </View>
 
@@ -111,11 +114,11 @@ const LoginScreen = ({route, navigation}) => {
         Login
       </Button>
 
-      <Button type="text" onPress={handleSkipLoginSubmit}>
+      <Button mode="text" onPress={handleSkipLoginSubmit}>
         Skip Login
       </Button>
 
-      <View style={styles.row}>
+      <View >
         <Text style={styles.error}>{generalError}</Text>
       </View>
       <BottomTouchView
@@ -134,8 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   error: {
-    fontWeight: 'bold',
-    color: theme.colors.error,
+    fontWeight: 'bold'
   },
 });
 
