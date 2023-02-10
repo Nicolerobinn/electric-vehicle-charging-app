@@ -1,28 +1,26 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Search from '../components/Search';
+import Search, { type forwardRefType } from '../components/Search';
 import TouchListing from '../components/TouchListing';
 import Listings from '../components/Listings';
-import type { ParamListBase } from '@react-navigation/native';
-import type { StackScreenProps } from '@react-navigation/stack';
-type Props = StackScreenProps<ParamListBase>;
 
 // redux
-import { useSelector, useDispatch } from 'react-redux';
-import * as Actions from '../store/Actions';
-const HomeScreen = ({ navigation }: Props) => {
-  const qrCode = useSelector((state) => state.appData.qrCode);
-  const dispatch = useDispatch();
-  const [searchState, setSearchState] = useState({});
-  const childRef = useRef();
+import { useAppSelector, useAppDispatch } from '../store/redux-patch';
+import { setQRCode } from '../store/slice/userSlice';
+const HomeScreen = () => {
+  const { qrCode } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const [searchState, setSearchState] = useState<{
+    visible: boolean
+    station: any[]
+  }>({ visible: false, station: [] });
+  const childRef = useRef<forwardRefType | null>(null);
   useEffect(() => {
-    console.log(qrCode);
-    if (qrCode) {
+    if (qrCode && childRef.current) {
       childRef.current.search(qrCode);
-      dispatch(Actions.setQRCode(''));
+      dispatch(setQRCode(''));
     }
   }, [qrCode]);
   return (
@@ -32,7 +30,6 @@ const HomeScreen = ({ navigation }: Props) => {
       />
       <Search
         ref={childRef}
-        navigation={navigation}
         searchChange={setSearchState}
       />
 
@@ -45,14 +42,10 @@ const HomeScreen = ({ navigation }: Props) => {
         />
       )}
       {/* home tab组件 */}
-      {!searchState.visible && <Listings navigation={navigation} />}
+      {!searchState.visible && <Listings />}
       <Footer />
     </SafeAreaViewBox>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {},
-});
 
 export default memo(HomeScreen);

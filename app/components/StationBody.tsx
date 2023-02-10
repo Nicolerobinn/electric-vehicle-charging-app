@@ -8,11 +8,10 @@ import { Text, Button, ActivityIndicator } from 'react-native-paper';
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
 // redux
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 
 const StationBody = () => {
-  const appData = useSelector((state) => state.appData);
-  const { token, userData, message } = appData || {};
+  const { token, userData, message } = useAppSelector((state) => state.user);
 
   const [buttonDsiabled, setButtonDsiabled] = useState(false);
   const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);

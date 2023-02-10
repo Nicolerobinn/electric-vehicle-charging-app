@@ -10,8 +10,7 @@ export const setLoginPersistent = (token?:string) => {
   AsyncStorage.setItem(STORAGE_STATION.LOGIN_PERSISTENT, token || '');
 };
 export const checkLoginPersistent = async () => {
-  const account = await AsyncStorage.getItem(STORAGE_STATION.LOGIN_PERSISTENT);
-  return account;
+  return await AsyncStorage.getItem(STORAGE_STATION.LOGIN_PERSISTENT);
 };
 export const loginOut = async () => {
   AsyncStorage.removeItem(STORAGE_STATION.LOGIN_PERSISTENT);

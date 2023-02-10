@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { checkLoginPersistent } from '../core/asyncStorage';
 // redux
-import { useSelector, useDispatch } from 'react-redux';
-import * as Actions from '../store/Actions';
+import { useAppSelector, useAppDispatch } from '../store/redux-patch';
+import { updateToken, setLoad } from '../store/slice/userSlice';
+
 // screens
 import {
   HomeScreen,
@@ -22,16 +23,15 @@ import {
 const Stack = createStackNavigator();
 
 const AppScreens = () => {
-  const dispatch = useDispatch();
-  const appData = useSelector((state: any) => state.appData);
-  const { token, isLoading } = appData;
+  const dispatch = useAppDispatch();
+  const { token, load: isLoading } = useAppSelector((state) => state.user);
   const checkLogin = async () => {
     const tok = await checkLoginPersistent();
     if (tok) {
-      dispatch(Actions.saveToken(tok));
+      dispatch(updateToken(tok));
     }
 
-    dispatch(Actions.setLoad(false));
+    dispatch(setLoad(false));
   };
   useEffect(() => {
     // 检查登录保持

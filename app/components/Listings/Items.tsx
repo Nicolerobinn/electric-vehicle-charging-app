@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { List, Text, Button, Divider } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../store/redux-patch';
 import { connecterTypeChecker } from '../../core/utils';
 import { GET_CONNECTOR_REQ, GET_CONNECTOR_RES } from '../../core/api';
 import { writeRecentStationToAsyncStorage } from '../../core/asyncStorage';
@@ -40,8 +40,7 @@ const ItemRight = ({ onPress, seationService, iconsState, type }: ItemRightProps
 const Items = ({ station }: { station: StationInter }) => {
   const [iconsState, setIconsState] = useState(['grey', 'grey']);
   const [seationService, setSeationService] = useState(true);
-  const appData = useSelector((state) => state.appData);
-  const { token, message } = appData || {};
+  const { token, message } = useAppSelector((state) => state.user);
   const serialNumber = station.serialNumber || station.smpctNumber;
   const navigation = useNavigation();
 
@@ -71,7 +70,7 @@ const Items = ({ station }: { station: StationInter }) => {
             case 'Faulted':
               return 'black';
             default:
-              break;
+              return ''
           }
         });
         setSeationService(false);

@@ -19,15 +19,14 @@ type Props = StackScreenProps<ParamListBase>;
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
 // redux
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 
 const StationScreen = ({ route, navigation }: Props) => {
   const { station, seationService } = route.params as {
     station: StationInter,
     seationService: boolean
   };
-  const appData = useSelector((state) => state.appData);
-  const { token, userData, message } = appData || {};
+  const { token, userData, message } = useAppSelector((state) => state.user);
   const {
     favouriteStationList = [],
     permissionList,
@@ -192,7 +191,7 @@ const StationScreen = ({ route, navigation }: Props) => {
       </View>
       {/* 暂时不处理，优先级较低，app整体flex布局修改，  */}
       {!seationService ? (
-        <StationBody station={station} />
+        <StationBody />
       ) : (
         <View style={{ flex: 1 }} />
       )}

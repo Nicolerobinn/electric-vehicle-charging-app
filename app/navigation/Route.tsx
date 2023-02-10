@@ -5,11 +5,11 @@ import WebSocketClient from '../core/WebSocketClient';
 import BlueTouchClient from '../core/BlueTouchClient';
 import { DefaultTheme, Provider } from 'react-native-paper';
 // redux
-import { useDispatch } from 'react-redux';
-import * as Actions from '../store/Actions';
+import { useAppDispatch } from '../store/redux-patch';
+import { setCurrentRoute } from '../store/slice/userSlice'
 import AppScreens from './AppScreens';
 const Route = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // 初始化webscoket
@@ -23,8 +23,8 @@ const Route = () => {
   const navigationRef = useNavigationContainerRef(); // You can also use a regular ref with `React.useRef()`
 
   const routeChange = () => {
-    const name = navigationRef.getCurrentRoute();
-    dispatch(Actions.setCurrentRoute(name));
+    const name = navigationRef.getCurrentRoute()?.name;
+    dispatch(setCurrentRoute(name || ''));
   };
   // overwrite react-native-paper theme
   const combinedTheme = {

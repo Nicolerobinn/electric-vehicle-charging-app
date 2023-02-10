@@ -55,10 +55,6 @@ export const connecterTypeChecker = (connectorList:string[]) => {
   return Array.from(type).join(' ');
 };
 
-export const arrayMapEqul = (arr:StationInter[], station:StationInter) => {
-  arr.forEach((obj) => {
-    if (obj?.smpctNumber === station.smpctNumber) {
-      return true;
-    }
-  });
+export const arrayMapEqul = (arr:StationInter[], station:StationInter):boolean => {
+  return arr.some((stat)=>stat?.smpctNumber === station.smpctNumber)
 };

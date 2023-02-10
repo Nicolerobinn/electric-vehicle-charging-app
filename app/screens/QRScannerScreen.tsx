@@ -8,7 +8,7 @@ import {
 } from 'react-native-permissions';
 import { Button } from 'react-native-paper';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../store/redux-patch';
 import {
   StyleSheet,
   Animated,
@@ -19,7 +19,7 @@ import {
   Platform,
   Alert, type AlertButton
 } from 'react-native';
-import * as Actions from '../store/Actions';
+import { setQRCode } from '../store/slice/userSlice'
 import type { ParamListBase } from '@react-navigation/native';
 import type { StackScreenProps } from '@react-navigation/stack';
 
@@ -27,7 +27,7 @@ type Props = StackScreenProps<ParamListBase>;
 
 const ScanQRCode = ({ navigation }: Props) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [throttle, setThrottle] = useState(false);
   useEffect(() => {
     requestCameraPermission();
@@ -131,7 +131,7 @@ const ScanQRCode = ({ navigation }: Props) => {
       {
         text: 'go',
         onPress: () => {
-          dispatch(Actions.setQRCode(number));
+          dispatch(setQRCode(number));
           navigation.goBack();
         },
       },

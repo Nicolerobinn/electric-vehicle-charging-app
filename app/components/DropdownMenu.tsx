@@ -5,15 +5,13 @@ import WebSocketClient from '../core/WebSocketClient';
 import { loginOut } from '../core/asyncStorage';
 import { useNavigation } from "@react-navigation/native";
 // redux
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 
 const DropdownMenu = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
-  const appData = useSelector((state) => state.appData);
-  const { permissionList = [] } = appData || {};
-  const skippedLoginUser = permissionList.length === 0;
+  const { permissionList = [] } = useAppSelector((state) => state.user);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -43,7 +41,7 @@ const DropdownMenu = () => {
           title="Options"
         />
         <Menu.Item
-          disabled={skippedLoginUser}
+          disabled={permissionList.length === 0}
           onPress={() => Linking.openURL('https://dev.evnrgy.com/')}
           title="Profile"
         />

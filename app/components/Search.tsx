@@ -8,15 +8,14 @@ import WebSocketClient from '../core/WebSocketClient';
 import { useNavigation } from "@react-navigation/native";
 
 // redux
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 export type forwardRefType = {
   search: (str: string) => void;
 };
 const Search = ({ searchChange }: {
   searchChange: (obj: { visible: boolean; station: string[] }) => void
-}, ref: React.Ref<forwardRefType>) => {
-  const appData = useSelector((state) => state.appData);
-  const { token, message } = appData || {};
+}, ref?: React.Ref<forwardRefType>) => {
+  const { token, message } = useAppSelector((state) => state.user);
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('3140000000');
   useDeepCompareEffect(() => {

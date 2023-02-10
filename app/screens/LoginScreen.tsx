@@ -18,15 +18,15 @@ import WebSocketClient from '../core/WebSocketClient';
 import type { ParamListBase } from '@react-navigation/native';
 import type { StackScreenProps } from '@react-navigation/stack';
 // redux
-import { useSelector, useDispatch } from 'react-redux';
-import * as Actions from '../store/Actions';
+import { useAppDispatch, useAppSelector } from '../store/redux-patch';
+
+import { saveMessage } from '../store/slice/userSlice'
 type Props = StackScreenProps<ParamListBase>;
 
 const LoginScreen = ({ navigation }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const appData = useSelector((state) => state.appData);
-  const { message = {} } = appData || {};
+  const { message } = useAppSelector((state) => state.user);
 
   // todo: cleanup
   const [email, setEmail] = useState({
@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }: Props) => {
     const { command = '', status = '', message: info } = message;
     if (command === LOGIN_RES || command === SKIP_LOGIN_RES) {
       if (status === 'SUCCESS') {
-        dispatch(Actions.saveMessage({}));
+        dispatch(saveMessage());
         navigation.navigate('HomeScreen' as never);
       } else if (status === 'ERROR') {
         setGeneralError(info);

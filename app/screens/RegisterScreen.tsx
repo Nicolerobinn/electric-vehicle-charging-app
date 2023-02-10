@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 import { View, Text, StyleSheet } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
@@ -25,7 +25,7 @@ type Props = StackScreenProps<ParamListBase>;
 
 
 const RegisterScreen = ({ navigation }: Props) => {
-  const message = useSelector((state) => state.appData.message);
+  const { message } = useAppSelector((state) => state.user);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',

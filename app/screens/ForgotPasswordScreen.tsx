@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 import { Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { emailValidator } from '../core/utils';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 import Background from '../components/Background';
 import { RESET_PASSWORD_REQ, RESET_PASSWORD_RES } from '../core/api';
 import Logo from '../components/Logo';
@@ -17,8 +17,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 
 type Props = StackScreenProps<ParamListBase>;
 const ForgotPasswordScreen = ({ navigation }: Props) => {
-  const appData = useSelector((state) => state.appData);
-  const { message = {} } = appData || {};
+  const { message } = useAppSelector((state) => state.user);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -111,13 +110,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
-    color: theme.colors.secondary,
     width: '100%',
     textAlign: 'center',
     marginBottom: 20,
   },
   label: {
-    color: theme.colors.secondary,
     width: '100%',
   },
 });

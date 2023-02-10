@@ -1,7 +1,7 @@
 import React, { useState, memo, useEffect } from 'react';
 import { Linking, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 import { useNavigation } from "@react-navigation/native";
 
 const HOME_SCREEN = 'HomeScreen';
@@ -24,12 +24,11 @@ const ROUTER = [
   },
 ]
 const Footer = () => {
-  const userData = useSelector((state) => state.appData.userData);
-  const { homeStationList = [] } = userData || {};
+  const { homeStationList = [] } = useAppSelector((state) => state.station);
   const [index, setIndex] = useState<null | number>(0);
   const navigation = useNavigation();
 
-  const currentRoute = useSelector((state) => state.appData.currentRoute);
+  const { currentRoute } = useAppSelector((state) => state.user);
   const [routes, setRoutes] = useState(ROUTER);
   useEffect(() => {
     switch (currentRoute) {

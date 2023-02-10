@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useState, useMemo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { TabView, type Route } from 'react-native-tab-view';
 import ListingComponent from './ListingComponent';
 import { readRecentStationListFromAsyncStorage } from '../../core/asyncStorage';
 // redux
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../store/redux-patch';
 
 const initialLayout = { width: Dimensions.get('window').width };
 
@@ -34,8 +34,8 @@ const RecentList = () => {
 const ListingsScreen = () => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutesArr] = useState(arr);
-  const userData = useSelector((state) => state.appData.userData);
-  const { favouriteStationList, homeStationList = [] } = userData || {};
+  const stationData = useAppSelector((state) => state.station);
+  const { favouriteStationList, homeStationList = [] } = stationData || {};
   useEffect(() => {
     if (homeStationList.length === 0) {
       setRoutesArr(arrTwo);

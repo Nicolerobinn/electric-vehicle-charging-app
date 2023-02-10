@@ -1,4 +1,4 @@
-import * as Actions from '../store/Actions';
+import {saveMessage,updateToken} from '../store/slice/userSlice'
 const WSSURL = 'wss://dev.evnrgy.com:7777';
 // instance of websocket connection as a class property
 
@@ -7,18 +7,18 @@ const WSSURL = 'wss://dev.evnrgy.com:7777';
 const onClose = (dispatch) => {
   console.log('disconnected');
   // clear all redux data
-  dispatch(Actions.saveMessage({}));
-  dispatch(Actions.saveToken(''));
+  dispatch(saveMessage());
+  dispatch(updateToken(''));
   // automatically try to reconnect on connection loss
 };
 const onMessage = (evt:{data:string}, dispatch) => {
   // listen to data sent from the webscoket server
   // TODO: 修改接收模式，改为派发，优先级低
   const message = JSON.parse(evt.data);
-  dispatch(Actions.saveMessage(message));
+  dispatch( saveMessage(message));
   console.log('message', message);
   if (message?.status === 'SUCCESS' && message?.token) {
-    dispatch(Actions.saveToken(message.token));
+    dispatch(updateToken(message.token));
   }
 };
 

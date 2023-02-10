@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import BlueToothList from '../components/BlueToothList';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/redux-patch';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import { List } from 'react-native-paper';
@@ -15,15 +15,14 @@ import type { StackScreenProps } from '@react-navigation/stack';
 
 type Props = StackScreenProps<ParamListBase>;
 const ConfigurationsBlueTouchScreen = ({ navigation }: Props) => {
-  const appData = useSelector((state) => state.appData);
-  const { connectedPeripheralsList, peripheralsList } = appData;
+  const { connectedPeripheralsList, peripheralsList } = useAppSelector((state) => state.blueTouch);
 
   // 移除蓝牙
-  const remove = (peripheral) => () => {
+  const remove = (peripheral: any) => () => {
     BlueTouchClient.instance?.removeBlueConnect(peripheral);
   };
   // 添加蓝牙
-  const add = (peripheral) => () => {
+  const add = (peripheral: any) => () => {
     BlueTouchClient.instance?.blueConnect(peripheral);
     console.log('Add peripheral', peripheral);
     return;
@@ -34,7 +33,7 @@ const ConfigurationsBlueTouchScreen = ({ navigation }: Props) => {
   };
   return (
     <SafeAreaViewBox>
-      <Header navigation={navigation} />
+      <Header />
       <ConfigurationsTopBox text="HOME STATIONS" />
       <ScrollView style={{ flex: 1 }}>
         <List.Item
