@@ -1,19 +1,19 @@
-import React, {memo, useState, useImperativeHandle, forwardRef} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
-import {theme} from '../core/theme';
-import {Searchbar, Button, IconButton} from 'react-native-paper';
-import {FIND_STATION_RES, FIND_STATION_REQ} from '../core/api';
-import {useDeepCompareEffect} from '../core/hooks';
+import React, { memo, useState, useImperativeHandle, forwardRef } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { theme } from '../core/theme';
+import { Searchbar, Button, IconButton } from 'react-native-paper';
+import { FIND_STATION_RES, FIND_STATION_REQ } from '../core/api';
+import { useDeepCompareEffect } from 'ahooks';
 import WebSocketClient from '../core/WebSocketClient';
 // redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const Search = ({navigation, searchChange}, ref) => {
+const Search = ({ navigation, searchChange }, ref) => {
   const appData = useSelector((state) => state.appData);
-  const {token, message} = appData || {};
+  const { token, message } = appData || {};
   const [searchQuery, setSearchQuery] = useState('3140000000');
   useDeepCompareEffect(() => {
-    const {status, command, payload} = message || {};
+    const { status, command, payload } = message || {};
     if (status === 'SUCCESS' && command === FIND_STATION_RES) {
       searchChange({
         visible: true,
@@ -30,7 +30,7 @@ const Search = ({navigation, searchChange}, ref) => {
     search: (str) => onChangeSearch(str),
   }));
   const handleQRScan = () => {
-    navigation.navigate('QRScannerScreen', {arr: {}});
+    navigation.navigate('QRScannerScreen', { arr: {} });
   };
 
   const searchHandler = () => {
@@ -65,7 +65,6 @@ const Search = ({navigation, searchChange}, ref) => {
           <Button
             icon="qrcode-scan"
             style={styles.icon}
-            color={theme.colors.primary}
           />
           <Text style={styles.label}>Scan QR</Text>
         </TouchableOpacity>
@@ -83,8 +82,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  searchBar: {flex: 4},
-  QRScan: {alignItems: 'center', justifyContent: 'center'},
+  searchBar: { flex: 4 },
+  QRScan: { alignItems: 'center', justifyContent: 'center' },
   icon: {
     width: 20,
     height: 20,

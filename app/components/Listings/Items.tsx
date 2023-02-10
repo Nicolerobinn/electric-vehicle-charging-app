@@ -1,20 +1,20 @@
-import React, {memo, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {List, Text, Button, Divider, Colors} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {connecterTypeChecker} from '../../core/utils';
-import {GET_CONNECTOR_REQ, GET_CONNECTOR_RES} from '../../core/api';
-import {writeRecentStationToAsyncStorage} from '../../core/asyncStorage';
-import {useDeepCompareEffect} from '../../core/hooks';
+import React, { memo, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { List, Text, Button, Divider, Colors } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { connecterTypeChecker } from '../../core/utils';
+import { GET_CONNECTOR_REQ, GET_CONNECTOR_RES } from '../../core/api';
+import { writeRecentStationToAsyncStorage } from '../../core/asyncStorage';
+import { useDeepCompareEffect } from 'ahooks';
 import WebSocketClient from '../../core/WebSocketClient';
 
-const ItemRight = ({onPress, seationService, iconsState, type}) => {
+const ItemRight = ({ onPress, seationService, iconsState, type }) => {
   return (
     <View style={[styles.flexBox, styles.rightBox]}>
       <Text style={styles.margin}>{type}</Text>
       <View style={[styles.flexBox]}>
         {iconsState.map((e, i) => (
-          <View key={i} style={[styles.circle, {backgroundColor: e}]} />
+          <View key={i} style={[styles.circle, { backgroundColor: e }]} />
         ))}
       </View>
       <Button
@@ -29,11 +29,11 @@ const ItemRight = ({onPress, seationService, iconsState, type}) => {
     </View>
   );
 };
-const Items = ({navigation, station, available}) => {
+const Items = ({ navigation, station, available }) => {
   const [iconsState, setIconsState] = useState(['grey', 'grey']);
   const [seationService, setSeationService] = useState(true);
   const appData = useSelector((state) => state.appData);
-  const {token, message} = appData || {};
+  const { token, message } = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
 
   const type = connecterTypeChecker(station.connectorList);
@@ -42,8 +42,8 @@ const Items = ({navigation, station, available}) => {
 
   const buttonMode = available ? 'contained' : 'text';
   useDeepCompareEffect(() => {
-    const {command = '', status = '', payload, message: info} = message;
-    const {statusList = [], noService = false} = payload || {};
+    const { command = '', status = '', payload, message: info } = message;
+    const { statusList = [], noService = false } = payload || {};
     if (command === GET_CONNECTOR_RES) {
       if (status === 'SUCCESS') {
         if (noService) {

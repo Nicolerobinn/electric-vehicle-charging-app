@@ -2,7 +2,6 @@ import * as Actions from '../store/Actions';
 const WSSURL = 'wss://dev.evnrgy.com:7777';
 // instance of websocket connection as a class property
 
-let that = null;
 
 // callback function
 const onClose = (dispatch) => {
@@ -12,7 +11,7 @@ const onClose = (dispatch) => {
   dispatch(Actions.saveToken(''));
   // automatically try to reconnect on connection loss
 };
-const onMessage = (evt, dispatch) => {
+const onMessage = (evt:{data:string}, dispatch) => {
   // listen to data sent from the webscoket server
   // TODO: 修改接收模式，改为派发，优先级低
   const message = JSON.parse(evt.data);
@@ -28,7 +27,6 @@ export default class WebSocketClient {
   connected = false;
   ws = null;
   constructor(dispatch) {
-    that = this;
     this.dispatch = dispatch;
   }
 
@@ -81,7 +79,7 @@ export default class WebSocketClient {
     this.ws.onerror = (e) => {
       console.log('WebSocket:', 'connect to server error');
       //重连
-      that.reconnect(e);
+      this.reconnect(e);
     };
     //连接关闭
     this.ws.onclose = () => {

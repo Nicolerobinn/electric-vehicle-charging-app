@@ -1,19 +1,26 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../core/theme';
+import { useNavigation } from "@react-navigation/native";
+
 import DropdownMenu from './DropdownMenu';
 import BackButton from './BackButton';
 
-const Header = ({ navigation, displayGoBackButton = true, saveChange }) => {
+const Header = ({ displayGoBackButton = true }: {
+  displayGoBackButton?: boolean
+}) => {
+  const navigation = useNavigation();
+
+
   const handleGoBack = () => {
-    navigation.goBack(null);
+    navigation.goBack();
   };
 
   return (
     <View style={styles.top}>
       {displayGoBackButton && <BackButton goBack={handleGoBack} />}
       <Text style={styles.center}>EV-NRGY</Text>
-      <DropdownMenu navigation={navigation} />
+      <DropdownMenu />
     </View>
   );
 };

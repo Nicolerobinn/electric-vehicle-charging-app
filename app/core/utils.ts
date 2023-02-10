@@ -1,4 +1,6 @@
-export const emailValidator = (email) => {
+import { type StationInter } from '../typings/stationType'
+
+export const emailValidator = (email:string) => {
   const re = /\S+@\S+\.\S+/;
 
   if (!email || email.length <= 0) {
@@ -10,21 +12,21 @@ export const emailValidator = (email) => {
   return '';
 };
 
-export const passwordValidator = (password) => {
+export const passwordValidator = (password:string) => {
   if (!password || password.length <= 0) {
     return 'Password cannot be empty.';
   }
   return '';
 };
 
-export const confirmPasswordValidator = (password) => {
+export const confirmPasswordValidator = (password:string) => {
   if (!password || password.length <= 0) {
     return 'Comfirm password cannot be empty.';
   }
   return '';
 };
 
-export const passwordMatch = (password1, password2) => {
+export const passwordMatch = (password1?:string, password2?:string) => {
   if (!password1 && !password2 && password1 !== password2) {
     return "Two Passwords don't match, please check again.";
   }
@@ -40,7 +42,7 @@ export const passwordMatch = (password1, password2) => {
  * @return {String} type - AC/DC
  *
  */
-export const connecterTypeChecker = (connectorList) => {
+export const connecterTypeChecker = (connectorList:string[]) => {
   const type = new Set();
   connectorList.forEach((connector) => {
     if (connector.includes('_CCS') || connector.includes('_AA')) {
@@ -53,7 +55,7 @@ export const connecterTypeChecker = (connectorList) => {
   return Array.from(type).join(' ');
 };
 
-export const arrayMapEqul = (arr, station) => {
+export const arrayMapEqul = (arr:StationInter[], station:StationInter) => {
   arr.forEach((obj) => {
     if (obj?.smpctNumber === station.smpctNumber) {
       return true;

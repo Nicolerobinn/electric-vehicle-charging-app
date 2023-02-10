@@ -1,20 +1,24 @@
-import React, {memo, useState} from 'react';
-import {Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
-import {emailValidator} from '../core/utils';
-import {useSelector} from 'react-redux';
+import React, { memo, useState } from 'react';
+import { Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { emailValidator } from '../core/utils';
+import { useSelector } from 'react-redux';
 import Background from '../components/Background';
-import {RESET_PASSWORD_REQ, RESET_PASSWORD_RES} from '../core/api';
+import { RESET_PASSWORD_REQ, RESET_PASSWORD_RES } from '../core/api';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
-import {useDeepCompareEffect} from '../core/hooks';
-import {theme} from '../core/theme';
+import { useDeepCompareEffect } from 'ahooks';
+import { theme } from '../core/theme';
 import WebSocketClient from '../core/WebSocketClient';
 
-const ForgotPasswordScreen = ({route, navigation}) => {
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+
+type Props = StackScreenProps<ParamListBase>;
+const ForgotPasswordScreen = ({ navigation }: Props) => {
   const appData = useSelector((state) => state.appData);
-  const {message = {}} = appData || {};
+  const { message = {} } = appData || {};
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
@@ -23,7 +27,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
   const [passwordResetmessage, setPasswordResetmessage] = useState('');
 
   useDeepCompareEffect(() => {
-    const {command = '', status = ''} = message;
+    const { command = '', status = '' } = message;
     if (command === RESET_PASSWORD_RES) {
       if (status === 'SUCCESS') {
         setPasswordResetmessage('Check your inbox for a password reset email');
@@ -35,7 +39,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
     const emailError = emailValidator(email.value);
 
     if (emailError) {
-      setEmail({...email, error: emailError});
+      setEmail({ ...email, error: emailError });
       return;
     }
 
@@ -70,7 +74,7 @@ const ForgotPasswordScreen = ({route, navigation}) => {
             label="E-mail address"
             returnKeyType="done"
             value={email.value}
-            onChangeText={(text) => setEmail({value: text, error: ''})}
+            onChangeText={(text) => setEmail({ value: text, error: '' })}
             error={!!email.error}
             errorText={email.error}
             autoCapitalize="none"

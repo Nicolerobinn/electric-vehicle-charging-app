@@ -1,15 +1,18 @@
-import React, {memo, useState} from 'react';
-import {View, Image, StyleSheet, Linking} from 'react-native';
-import {Button, Menu, Divider} from 'react-native-paper';
+import React, { memo, useState } from 'react';
+import { View, Image, StyleSheet, Linking } from 'react-native';
+import { Button, Menu, Divider } from 'react-native-paper';
 import WebSocketClient from '../core/WebSocketClient';
-import {loginOut} from '../core/asyncStorage';
+import { loginOut } from '../core/asyncStorage';
+import { useNavigation } from "@react-navigation/native";
 // redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const DropdownMenu = ({navigation}) => {
+const DropdownMenu = () => {
   const [visible, setVisible] = useState(false);
+  const navigation = useNavigation();
+
   const appData = useSelector((state) => state.appData);
-  const {token, permissionList = []} = appData || {};
+  const { permissionList = [] } = appData || {};
   const skippedLoginUser = permissionList.length === 0;
 
   const openMenu = () => setVisible(true);
@@ -19,7 +22,7 @@ const DropdownMenu = ({navigation}) => {
     loginOut();
     WebSocketClient.instance.close();
     closeMenu();
-    navigation.navigate('LoginScreen');
+    navigation.navigate('LoginScreen' as never);
   };
 
   return (

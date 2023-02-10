@@ -1,16 +1,19 @@
-import React, {memo, useState, useRef, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { memo, useState, useRef, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Search from '../components/Search';
 import TouchListing from '../components/TouchListing';
 import Listings from '../components/Listings';
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+type Props = StackScreenProps<ParamListBase>;
 
 // redux
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as Actions from '../store/Actions';
-const HomeScreen = ({route, navigation}) => {
+const HomeScreen = ({ navigation }: Props) => {
   const qrCode = useSelector((state) => state.appData.qrCode);
   const dispatch = useDispatch();
   const [searchState, setSearchState] = useState({});
@@ -25,10 +28,7 @@ const HomeScreen = ({route, navigation}) => {
   return (
     <SafeAreaViewBox>
       <Header
-        style={styles.header}
-        navigation={navigation}
         displayGoBackButton={false}
-        displaySearchBar={true}
       />
       <Search
         ref={childRef}

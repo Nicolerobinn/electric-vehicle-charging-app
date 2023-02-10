@@ -1,27 +1,33 @@
-import React, {memo, useState, useEffect} from 'react';
-import {START, STOP, WAITING, CONNECTOR_LIST} from '../constants';
+import React, { memo, useState, useEffect } from 'react';
+import { START, STOP, WAITING, CONNECTOR_LIST } from '../constants';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
-import Icon from 'react-native-vector-icons/dist/MaterialIcons';
-import {Platform, Linking, StyleSheet, View, Image, Alert} from 'react-native';
+import { Platform, Linking, StyleSheet, View, Image, Alert } from 'react-native';
 import StationBody from '../components/StationBody';
-import {Text, Button, IconButton} from 'react-native-paper';
+import { Text, Button, IconButton } from 'react-native-paper';
+import { type StationInter } from '../typings/stationType'
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import {arrayMapEqul} from '../core/utils';
-import {homeStationPasswordCompare} from '../core/asyncStorage';
+import { arrayMapEqul } from '../core/utils';
 import WebSocketClient from '../core/WebSocketClient';
 
-import {REMOVE_FAVOUR_REQ, ADD_FAVOUR_REQ, FIND_STATION_RES} from '../core/api';
+import { REMOVE_FAVOUR_REQ, ADD_FAVOUR_REQ } from '../core/api';
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+
+type Props = StackScreenProps<ParamListBase>;
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
 // redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const StationScreen = ({route, navigation}) => {
-  const {station = {}, seationService} = route.params;
+const StationScreen = ({ route, navigation }: Props) => {
+  const { station, seationService } = route.params as {
+    station: StationInter,
+    seationService: boolean
+  };
   const appData = useSelector((state) => state.appData);
-  const {token, userData, message} = appData || {};
+  const { token, userData, message } = appData || {};
   const {
     favouriteStationList = [],
     permissionList,
@@ -68,12 +74,12 @@ const StationScreen = ({route, navigation}) => {
       Alert.alert(
         'Please create an account to do this action',
         'Please create an account to do this action',
-        [{text: 'Sign up', onPress: () => console.log('OK Pressed')}],
-        {cancelable: false},
+        [{ text: 'Sign up', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false },
       );
     }
   };
-  const getUrl = (latitude, longitude, label) => {
+  const getUrl = (latitude: string, longitude: string, label: string) => {
     const browser_url = `https://www.google.de/maps/@${latitude},${longitude}?q=${label}`;
     return Linking.openURL(browser_url);
   };
@@ -85,7 +91,7 @@ const StationScreen = ({route, navigation}) => {
     //   });
     //   return;
     // }
-    navigation.navigate('ConfigurationsScreen', {station: {}});
+    navigation.navigate('ConfigurationsScreen', { station: {} });
   };
   const getDirectionHandler = () => {
     // todo: get station latitude & longitude
@@ -97,18 +103,9 @@ const StationScreen = ({route, navigation}) => {
       ios: `maps:${latitude},${longitude}?q=${label}`,
       android: `geo:${latitude},${longitude}?q=${label}`,
     });
+    if (!url) return
     Linking.canOpenURL(url).then((supported) => {
-      if (supported) {
-        // todo: test on real device
-        const url = Platform.select({
-          ios: `maps:${latitude},${longitude}?q=${label}`,
-          android: `geo:${latitude},${longitude}?q=${label}`,
-        });
-        // return Linking.openURL(url);
-        return getUrl(latitude, longitude, label);
-      } else {
-        return getUrl(latitude, longitude, label);
-      }
+      return getUrl(latitude, longitude, label);
     });
   };
 
@@ -139,7 +136,7 @@ const StationScreen = ({route, navigation}) => {
 
   return (
     <SafeAreaViewBox>
-      <Header style={styles.header} navigation={navigation} />
+      <Header />
       <View style={styles.stationHeader}>
         <View style={styles.stationContent}>
           <View style={styles.contentTitle}>
@@ -177,8 +174,8 @@ const StationScreen = ({route, navigation}) => {
         </View>
         <View style={styles.stationHeaderRight}>
           {/* todo: change the color solid / empty  */}
-          {station.connectorList &&
-            station.connectorList.map((str, index) => {
+          {!!station.connectorList?.length &&
+            station.connectorList.map((str: string, index) => {
               if (CONNECTOR_LIST[str]) {
                 return (
                   <View style={styles.connectorListBox} key={index}>
@@ -197,7 +194,7 @@ const StationScreen = ({route, navigation}) => {
       {!seationService ? (
         <StationBody station={station} />
       ) : (
-        <View style={{flex: 1}} />
+        <View style={{ flex: 1 }} />
       )}
 
       <Footer navigation={navigation} />

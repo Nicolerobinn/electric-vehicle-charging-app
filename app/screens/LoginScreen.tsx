@@ -6,7 +6,7 @@ import {
   SKIP_LOGIN_REQ,
   SKIP_LOGIN_RES,
 } from '../core/api';
-import { useDeepCompareEffect } from '../core/hooks';
+import { useDeepCompareEffect } from 'ahooks';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import BottomTouchView from '../components/BottomTouchView';

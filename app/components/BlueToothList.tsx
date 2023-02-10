@@ -1,18 +1,25 @@
-import React, {memo, useState, useEffect} from 'react';
-import {Button, Divider, List} from 'react-native-paper';
-import {View, Text, StyleSheet} from 'react-native';
-const BlueToothList = ({arr = [], buttonText, boxTitle, change}) => {
+import React from 'react';
+import { Button, Divider, List } from 'react-native-paper';
+import { View, Text, StyleSheet } from 'react-native';
+
+
+interface Props {
+  arr: { name: string }[]
+  buttonText: string
+  boxTitle: string
+}
+const BlueToothList = ({ arr = [], buttonText, boxTitle, change }: Props) => {
   return (
     <>
       <Divider />
       <Text style={styles.title}>{boxTitle}</Text>
-      <View style={{paddingTop: 10, paddingBottom: 10}}>
+      <View style={{ paddingTop: 10, paddingBottom: 10 }}>
         {arr.map((e, i) => (
           <List.Item
             key={i}
             style={styles.item}
             title={e.name}
-            right={(props) => (
+            right={() => (
               <Button
                 style={styles.changeButton}
                 mode="outlined"
@@ -44,6 +51,6 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     marginHorizontal: 10,
   },
-  item: {paddingBottom: 0, paddingTop: 0, paddingLeft: 25},
+  item: { paddingBottom: 0, paddingTop: 0, paddingLeft: 25 },
 });
 export default BlueToothList;

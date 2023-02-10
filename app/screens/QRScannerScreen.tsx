@@ -1,4 +1,4 @@
-import {RNCamera} from 'react-native-camera';
+import { RNCamera, type BarCodeReadEvent } from 'react-native-camera';
 import {
   request,
   PERMISSIONS,
@@ -6,21 +6,26 @@ import {
   check,
   RESULTS,
 } from 'react-native-permissions';
-import {Button} from 'react-native-paper';
-import React, {useEffect, useRef, useState} from 'react';
-import {useDispatch} from 'react-redux';
+import { Button } from 'react-native-paper';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   StyleSheet,
   Animated,
   PermissionsAndroid,
-  default as Easing,
+  Easing,
   View,
   Text,
   Platform,
-  Alert,
+  Alert, type AlertButton
 } from 'react-native';
 import * as Actions from '../store/Actions';
-const ScanQRCode = ({route, navigation}) => {
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+
+type Props = StackScreenProps<ParamListBase>;
+
+const ScanQRCode = ({ navigation }: Props) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const dispatch = useDispatch();
   const [throttle, setThrottle] = useState(false);
@@ -53,7 +58,7 @@ const ScanQRCode = ({route, navigation}) => {
     const result = await check(PERMISSIONS.IOS.CAMERA);
     switch (result) {
       case RESULTS.UNAVAILABLE:
-        alert(
+        Alert.alert(
           'This feature is not available (on this device / in this context)',
         );
         break;
@@ -84,14 +89,14 @@ const ScanQRCode = ({route, navigation}) => {
               openSettings().catch(() => console.warn('cannot open settings')),
           },
           ,
-        ]);
+        ] as AlertButton[]);
         break;
     }
   };
   //请求权限的方法
   const requestCameraPermission = () => {
     try {
-      const {OS} = Platform; // android or ios
+      const { OS } = Platform; // android or ios
       OS === 'android' ? androidPermissionCheck() : iosPermissionCheck();
     } catch (err) {
       console.warn(err);
@@ -115,11 +120,11 @@ const ScanQRCode = ({route, navigation}) => {
       }),
     ]).start(() => startAnimation());
   };
-  const onBarCodeRead = (result) => {
+  const onBarCodeRead = (result: BarCodeReadEvent) => {
     if (throttle) {
       return;
     }
-    const {data: number} = result; //只要拿到data就可以了
+    const { data: number } = result; //只要拿到data就可以了
     //扫码后的操作
     setThrottle(true);
     Alert.alert('stationNumber', number, [
@@ -127,7 +132,7 @@ const ScanQRCode = ({route, navigation}) => {
         text: 'go',
         onPress: () => {
           dispatch(Actions.setQRCode(number));
-          navigation.goBack(null);
+          navigation.goBack();
         },
       },
       {
@@ -151,13 +156,13 @@ const ScanQRCode = ({route, navigation}) => {
         style={styles.button}
         icon="arrow-left"
         mode="contained"
-        labelStyle={{marginLeft: 0}}
+        labelStyle={{ marginLeft: 0 }}
         uppercase={false}
-        onPress={() => navigation.goBack(null)}
-      />
-      <View style={{width: '80%', height: '60%'}}>
+        onPress={() => navigation.goBack()}
+      ><></></Button>
+      <View style={{ width: '80%', height: '60%' }}>
         <Animated.View
-          style={[styles.border, {transform: [{translateY: moveAnim}]}]}
+          style={[styles.border, { transform: [{ translateY: moveAnim }] }]}
         />
       </View>
       <Text style={styles.rectangleText}>Scan QR Code</Text>

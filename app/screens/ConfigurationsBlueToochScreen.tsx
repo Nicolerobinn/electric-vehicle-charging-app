@@ -1,18 +1,22 @@
-import React, {memo, useState, useRef, useEffect} from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import React, { memo } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
 import BlueToothList from '../components/BlueToothList';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
-import {List} from 'react-native-paper';
+import { List } from 'react-native-paper';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BlueTouchClient from '../core/BlueTouchClient';
 
-const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+
+type Props = StackScreenProps<ParamListBase>;
+const ConfigurationsBlueTouchScreen = ({ navigation }: Props) => {
   const appData = useSelector((state) => state.appData);
-  const {connectedPeripheralsList, peripheralsList} = appData;
+  const { connectedPeripheralsList, peripheralsList } = appData;
 
   // 移除蓝牙
   const remove = (peripheral) => () => {
@@ -32,11 +36,11 @@ const ConfigurationsBlueTouchScreen = ({route, navigation}) => {
     <SafeAreaViewBox>
       <Header navigation={navigation} />
       <ConfigurationsTopBox text="HOME STATIONS" />
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <List.Item
           style={styles.titleItem}
           title="Bluetooth"
-          left={(props) => (
+          left={() => (
             <Icon size={18} style={styles.right} name="bluetooth" />
           )}
         />
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingTop: 0,
   },
-  item: {paddingBottom: 0, paddingTop: 0, paddingLeft: 25},
+  item: { paddingBottom: 0, paddingTop: 0, paddingLeft: 25 },
 });
 
 export default memo(ConfigurationsBlueTouchScreen);

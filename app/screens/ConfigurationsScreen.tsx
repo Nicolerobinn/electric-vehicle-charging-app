@@ -1,4 +1,4 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -9,15 +9,18 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
-import {useSelector} from 'react-redux';
-import {List, Divider} from 'react-native-paper';
+import { List, Divider } from 'react-native-paper';
 import AndroidTextAlert from '../components/AndroidTextAlert';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const ConfigurationsScreen = ({route, navigation}) => {
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+
+type Props = StackScreenProps<ParamListBase>;
+const ConfigurationsScreen = ({ navigation }: Props) => {
   const [state, setstate] = useState();
   const [visible, setVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
@@ -27,10 +30,10 @@ const ConfigurationsScreen = ({route, navigation}) => {
     console.log('save');
   };
   const bluetoothClick = () => {
-    navigation.navigate('ConfigurationsBlueToochScreen', {arr: {}});
+    navigation.navigate('ConfigurationsBlueToochScreen', { arr: {} });
   };
   const wifiClick = () => {
-    navigation.navigate('ConfigurationsWIFIScreen', {arr: {}});
+    navigation.navigate('ConfigurationsWIFIScreen', { arr: {} });
   };
   const nameChange = (text) => {
     console.log('station name', text);
@@ -54,7 +57,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
     hideDialog();
   };
   const changePassword = () => {
-    navigation.navigate('StationDefaultPasswordResetScreen', {arr: {}});
+    navigation.navigate('StationDefaultPasswordResetScreen', { arr: {} });
   };
   return (
     <SafeAreaViewBox>
@@ -66,7 +69,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
       />
       <Header navigation={navigation} saveChange={saveChange} />
       <ConfigurationsTopBox />
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <Text style={styles.title}>Home Station</Text>
         <List.Item
           style={styles.item}
@@ -74,7 +77,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
           onPress={nameAlertShow}
           left={(props) => <List.Icon {...props} icon="folder" />}
           right={(props) => (
-            <Text style={{marginTop: 10}}>Home station Name</Text>
+            <Text style={{ marginTop: 10 }}>Home station Name</Text>
           )}
         />
         <List.Item
@@ -89,7 +92,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Authentication"
-          titleStyle={{fontSize: 14, color: 'gray'}}
+          titleStyle={{ fontSize: 14, color: 'gray' }}
         />
         <Divider />
         <List.Item
@@ -104,14 +107,14 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Authentication"
-          titleStyle={{fontSize: 14, color: 'gray'}}
+          titleStyle={{ fontSize: 14, color: 'gray' }}
         />
         <Divider />
         <Text style={styles.title}>Access</Text>
         <List.Item
           style={styles.item}
           title="Unrestricted"
-          titleStyle={{color: isSwitchOn ? 'gray' : 'black'}}
+          titleStyle={{ color: isSwitchOn ? 'gray' : 'black' }}
           left={(props) => (
             <List.Icon
               {...props}
@@ -121,8 +124,8 @@ const ConfigurationsScreen = ({route, navigation}) => {
           )}
           right={(props) => (
             <Switch
-              style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
-              trackColor={{false: '#767577', true: '#81b0ff'}}
+              style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
               thumbColor={isSwitchOn ? '#f5dd4b' : '#f4f3f4'}
               ios_backgroundColor="#3e3e3e"
               onValueChange={onToggleSwitch}
@@ -133,7 +136,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Authentication"
-          titleStyle={{color: !isSwitchOn ? 'gray' : 'black'}}
+          titleStyle={{ color: !isSwitchOn ? 'gray' : 'black' }}
           onPress={isSwitchOn && bluetoothClick}
           left={(props) => (
             <List.Icon
@@ -149,7 +152,7 @@ const ConfigurationsScreen = ({route, navigation}) => {
         <List.Item
           style={styles.item}
           title="Authentication"
-          titleStyle={{fontSize: 14, color: 'gray'}}
+          titleStyle={{ fontSize: 14, color: 'gray' }}
         />
         <Divider />
         <List.Item
@@ -180,7 +183,7 @@ const styles = StyleSheet.create({
     marginRight: 22,
     marginLeft: 8,
   },
-  item: {paddingBottom: 0, paddingTop: 0},
+  item: { paddingBottom: 0, paddingTop: 0 },
 });
 
 export default memo(ConfigurationsScreen);

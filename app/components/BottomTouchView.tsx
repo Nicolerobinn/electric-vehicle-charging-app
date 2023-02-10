@@ -1,8 +1,13 @@
-import React, {memo} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {theme} from '../core/theme';
+import React, { memo } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { theme } from '../core/theme';
 
-const BottomTouchView = ({text, touchText, onChange}) => (
+interface Props {
+  text: string
+  touchText: string
+  onChange: () => void
+}
+const BottomTouchView = ({ text, touchText, onChange }: Props) => (
   <View style={styles.row}>
     <Text style={styles.label}>{text} </Text>
     <TouchableOpacity onPress={onChange}>
@@ -18,7 +23,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    color: theme.colors.secondary,
   },
   link: {
     fontWeight: 'bold',

@@ -1,43 +1,44 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, { memo, useState } from 'react';
 
 import {
   StyleSheet,
   View,
-  Text,
   ScrollView,
-  Alert,
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
-import Icon from 'react-native-vector-icons/dist/Feather';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Background from '../components/Background';
-import {setHomeStation} from '../core/asyncStorage';
+import { type StationInter } from '../typings/stationType'
+import { setHomeStation } from '../core/asyncStorage';
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
 
-const StationDefaultPasswordResetScreen = ({route, navigation}) => {
-  const {station = {}} = route.params;
+type Props = StackScreenProps<ParamListBase>;
+
+const StationDefaultPasswordResetScreen = ({ route, navigation }: Props) => {
+  const { station } = route.params as {
+    station: StationInter
+  };
   const [defaultPassword, setDefaultPassword] = useState({
     value: '',
     error: '',
   });
 
-  const [password, setPassword] = useState({value: '', error: ''});
-  const save = () => {
-    const change = () => {
-      navigation.goBack(null);
-    };
-    setHomeStation(station, password, change);
+  const [password, setPassword] = useState({ value: '', error: '' });
+  const save = async () => {
+    await setHomeStation(station, password.value);
+    navigation.goBack();
   };
   return (
     <SafeAreaViewBox>
-      <View style={{flex: 1}}>
-        <Header navigation={navigation} />
-        <ScrollView style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
+        <Header />
+        <ScrollView style={{ flex: 1 }}>
           <KeyboardAvoidingView
             style={styles.keyBoard}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -48,7 +49,7 @@ const StationDefaultPasswordResetScreen = ({route, navigation}) => {
                 returnKeyType="done"
                 value={defaultPassword.value}
                 onChangeText={(text) =>
-                  setDefaultPassword({value: text, error: ''})
+                  setDefaultPassword({ value: text, error: '' })
                 }
                 error={!!defaultPassword.error}
                 errorText={defaultPassword.error}
@@ -59,7 +60,7 @@ const StationDefaultPasswordResetScreen = ({route, navigation}) => {
                 label="please enter new password"
                 returnKeyType="done"
                 value={password.value}
-                onChangeText={(text) => setPassword({value: text, error: ''})}
+                onChangeText={(text) => setPassword({ value: text, error: '' })}
                 error={!!password.error}
                 errorText={password.error}
                 secureTextEntry

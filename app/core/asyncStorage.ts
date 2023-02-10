@@ -1,27 +1,24 @@
 // handle all async storage related functions
 import AsyncStorage from '@react-native-community/async-storage';
-
-const RECENT_STATION_LIST = 'recentStationList';
-const HOME_STATION__LIST = 'stationPasswordList';
-const LOGIN_PERSISTENT = 'loginPersistent';
-
-const _stationLookup = (stationList, serialNumber) => {
+import { type StationInter , STORAGE_STATION } from '../typings/stationType'
+ 
+const _stationLookup = (stationList:StationInter[], serialNumber:number):boolean => {
   return stationList.some((station) => station.smpctNumber === serialNumber);
 };
 
-export const setLoginPersistent = (token) => {
-  AsyncStorage.setItem(LOGIN_PERSISTENT, token);
+export const setLoginPersistent = (token?:string) => {
+  AsyncStorage.setItem(STORAGE_STATION.LOGIN_PERSISTENT, token || '');
 };
 export const checkLoginPersistent = async () => {
-  const account = await AsyncStorage.getItem(LOGIN_PERSISTENT);
+  const account = await AsyncStorage.getItem(STORAGE_STATION.LOGIN_PERSISTENT);
   return account;
 };
 export const loginOut = async () => {
-  AsyncStorage.removeItem(LOGIN_PERSISTENT);
+  AsyncStorage.removeItem(STORAGE_STATION.LOGIN_PERSISTENT);
 };
 
-export const readRecentStationListFromAsyncStorage = async (callback) => {
-  const list = await AsyncStorage.getItem(RECENT_STATION_LIST);
+export const readRecentStationListFromAsyncStorage = async ( ) => {
+  const list = await AsyncStorage.getItem(STORAGE_STATION.RECENT_STATION_LIST);
   return list ? JSON.parse(list) : [];
 };
 /**
@@ -32,56 +29,55 @@ export const readRecentStationListFromAsyncStorage = async (callback) => {
  *
  */
 export const writeRecentStationToAsyncStorage = async (
-  station,
-  serialNumber,
+  station:StationInter,
+  serialNumber:number,
 ) => {
-  let recentStationList = await AsyncStorage.getItem(RECENT_STATION_LIST);
+  let recentStationList = await AsyncStorage.getItem(STORAGE_STATION.RECENT_STATION_LIST);
   if (recentStationList) {
-    recentStationList = JSON.parse(recentStationList);
+   const  list = JSON.parse(recentStationList) as StationInter[];
     // if current serialNumber exist, then we ignore it
-    if (!_stationLookup(recentStationList, serialNumber)) {
-      recentStationList.unshift(station);
+    if (!_stationLookup(list, serialNumber)) {
+      list.unshift(station);
       await AsyncStorage.setItem(
-        RECENT_STATION_LIST,
-        JSON.stringify(recentStationList),
+        STORAGE_STATION.RECENT_STATION_LIST,
+        JSON.stringify(list),
       );
     }
   } else {
-    await AsyncStorage.setItem(RECENT_STATION_LIST, JSON.stringify([station]));
+    await AsyncStorage.setItem(STORAGE_STATION.RECENT_STATION_LIST, JSON.stringify([station]));
   }
 };
 
 // 关于station 储存本地密码的函数
 
-export const homeStationPasswordCompare = async (station) => {
-  let list = await AsyncStorage.getItem(HOME_STATION__LIST);
-  if (list) {
-    list = JSON.parse(list);
-    const stationObj = list.filter((e, i) => e.number === station.number);
-    return stationObj.password === station.password;
+export const homeStationPasswordCompare = async (station:StationInter) => {
+  const stationPassword = await AsyncStorage.getItem(STORAGE_STATION.HOME_STATION__LIST);
+  if (stationPassword) {
+   const list = JSON.parse(stationPassword);
+    const stationFilter = list.filter((e:StationInter) => e.number === station.number);
+    return stationFilter.password === station.password;
   }
   return 'error'
 };
 
-export const removeHomeStation = async (station) => {
-  let list = await AsyncStorage.getItem(HOME_STATION__LIST);
-  if (list) {
-    list = JSON.parse(list);
-    list = list.filter((e) => e.number !== station.number);
-    AsyncStorage.setItem(HOME_STATION__LIST, JSON.stringify(list));
+export const removeHomeStation = async (station:StationInter) => {
+  const stationList = await AsyncStorage.getItem(STORAGE_STATION.HOME_STATION__LIST);
+  if (stationList) {
+    const list = JSON.parse(stationList);
+    AsyncStorage.setItem(STORAGE_STATION.HOME_STATION__LIST, JSON.stringify(list.filter((s:StationInter) => s.number !== station.number)));
   }
   return 'error'
 };
 
-export const setHomeStation = async (station, password) => {
-  let list = await AsyncStorage.getItem(HOME_STATION__LIST);
+export const setHomeStation = async (station:StationInter, password:string) => {
+  const stationList = await AsyncStorage.getItem(STORAGE_STATION.HOME_STATION__LIST);
   const obj = { number: station.number, password: password };
-  if (list) {
-    list = JSON.parse(list);
-    list = list.filter((e) => e.number !== obj.number);
-    list.unshift(obj);
-    AsyncStorage.setItem(HOME_STATION__LIST, JSON.stringify(list));
+  if (stationList) {
+    const list = JSON.parse(stationList) as StationInter[]
+    const listFilter = list.filter((e:StationInter) => e.number !== obj.number);
+    listFilter.unshift(obj);
+    AsyncStorage.setItem(STORAGE_STATION.HOME_STATION__LIST, JSON.stringify(list));
   } else {
-    AsyncStorage.setItem(HOME_STATION__LIST, JSON.stringify([obj]));
+    AsyncStorage.setItem(STORAGE_STATION.HOME_STATION__LIST, JSON.stringify([obj]));
   }
 };

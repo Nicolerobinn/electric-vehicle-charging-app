@@ -1,4 +1,4 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, { memo, useState, useEffect } from 'react';
 
 import {
   StyleSheet,
@@ -8,16 +8,26 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import {List, Divider} from 'react-native-paper';
+import { List, Divider } from 'react-native-paper';
 import AndroidTextAlert from '../components/AndroidTextAlert';
 import SafeAreaViewBox from '../components/SafeAreaViewBox';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import ConfigurationsTopBox from '../components/ConfigurationsTopBox';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import type { BueTouchConnectionInter } from '../typings/stationType'
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
 
+type Props = StackScreenProps<ParamListBase>;
+interface ListBoxProps {
+  arr: BueTouchConnectionInter[]
+  buttonText?: string
+  boxTitle: string
+  change: (blue: BueTouchConnectionInter) => () => void
+}
 const PROMPT = 'Please enter password for wifi:';
-const NetworksArr = [
+const NetworksArr: BueTouchConnectionInter[] = [
   {
     title: 'spot-1',
     id: '1',
@@ -28,18 +38,18 @@ const NetworksArr = [
     lock: true,
   },
 ];
-const CurrentConnectionArr = [
+const CurrentConnectionArr: BueTouchConnectionInter[] = [
   {
     title: 'Phone two',
     id: '1',
   },
 ];
-const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
+const ListBox = ({ arr = [], boxTitle, change }: ListBoxProps) => {
   return (
     <>
       <Divider />
       <Text style={styles.title}>{boxTitle}</Text>
-      <View style={{paddingTop: 10, paddingBottom: 10}}>
+      <View style={{ paddingTop: 10, paddingBottom: 10 }}>
         {arr.map((e, i) => (
           <List.Item
             key={i}
@@ -48,8 +58,8 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
             onPress={change(e)}
             right={(props) => (
               <View
-                style={{flexDirection: 'row', paddingTop: 10, paddingRight: 4}}>
-                {e.lock && <Icon name="lock" style={{marginRight: 4}} />}
+                style={{ flexDirection: 'row', paddingTop: 10, paddingRight: 4 }}>
+                {e.lock && <Icon name="lock" style={{ marginRight: 4 }} />}
                 <Icon name="wifi" />
               </View>
             )}
@@ -59,27 +69,29 @@ const ListBox = ({arr = [], buttonText, boxTitle, change}) => {
     </>
   );
 };
-const ConfigurationsBlueToochScreen = ({route, navigation}) => {
-  const [wifiState, setWifiState] = useState({});
+const ConfigurationsBlueToochScreen = ({ navigation }: Props) => {
+  const [wifiState, setWifiState] = useState<{
+    title: string
+  }>({ title: '' });
   const [visible, setVisible] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   const hideDialog = () => setVisible(false);
-  const unConnection = (i) => () => {
+  const unConnection = (i: BueTouchConnectionInter) => () => {
     console.log('wifi-unConnection', i);
   };
   // todo: 连接wifi
-  const connectionWIFI = (e) => {};
+  const connectionWIFI = (e: BueTouchConnectionInter) => { };
   // todo: 发送请求 校验密码是否正确 通过 useEffect监听 response
-  const passwordCheck = (text) => {
+  const passwordCheck = (text: string) => {
     console.log('wifiState', wifiState);
     console.log(text);
   };
-  const wifiLockAlert = (e) => {
+  const wifiLockAlert = (e: BueTouchConnectionInter) => {
     Alert.prompt('', `${PROMPT} ${e.title}`, (text) => {
       passwordCheck(text);
     });
   };
-  const connection = (e) => () => {
+  const connection = (e: BueTouchConnectionInter) => () => {
     setWifiState(e);
     if (e.lock) {
       if (Platform.OS === 'android') {
@@ -92,14 +104,13 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
     }
     connectionWIFI(e);
   };
-  const arr = [];
-  const androidAlertChange = (text) => {
+  const androidAlertChange = (text: string) => {
     passwordCheck(text);
     hideDialog();
   };
   return (
     <SafeAreaViewBox>
-      <Header navigation={navigation} />
+      <Header />
       <ConfigurationsTopBox />
       <AndroidTextAlert
         visible={visible}
@@ -107,14 +118,13 @@ const ConfigurationsBlueToochScreen = ({route, navigation}) => {
         handleChange={() => androidAlertChange}
         title={`${PROMPT} ${wifiState.title}`}
       />
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <List.Item
           style={styles.titleItem}
           title="WiFi"
           left={(props) => <Icon size={18} style={styles.right} name="wifi" />}
         />
         <ListBox
-          lock
           boxTitle="CurrentConnection"
           arr={CurrentConnectionArr}
           change={unConnection}
@@ -155,7 +165,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingTop: 0,
   },
-  item: {paddingBottom: 0, paddingTop: 0, paddingLeft: 25},
+  item: { paddingBottom: 0, paddingTop: 0, paddingLeft: 25 },
 });
 
 export default memo(ConfigurationsBlueToochScreen);

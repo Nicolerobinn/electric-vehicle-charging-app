@@ -1,11 +1,9 @@
-import React, {memo, useState, useEffect} from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
-import {Button as PaperButton} from 'react-native-paper';
-import {theme} from '../core/theme';
-import {LineChart} from 'react-native-chart-kit';
+import React, { memo, useState, useEffect } from 'react';
+import { StyleSheet, Dimensions } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 import dayjs from 'dayjs';
 
-const Chart = ({mode, children, ...props}) => {
+const Chart = ({ mode, children, ...props }) => {
   const screenWidth = Dimensions.get('window').width;
 
   const [dataSet, setDataSet] = useState([

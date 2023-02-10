@@ -1,14 +1,14 @@
-import React, {memo, useState} from 'react';
-import {useSelector} from 'react-redux';
-import {View, Text, StyleSheet, Alert} from 'react-native';
+import React, { memo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { View, Text, StyleSheet } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {theme} from '../core/theme';
-import {USER_REGISTRATION_REQ, USER_REGISTRATION_RES} from '../core/api';
-import {useDeepCompareEffect} from '../core/hooks';
+import { theme } from '../core/theme';
+import { USER_REGISTRATION_REQ, USER_REGISTRATION_RES } from '../core/api';
+import { useDeepCompareEffect } from 'ahooks';
 import BottomTouchView from '../components/BottomTouchView';
 import WebSocketClient from '../core/WebSocketClient';
 
@@ -18,15 +18,20 @@ import {
   confirmPasswordValidator,
   passwordMatch,
 } from '../core/utils';
+import type { ParamListBase } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
 
-const RegisterScreen = ({route, navigation}) => {
+type Props = StackScreenProps<ParamListBase>;
+
+
+const RegisterScreen = ({ navigation }: Props) => {
   const message = useSelector((state) => state.appData.message);
   // todo: cleanup test data
   const [email, setEmail] = useState({
     value: 'zsyoscar@gmail.com',
     error: '',
   });
-  const [password, setPassword] = useState({value: 'abcabc', error: ''});
+  const [password, setPassword] = useState({ value: 'abcabc', error: '' });
   const [confirmPassword, setConfirmPassword] = useState({
     value: 'abcabc',
     error: '',
@@ -34,7 +39,7 @@ const RegisterScreen = ({route, navigation}) => {
   const [generalError, setGeneralError] = useState('');
 
   useDeepCompareEffect(() => {
-    const {command = '', status = '', message: info} = message;
+    const { command = '', status = '', message: info } = message;
     if (command === USER_REGISTRATION_RES) {
       if (status === 'SUCCESS') {
         navigation.navigate('HomeScreen');
@@ -53,9 +58,9 @@ const RegisterScreen = ({route, navigation}) => {
 
     // validation
     if (emailError || passwordError || passwordMatchError) {
-      setEmail({...email, error: emailError});
-      setPassword({...password, error: passwordError});
-      setConfirmPassword({...confirmPassword, error: confirmPasswordError});
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
       return;
     }
     if (passwordMatchError) {
@@ -83,11 +88,11 @@ const RegisterScreen = ({route, navigation}) => {
         label="Email"
         returnKeyType="next"
         value={email.value}
-        onChangeText={(text) => setEmail({value: text, error: ''})}
+        onChangeText={(text) => setEmail({ value: text, error: '' })}
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
-        autoCompleteType="email"
+        autoComplete="email"
         textContentType="emailAddress"
         keyboardType="email-address"
       />
@@ -96,7 +101,7 @@ const RegisterScreen = ({route, navigation}) => {
         label="Password"
         returnKeyType="done"
         value={password.value}
-        onChangeText={(text) => setPassword({value: text, error: ''})}
+        onChangeText={(text) => setPassword({ value: text, error: '' })}
         error={!!password.error}
         errorText={password.error}
         secureTextEntry
@@ -106,7 +111,7 @@ const RegisterScreen = ({route, navigation}) => {
         label="ConfirmPassword"
         returnKeyType="done"
         value={confirmPassword.value}
-        onChangeText={(text) => setConfirmPassword({value: text, error: ''})}
+        onChangeText={(text) => setConfirmPassword({ value: text, error: '' })}
         error={!!confirmPassword.error}
         errorText={confirmPassword.error}
         secureTextEntry
@@ -133,7 +138,6 @@ const RegisterScreen = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   label: {
-    color: theme.colors.secondary,
   },
   button: {
     marginTop: 24,
@@ -148,8 +152,7 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
   error: {
-    fontWeight: 'bold',
-    color: theme.colors.error,
+    fontWeight: 'bold'
   },
 });
 

@@ -3,7 +3,12 @@ export const MESSAGE_CHANGE = 'MESSAGE_CHANGE';
 export const START = 'Start Charging';
 export const STOP = 'Stop Charging';
 export const WAITING = 'Waiting';
-export const CONNECTOR_LIST = {
+export const CONNECTOR_LIST:{
+  [key:string]:{
+    url:any
+    type: 'AC'| 'DC'
+  }
+} = {
   IEC_62196_TYPE_1: {
     url: require('../assets/IEC_62196_TYPE_1.png'),
     type: 'AC',

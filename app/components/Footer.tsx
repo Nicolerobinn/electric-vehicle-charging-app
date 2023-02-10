@@ -1,16 +1,16 @@
-import React, {useState, memo, useEffect} from 'react';
-import {Linking, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {BottomNavigation} from 'react-native-paper';
+import React, { useState, memo, useEffect } from 'react';
+import { Linking, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import {theme} from '../core/theme';
-import {useSelector} from 'react-redux';
+import { theme } from '../core/theme';
+import { useSelector } from 'react-redux';
 
 const HOME_SCREEN = 'HomeScreen';
 const BLUETOOTH_SCREEN = 'ConfigurationsBlueToochScreen';
-const Footer = ({navigation}) => {
+const Footer = ({ navigation }) => {
   const userData = useSelector((state) => state.appData.userData);
-  const {homeStationList = []} = userData || {};
-  const [index, setIndex] = useState(0);
+  const { homeStationList = [] } = userData || {};
+  const [index, setIndex] = useState<null>(0);
 
   const currentRoute = useSelector((state) => state.appData.currentRoute);
   const [routes, setRoutes] = useState([
@@ -39,7 +39,7 @@ const Footer = ({navigation}) => {
         setIndex(2);
         break;
       default:
-        setIndex('');
+        setIndex(null);
         break;
     }
   }, [currentRoute]);
@@ -79,7 +79,7 @@ const Footer = ({navigation}) => {
         break;
     }
   };
-  const renderScene = () => {};
+  const renderScene = () => { };
   return (
     <View style={styles.footer}>
       {routes.map((e, i) => (
