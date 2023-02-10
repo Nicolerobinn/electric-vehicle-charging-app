@@ -9,10 +9,12 @@ export interface StationInter {
   city:string
   state:string
   connectorList:string[]
+  serialNumber?:number
 }
 export interface BueTouchConnectionInter{
   title:string;
   id:string
+  name?:string
   lock?:boolean
 }
 export enum STORAGE_STATION {

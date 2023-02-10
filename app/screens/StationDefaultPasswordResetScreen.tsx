@@ -72,7 +72,7 @@ const StationDefaultPasswordResetScreen = ({ route, navigation }: Props) => {
           </KeyboardAvoidingView>
         </ScrollView>
       </View>
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };

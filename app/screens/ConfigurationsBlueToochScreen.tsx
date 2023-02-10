@@ -57,7 +57,7 @@ const ConfigurationsBlueTouchScreen = ({ navigation }: Props) => {
           change={add}
         />
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };

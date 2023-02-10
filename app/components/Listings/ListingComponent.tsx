@@ -1,18 +1,19 @@
-import React, {memo} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import React, { memo } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import type { StationInter } from '../../typings/stationType'
+
 import Item from './Items';
-const ListingComponent = ({stations = [], navigation, propKkey}) => {
+const ListingComponent = ({ stations = [], propKkey }: {
+  stations: StationInter[]
+  propKkey: string
+}) => {
   return (
     <View style={styles.scene}>
       <ScrollView>
         {stations.length > 0 &&
           stations.map((station) => (
             <Item
-              navigation={navigation}
               station={station}
-              icon1="power-plug"
-              icon2="power-plug-off"
-              available={true}
               key={`${propKkey}_${station.smpctNumber}`}
             />
           ))}

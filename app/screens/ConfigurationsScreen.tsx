@@ -163,7 +163,7 @@ const ConfigurationsScreen = ({ navigation }: Props) => {
           )}
         />
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };

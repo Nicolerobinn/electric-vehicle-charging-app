@@ -5,12 +5,19 @@ import { Searchbar, Button, IconButton } from 'react-native-paper';
 import { FIND_STATION_RES, FIND_STATION_REQ } from '../core/api';
 import { useDeepCompareEffect } from 'ahooks';
 import WebSocketClient from '../core/WebSocketClient';
+import { useNavigation } from "@react-navigation/native";
+
 // redux
 import { useSelector } from 'react-redux';
-
-const Search = ({ navigation, searchChange }, ref) => {
+export type forwardRefType = {
+  search: (str: string) => void;
+};
+const Search = ({ searchChange }: {
+  searchChange: (obj: { visible: boolean; station: string[] }) => void
+}, ref: React.Ref<forwardRefType>) => {
   const appData = useSelector((state) => state.appData);
   const { token, message } = appData || {};
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('3140000000');
   useDeepCompareEffect(() => {
     const { status, command, payload } = message || {};
@@ -22,15 +29,15 @@ const Search = ({ navigation, searchChange }, ref) => {
     }
   }, [message]);
   // 此处注意useImperativeHandle方法的的第一个参数是目标元素的ref引用
-  const onChangeSearch = (query) => {
+  const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     searchHandler();
   };
   useImperativeHandle(ref, () => ({
-    search: (str) => onChangeSearch(str),
+    search: onChangeSearch,
   }));
   const handleQRScan = () => {
-    navigation.navigate('QRScannerScreen', { arr: {} });
+    navigation.navigate('QRScannerScreen' as never, { arr: {} } as never);
   };
 
   const searchHandler = () => {
@@ -58,15 +65,14 @@ const Search = ({ navigation, searchChange }, ref) => {
             size={30}
             icon="map-search"
             onPress={searchHandler}
-            color="#fff"
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleQRScan} style={styles.QRScan}>
           <Button
             icon="qrcode-scan"
             style={styles.icon}
-          />
-          <Text style={styles.label}>Scan QR</Text>
+          ><></></Button>
+          <Text  >Scan QR</Text>
         </TouchableOpacity>
       </View>
     </View>

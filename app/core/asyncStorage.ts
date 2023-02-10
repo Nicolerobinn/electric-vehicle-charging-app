@@ -2,7 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { type StationInter , STORAGE_STATION } from '../typings/stationType'
  
-const _stationLookup = (stationList:StationInter[], serialNumber:number):boolean => {
+const _stationLookup = (stationList:StationInter[], serialNumber?:number):boolean => {
   return stationList.some((station) => station.smpctNumber === serialNumber);
 };
 
@@ -30,7 +30,7 @@ export const readRecentStationListFromAsyncStorage = async ( ) => {
  */
 export const writeRecentStationToAsyncStorage = async (
   station:StationInter,
-  serialNumber:number,
+  serialNumber?:number,
 ) => {
   let recentStationList = await AsyncStorage.getItem(STORAGE_STATION.RECENT_STATION_LIST);
   if (recentStationList) {

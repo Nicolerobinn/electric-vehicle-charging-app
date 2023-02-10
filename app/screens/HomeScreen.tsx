@@ -42,12 +42,11 @@ const HomeScreen = ({ navigation }: Props) => {
         <TouchListing
           list={searchState.station}
           onChange={setSearchState}
-          navigation={navigation}
         />
       )}
       {/* home tab组件 */}
       {!searchState.visible && <Listings navigation={navigation} />}
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };

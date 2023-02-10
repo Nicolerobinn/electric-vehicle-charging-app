@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState, useMemo } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
-import { TabView } from 'react-native-tab-view';
+import { TabView, type Route } from 'react-native-tab-view';
 import ListingComponent from './ListingComponent';
 import { readRecentStationListFromAsyncStorage } from '../../core/asyncStorage';
 // redux
@@ -17,7 +17,7 @@ const arrTwo = [
   { key: 'recent', title: 'Recent' },
   { key: 'favorites', title: 'Favorites' },
 ];
-const RecentList = ({ navigation }) => {
+const RecentList = () => {
   const [recentStationList, setRecentStationList] = useState([]);
   useEffect(() => {
     readRecentStationListFromAsyncStorage().then((list) => {
@@ -26,13 +26,12 @@ const RecentList = ({ navigation }) => {
   }, []);
   return (
     <ListingComponent
-      navigation={navigation}
       stations={recentStationList}
       propKkey="recent"
     />
   );
 };
-const ListingsScreen = ({ navigation }) => {
+const ListingsScreen = () => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutesArr] = useState(arr);
   const userData = useSelector((state) => state.appData.userData);
@@ -45,14 +44,13 @@ const ListingsScreen = ({ navigation }) => {
     }
   }, [homeStationList.length]);
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({ route }: { route: Route }) => {
     switch (route.key) {
       case 'recent':
-        return <RecentList navigation={navigation} />;
+        return <RecentList />;
       case 'favorites':
         return (
           <ListingComponent
-            navigation={navigation}
             stations={favouriteStationList}
             propKkey="favorites"
           />
@@ -60,7 +58,6 @@ const ListingsScreen = ({ navigation }) => {
       case 'home':
         return (
           <ListingComponent
-            navigation={navigation}
             stations={homeStationList}
             propKkey="home"
           />

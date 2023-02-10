@@ -1,35 +1,36 @@
 import React, { useState, memo, useEffect } from 'react';
 import { Linking, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import { theme } from '../core/theme';
 import { useSelector } from 'react-redux';
+import { useNavigation } from "@react-navigation/native";
 
 const HOME_SCREEN = 'HomeScreen';
 const BLUETOOTH_SCREEN = 'ConfigurationsBlueToochScreen';
-const Footer = ({ navigation }) => {
+const ROUTER = [
+  {
+    key: 'search',
+    title: 'Search',
+    icon: 'magnify',
+  },
+  {
+    key: 'location',
+    title: 'Join Location',
+    icon: 'ev-station',
+  },
+  {
+    key: 'stations',
+    title: 'Home Stations',
+    icon: 'plus',
+  },
+]
+const Footer = () => {
   const userData = useSelector((state) => state.appData.userData);
   const { homeStationList = [] } = userData || {};
-  const [index, setIndex] = useState<null>(0);
+  const [index, setIndex] = useState<null | number>(0);
+  const navigation = useNavigation();
 
   const currentRoute = useSelector((state) => state.appData.currentRoute);
-  const [routes, setRoutes] = useState([
-    {
-      key: 'search',
-      title: 'Search',
-      icon: 'magnify',
-    },
-    {
-      key: 'location',
-      title: 'Join Location',
-      icon: 'ev-station',
-    },
-    {
-      key: 'stations',
-      title: 'Home Stations',
-      icon: 'plus',
-    },
-  ]);
+  const [routes, setRoutes] = useState(ROUTER);
   useEffect(() => {
     switch (currentRoute) {
       case HOME_SCREEN:
@@ -45,26 +46,10 @@ const Footer = ({ navigation }) => {
   }, [currentRoute]);
   useEffect(() => {
     if (homeStationList.length > 0) {
-      setRoutes([
-        {
-          key: 'search',
-          title: 'Search',
-          icon: 'magnify',
-        },
-        {
-          key: 'location',
-          title: 'Join Location',
-          icon: 'ev-station',
-        },
-        {
-          key: 'stations',
-          title: 'Home Stations',
-          icon: 'ev-station',
-        },
-      ]);
+      setRoutes(ROUTER);
     }
   }, [homeStationList.length]);
-  const indexChange = (i) => () => {
+  const indexChange = (i: number) => () => {
     if (i === 1) {
       Linking.openURL('https://dev.evnrgy.com/');
       return;
@@ -72,14 +57,13 @@ const Footer = ({ navigation }) => {
     setIndex(i);
     switch (i) {
       case 0:
-        navigation.navigate(HOME_SCREEN);
+        navigation.navigate(HOME_SCREEN as never);
         break;
       case 2:
-        navigation.navigate(BLUETOOTH_SCREEN);
+        navigation.navigate(BLUETOOTH_SCREEN as never);
         break;
     }
   };
-  const renderScene = () => { };
   return (
     <View style={styles.footer}>
       {routes.map((e, i) => (

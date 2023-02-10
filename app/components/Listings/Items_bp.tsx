@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
-import {theme} from '../../core/theme';
-import {Button} from 'react-native-paper';
-const Item = ({item}) => {
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { theme } from '../../core/theme';
+import { Button } from 'react-native-paper';
+const Item = () => {
   // todo: replace
   const time = '111';
   const iconName = 'qrcode-scan';
@@ -11,7 +11,7 @@ const Item = ({item}) => {
     <View style={styles.list_row}>
       <Text style={styles.place}>Place</Text>
       <Text style={styles.list_row_time}>{time}</Text>
-      <Button icon={iconName} />
+      <Button icon={iconName}><></></Button>
       <Text style={styles.list_row_temp}>{temp}</Text>
       <Text style={styles.description}>description</Text>
     </View>
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 12,
   },
-  list_row_time: {flex: 1},
-  list_row_temp: {paddingLeft: 12},
+  list_row_time: { flex: 1 },
+  list_row_temp: { paddingLeft: 12 },
 });
 
 export default Item;

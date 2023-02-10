@@ -197,7 +197,7 @@ const StationScreen = ({ route, navigation }: Props) => {
         <View style={{ flex: 1 }} />
       )}
 
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };

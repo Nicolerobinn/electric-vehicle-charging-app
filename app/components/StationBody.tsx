@@ -1,26 +1,25 @@
-import React, {memo, useState, useEffect} from 'react';
-import {START, STOP, WAITING} from '../constants';
+import React, { memo, useState, useEffect } from 'react';
+import { START, STOP, WAITING } from '../constants';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
-import {StyleSheet, View, Image, Alert} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Chart from './Chart';
-import {Text, Button, ActivityIndicator, Colors} from 'react-native-paper';
+import { Text, Button, ActivityIndicator } from 'react-native-paper';
 
-import {homeStationPasswordCompare} from '../core/asyncStorage';
 const AUTHORIZING = 'Authorizing';
 const AVAILABLE = 'Available';
 // redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const StationBody = ({station}) => {
+const StationBody = () => {
   const appData = useSelector((state) => state.appData);
-  const {token, userData, message} = appData || {};
+  const { token, userData, message } = appData || {};
 
   const [buttonDsiabled, setButtonDsiabled] = useState(false);
   const [chargingStatusText, setChargingStatusText] = useState(AVAILABLE);
   // options: 'Start Charging', 'Waiting', 'Stop Charging'
   const [chargingStatus, setChargingStatus] = useState(START);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const startChargingHandler = () => {
     if (buttonDsiabled) {
@@ -51,7 +50,6 @@ const StationBody = ({station}) => {
     <View style={styles.stationBody}>
       <ActivityIndicator
         animating={chargingStatus === WAITING}
-        color={Colors.red800}
       />
       {chargingStatus === STOP && <Chart />}
       {chargingStatus === START && <Icon name="ev-station" size={100} />}

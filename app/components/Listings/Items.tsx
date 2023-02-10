@@ -1,17 +1,25 @@
 import React, { memo, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { List, Text, Button, Divider, Colors } from 'react-native-paper';
+import { List, Text, Button, Divider } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { connecterTypeChecker } from '../../core/utils';
 import { GET_CONNECTOR_REQ, GET_CONNECTOR_RES } from '../../core/api';
 import { writeRecentStationToAsyncStorage } from '../../core/asyncStorage';
 import { useDeepCompareEffect } from 'ahooks';
+import { useNavigation } from "@react-navigation/native";
+import type { StationInter } from '../../typings/stationType'
 import WebSocketClient from '../../core/WebSocketClient';
 
-const ItemRight = ({ onPress, seationService, iconsState, type }) => {
+interface ItemRightProps {
+  type: string
+  seationService: boolean
+  iconsState: string[]
+  onPress: () => void
+}
+const ItemRight = ({ onPress, seationService, iconsState, type }: ItemRightProps) => {
   return (
     <View style={[styles.flexBox, styles.rightBox]}>
-      <Text style={styles.margin}>{type}</Text>
+      <Text >{type}</Text>
       <View style={[styles.flexBox]}>
         {iconsState.map((e, i) => (
           <View key={i} style={[styles.circle, { backgroundColor: e }]} />
@@ -29,27 +37,27 @@ const ItemRight = ({ onPress, seationService, iconsState, type }) => {
     </View>
   );
 };
-const Items = ({ navigation, station, available }) => {
+const Items = ({ station }: { station: StationInter }) => {
   const [iconsState, setIconsState] = useState(['grey', 'grey']);
   const [seationService, setSeationService] = useState(true);
   const appData = useSelector((state) => state.appData);
   const { token, message } = appData || {};
   const serialNumber = station.serialNumber || station.smpctNumber;
+  const navigation = useNavigation();
 
   const type = connecterTypeChecker(station.connectorList);
   const stationName = `${serialNumber} \n${station.name} `;
   const address = `${station.addressLineOne} ${station.addressLineTwo} ${station.city} ${station.state} `;
 
-  const buttonMode = available ? 'contained' : 'text';
   useDeepCompareEffect(() => {
-    const { command = '', status = '', payload, message: info } = message;
+    const { command = '', status = '', payload } = message;
     const { statusList = [], noService = false } = payload || {};
     if (command === GET_CONNECTOR_RES) {
       if (status === 'SUCCESS') {
         if (noService) {
           return;
         }
-        const arr = statusList.map((e, i) => {
+        const arr = statusList.map((e: string) => {
           switch (e) {
             case 'Available':
             case 'Finishing':
@@ -87,10 +95,10 @@ const Items = ({ navigation, station, available }) => {
   const handleStationNavigation = () => {
     // store current station to async storage
     writeRecentStationToAsyncStorage(station, serialNumber);
-    return navigation.navigate('StationScreen', {
+    return navigation.navigate('StationScreen' as never, {
       station: station,
       seationService: seationService,
-    });
+    } as never);
   };
 
   return (
@@ -99,10 +107,9 @@ const Items = ({ navigation, station, available }) => {
         title={stationName}
         titleNumberOfLines={2}
         description={address}
-        right={(props) => (
+        right={() => (
           <ItemRight
             onPress={handleStationNavigation}
-            buttonMode={buttonMode}
             iconsState={iconsState}
             seationService={seationService}
             type={type}

@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import dayjs from 'dayjs';
 
-const Chart = ({ mode, children, ...props }) => {
+const Chart = () => {
   const screenWidth = Dimensions.get('window').width;
 
   const [dataSet, setDataSet] = useState([

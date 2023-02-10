@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button, Divider, List } from 'react-native-paper';
 import { View, Text, StyleSheet } from 'react-native';
-
+import { type BueTouchConnectionInter } from '../typings/stationType'
 
 interface Props {
-  arr: { name: string }[]
+  arr: BueTouchConnectionInter[]
   buttonText: string
   boxTitle: string
+  change: (blue: BueTouchConnectionInter) => () => void
 }
 const BlueToothList = ({ arr = [], buttonText, boxTitle, change }: Props) => {
   return (

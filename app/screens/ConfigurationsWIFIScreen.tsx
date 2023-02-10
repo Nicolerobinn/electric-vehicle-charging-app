@@ -131,7 +131,7 @@ const ConfigurationsBlueToochScreen = ({ navigation }: Props) => {
         />
         <ListBox boxTitle="Networks" arr={NetworksArr} change={connection} />
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </SafeAreaViewBox>
   );
 };
