@@ -19,7 +19,6 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@types/lodash": "^4.14.191",
     "ahooks": "^3.7.4",
-    "convert-string": "^0.1.0",
     "dayjs": "^1.11.7",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",

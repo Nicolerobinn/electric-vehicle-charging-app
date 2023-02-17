@@ -3,7 +3,7 @@ import {
   NativeEventEmitter,
   Platform,
   PermissionsAndroid,
-  Alert,
+  Alert, type AlertButton
 } from 'react-native';
 import {
   request,
@@ -13,32 +13,31 @@ import {
   RESULTS,
 } from 'react-native-permissions';
 import BleManager from 'react-native-ble-manager';
-// for send data to BLE, we need to convert it to buffer array
-import {stringToBytes} from 'convert-string';
 import * as UUID from '../core/UUID';
 import {removeHomeStation} from '../core/asyncStorage';
-import * as Actions from '../store/Actions';
-
+import { store } from '../store';
+import { setBlueTouchCollection} from '../store/slice/blueTouchSlice'
 const BLE_DISCOVER = 'BleManagerDiscoverPeripheral';
 const BLE_STOP = 'BleManagerStopScan';
 const BLE_DIS = 'BleManagerDisconnectPeripheral';
 const BLE_UPDATE = 'BleManagerDidUpdateValueForCharacteristic';
 
 export default class BlueTouchClient {
-  bleManagerEmitter = null;
+  bleManagerEmitter:null |NativeEventEmitter  = null;
   // 未连接设备
   connectedPeripheralsperipherals = null;
   // 已连接设备
-  connectedPeripherals = null;
+  connectedPeripherals:null | Map<string,any> = null;
   // 扫描状态
   isScanning = true;
+  instance = null
+  peripherals:null | Map<string,any> = null
+  static instance:any  = null;
   // 派发
-  dispatch = null;
-  constructor(dispatch) {
+  constructor() {
     // 初始化设备发射器
     const BleManagerModule = NativeModules.BleManager;
     this.bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
-    this.dispatch = dispatch;
     // 大量读写 使用map数据结构
     this.connectedPeripherals = new Map();
     this.peripherals = new Map();
@@ -51,10 +50,11 @@ export default class BlueTouchClient {
       this.iosPermissionCheck();
     }
   }
+
   // 初始化蓝牙单例
-  static getInstance(dispatch) {
+  static getInstance() {
     if (!this.instance) {
-      this.instance = new BlueTouchClient(dispatch);
+      this.instance = new BlueTouchClient();
     }
     return this.instance;
   }
@@ -101,7 +101,7 @@ export default class BlueTouchClient {
           openSettings().catch(() => console.warn('cannot open settings')),
       },
     ];
-    Alert.alert('xxx', 'xxx', arr);
+    Alert.alert('xxx', 'xxx', arr as AlertButton[]);
   };
   // ios设备权限验证
   iosPermissionCheck = async () => {
@@ -138,6 +138,7 @@ export default class BlueTouchClient {
   // 挂载蓝牙
   mountBlueTouchClint() {
     BleManager.start({showAlert: false});
+    if(!this.bleManagerEmitter)return
     // 发现设备
     this.bleManagerEmitter.addListener(
       BLE_DISCOVER,
@@ -161,19 +162,11 @@ export default class BlueTouchClient {
   }
   // 卸载蓝牙
   unMountBlueTouchClint() {
-    this.bleManagerEmitter.removeListener(
-      BLE_DISCOVER,
-      this.handleDiscoverPeripheral,
-    );
-    this.bleManagerEmitter.removeListener(BLE_STOP, this.handleStopScan);
-    this.bleManagerEmitter.removeListener(
-      BLE_DIS,
-      this.handleDisconnectedPeripheral,
-    );
-    this.bleManagerEmitter.removeListener(
-      BLE_UPDATE,
-      this.handleUpdateValueForCharacteristic,
-    );
+    if(!this.bleManagerEmitter)return
+    this.bleManagerEmitter.removeAllListeners( BLE_DISCOVER );
+    this.bleManagerEmitter.removeAllListeners(BLE_STOP);
+    this.bleManagerEmitter.removeAllListeners( BLE_DIS );
+    this.bleManagerEmitter.removeAllListeners(BLE_UPDATE );
   }
 
   // 封装的蓝牙方法部分
@@ -189,7 +182,8 @@ export default class BlueTouchClient {
       });
   };
   // 断开蓝牙
-  handleDisconnectedPeripheral = (data) => {
+  handleDisconnectedPeripheral = (data:any) => {
+    if(! this.connectedPeripherals)return
     let peripheral = this.connectedPeripherals.get(data.peripheral);
     if (peripheral) {
       this.connectedPeripherals.delete(peripheral.id);
@@ -197,7 +191,7 @@ export default class BlueTouchClient {
     console.log('Disconnected from ' + data.peripheral);
   };
   // 收到数据通知
-  handleUpdateValueForCharacteristic = (data) => {
+  handleUpdateValueForCharacteristic = (data:any) => {
     const {peripheral, characteristic, value} = data;
     const efferenceStr = `Received data from ${peripheral} characteristic ${characteristic} ${value}`;
     console.log('====================================');
@@ -212,7 +206,7 @@ export default class BlueTouchClient {
         console.log('没有连接外围设备');
       }
       for (let i = 0; i < results.length; i++) {
-        this.connectedPeripherals.set(results[i].id, results[i]);
+        this.connectedPeripherals?.set(results[i].id, results[i]);
       }
     });
   };
@@ -240,7 +234,7 @@ export default class BlueTouchClient {
     console.log(this.getBlueTouchList());
   };
   // 密码校验
-  blueTouchCheckPassword = (ID, password) => {
+  blueTouchCheckPassword = (ID:string, password:string) => {
     setTimeout(() => {
       BleManager.retrieveServices(ID).then((peripheralInfo) => {
         setTimeout(() => {
@@ -266,21 +260,20 @@ export default class BlueTouchClient {
     }, 900);
   };
   // 移除蓝牙
-  removeBlueConnect = async (station) => {
+  removeBlueConnect = async (station:any) => {
     removeHomeStation(station);
     await BleManager.disconnect(station.id);
     this.startScan();
     this.retrieveConnected();
   };
   // 连接蓝牙
-  blueConnect = async (peripheral) => {
+  blueConnect = async (peripheral:any) => {
     const ID = peripheral.id;
     try {
       await BleManager.connect(ID);
-      this.peripherals.delete(ID);
-      this.connectedPeripherals.set(ID, peripheral);
-      const psd = stringToBytes('dog');
-      this.blueTouchCheckPassword(ID, psd);
+      this.peripherals?.delete(ID);
+      this.connectedPeripherals?.set(ID, peripheral);
+      this.blueTouchCheckPassword(ID, 'dog');
       this.dispatchActionColl();
       // 可以使用 async/await 封装回传不使用派发
       // return this.getBlueTouchList();
@@ -292,13 +285,14 @@ export default class BlueTouchClient {
 
   // 获取rssi
   // 函数需要修改
-  testPeripheral = (peripheral) => {
+  testPeripheral = (peripheral:{id:string}) => {
     /* Test read current RSSI value */
     BleManager.retrieveServices(peripheral.id).then((peripheralData) => {
       console.log('检索周边服务', peripheralData);
 
       BleManager.readRSSI(peripheral.id).then((rssi) => {
         console.log('检索到 RSSI value', rssi);
+        if(! this.peripherals)return
         let p = this.peripherals.get(peripheral.id);
         if (p) {
           p.rssi = rssi;
@@ -310,13 +304,13 @@ export default class BlueTouchClient {
   };
   // 派发集合
   dispatchActionColl() {
-    this.dispatch(Actions.setBlueTouchCollection(this.getBlueTouchList()));
+    store.dispatch(setBlueTouchCollection(this.getBlueTouchList()))
   }
   // 获取蓝牙列表
   getBlueTouchList = () => {
     return {
-      peripherals: Array.from(this.peripherals.values()),
-      connectedPeripherals: Array.from(this.connectedPeripherals.values()),
+      peripherals: Array.from(this.peripherals?.values?.()||[]),
+      connectedPeripherals: Array.from(this.connectedPeripherals?.values?.()|| []),
     };
   };
 }

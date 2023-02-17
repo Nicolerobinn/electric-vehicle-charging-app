@@ -14,7 +14,7 @@ const Route = () => {
   useEffect(() => {
     // 初始化webscoket
     // 挂载蓝牙功能
-    BlueTouchClient.getInstance(dispatch).mountBlueTouchClint();
+    BlueTouchClient.getInstance().mountBlueTouchClint();
     WebSocketClient.getInstance(dispatch).initWebSocket();
     return () => {
       BlueTouchClient.getInstance().unMountBlueTouchClint();

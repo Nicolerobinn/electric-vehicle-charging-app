@@ -19,7 +19,6 @@ specifiers:
   '@types/react-test-renderer': ^18.0.0
   ahooks: ^3.7.4
   babel-jest: ^26.6.3
-  convert-string: ^0.1.0
   dayjs: ^1.11.7
   eslint: ^8.33.0
   jest: ^26.6.3
@@ -59,7 +58,6 @@ dependencies:
   '@reduxjs/toolkit': 1.9.2_k4ae6lp43ej6mezo3ztvx6pykq
   '@types/lodash': 4.14.191
   ahooks: 3.7.4_react@18.2.0
-  convert-string: 0.1.0
   dayjs: 1.11.7
   jwt-decode: 3.1.2
   lodash: 4.17.21
@@ -2894,10 +2892,6 @@ packages:
 
   /convert-source-map/1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
-
-  /convert-string/0.1.0:
-    resolution: {integrity: sha512-1KX9ESmtl8xpT2LN2tFnKSbV4NiarbVi8DVb39ZriijvtTklyrT+4dT1wsGMHKD3CJUjXgvJzstm9qL9ICojGA==}
-    dev: false
 
   /copy-descriptor/0.1.1:
     resolution: {integrity: sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==}
