@@ -1,46 +1,46 @@
-import {saveMessage,updateToken} from '../store/slice/userSlice'
+import { store } from '../store';
+import { saveMessage,updateToken } from '../store/slice/userSlice'
 const WSSURL = 'wss://dev.evnrgy.com:7777';
 // instance of websocket connection as a class property
 
 
 // callback function
-const onClose = (dispatch) => {
+const onClose = () => {
   console.log('disconnected');
   // clear all redux data
-  dispatch(saveMessage());
-  dispatch(updateToken(''));
+  store.dispatch(saveMessage());
+  store.dispatch(updateToken(''));
   // automatically try to reconnect on connection loss
 };
-const onMessage = (evt:{data:string}, dispatch) => {
+const onMessage = (evt:{data:string}) => {
   // listen to data sent from the webscoket server
   // TODO: 修改接收模式，改为派发，优先级低
   const message = JSON.parse(evt.data);
-  dispatch( saveMessage(message));
+  store.dispatch( saveMessage(message));
   console.log('message', message);
   if (message?.status === 'SUCCESS' && message?.token) {
-    dispatch(updateToken(message.token));
+    store.dispatch(updateToken(message.token));
   }
 };
 
 // singleton pattern class
 export default class WebSocketClient {
   connected = false;
-  ws = null;
-  constructor(dispatch) {
-    this.dispatch = dispatch;
+  isInit=false
+  ws:any = null;
+  timeout:any= null
+  static instance:any = null
+  constructor( ) { 
   }
 
   /**
    * 获取WebSocket单例
    * @returns {WebSocketClient}
    */
-  static getInstance(dispatch) {
+  static getInstance( ) {
     if (!this.instance) {
-      console.log('初始化webscoket 单例');
-      if (!dispatch) {
-        console.log('未注入派发器,请检查代码');
-      }
-      this.instance = new WebSocketClient(dispatch);
+      console.log('初始化webscoket 单例'); 
+      this.instance = new WebSocketClient( );
       // 添加初始化节流，防止提前调用方法导致error
       this.instance.isInit = true;
     }
@@ -72,9 +72,7 @@ export default class WebSocketClient {
     };
 
     //客户端接收服务端数据时触发
-    this.ws.onmessage = (evt) => {
-      onMessage(evt, this.dispatch);
-    };
+    this.ws.onmessage = onMessage;
     //连接错误
     this.ws.onerror = (e) => {
       console.log('WebSocket:', 'connect to server error');
@@ -84,7 +82,7 @@ export default class WebSocketClient {
     //连接关闭
     this.ws.onclose = () => {
       this.connected = false;
-      onClose(this.dispatch);
+      onClose();
     };
   }
 
@@ -92,7 +90,7 @@ export default class WebSocketClient {
     this.ws.onclose();
   }
   //发送消息
-  sendMessage(requestBody) {
+  sendMessage(requestBody:any) {
     // 根据节流判断是否允许send
     if (this.isInit) {
       console.log('ws 初始化中');
@@ -116,7 +114,6 @@ export default class WebSocketClient {
 
   //重连
   reconnect(e) {
-    this.onerrorCallBack && this.onerrorCallBack(e);
     if (this.timeout) {
       clearTimeout(this.timeout);
     }

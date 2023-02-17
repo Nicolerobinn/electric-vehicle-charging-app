@@ -30,7 +30,6 @@ export default class BlueTouchClient {
   connectedPeripherals:null | Map<string,any> = null;
   // 扫描状态
   isScanning = true;
-  instance = null
   peripherals:null | Map<string,any> = null
   static instance:any  = null;
   // 派发
@@ -211,7 +210,7 @@ export default class BlueTouchClient {
     });
   };
   // Discover ALl BLE devices
-  handleDiscoverPeripheral = (peripheral) => {
+  handleDiscoverPeripheral = (peripheral:any) => {
     // console.log('Discover BLE device: ', peripheral, peripheral.advertising.manufacturerData);
     // Ignore peripheral that has no name
     if (!peripheral.name) {
